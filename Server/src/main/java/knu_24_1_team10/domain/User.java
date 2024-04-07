@@ -29,6 +29,12 @@ public class User {
   @Column(name = "birthdate", nullable = false)
   private LocalDate birthdate;
 
+  @Column(name = "email", nullable = true, length = 50)
+  private String email;
+
+  @Column(name = "password", nullable = true, length = 20)
+  private String password;
+
   // Getters
   public Long getId() {
 		return this.id;
@@ -48,5 +54,13 @@ public class User {
 
   public LocalDate getBirthdate() {
 		return this.birthdate;
+	}
+
+  public String getEmail() {
+		return this.email;
+	}
+
+  public String getPassword() {
+		return this.password;
 	}
 }
