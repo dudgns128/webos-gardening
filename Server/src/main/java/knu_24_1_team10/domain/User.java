@@ -12,6 +12,24 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "user")
 public class User {
+  public User(String name, String gender, String username, LocalDate birthdate) {
+    this.name = name;
+    this.gender = gender;
+    this.username = username;
+    this.birthdate = birthdate;
+    this.email = null;
+    this.password = null;
+  }
+
+  public User(String name, String gender, String username, LocalDate birthdate, String email, String password) {
+    this.name = name;
+    this.gender = gender;
+    this.username = username;
+    this.birthdate = birthdate;
+    this.email = email;
+    this.password = password;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
