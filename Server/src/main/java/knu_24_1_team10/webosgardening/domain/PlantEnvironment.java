@@ -1,11 +1,29 @@
-package knu_24_1_team10.domain;
+package knu_24_1_team10.webosgardening.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "plant_environment")
 public class PlantEnvironment {
+  // constructor for test
+  public PlantEnvironment(float properWaterValue, float properWaterRange, float properLightValue,
+                          float properLightRange, float properTemperatureValue, float properTemperatureRange,
+                          float properHumidityValue, float properHumidityRange) {
+                            this.properWaterValue = properWaterValue;
+                            this.properWaterRange = properWaterRange;
+                            this.properLightValue = properLightValue;
+                            this.properLightRange = properLightRange;
+                            this.properTemperatureValue = properTemperatureValue;
+                            this.properTemperatureRange = properTemperatureRange;
+                            this.properHumidityValue = properHumidityValue;
+                            this.properHumidityRange = properHumidityRange;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -36,6 +54,10 @@ public class PlantEnvironment {
   private float properHumidityRange;
 
   // Getters
+  public Long getId() {
+    return this.id;
+  }
+
   public float getProperWaterValue() {
 		return this.properWaterValue;
 	}

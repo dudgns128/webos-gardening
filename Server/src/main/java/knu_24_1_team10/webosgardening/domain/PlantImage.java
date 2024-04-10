@@ -1,11 +1,33 @@
-package knu_24_1_team10.domain;
+package knu_24_1_team10.webosgardening.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
+@Entity
+@Table(name = "plant_image")
 public class PlantImage {
+  // constructor for test
+  public PlantImage(String happyImageUrl, String sadImageUrl, String angryImageUrl,
+                    String underWaterImageUrl, String overWaterImageUrl, String underLightImageUrl,
+                    String overLightImageUrl, String underTemperatureImageUrl, String overTemperatureImageUrl,
+                    String underHumidityImageUrl, String overHumidityImageUrl) {
+                      this.happyImageUrl = happyImageUrl;
+                      this.sadImageUrl = sadImageUrl;
+                      this.angryImageUrl = angryImageUrl;
+                      this.underWaterImageUrl = underWaterImageUrl;
+                      this.overWaterImageUrl = overWaterImageUrl;
+                      this.underLightImageUrl = underLightImageUrl;
+                      this.overLightImageUrl = overLightImageUrl;
+                      this.underTemperatureImageUrl = underTemperatureImageUrl;
+                      this.overTemperatureImageUrl = overTemperatureImageUrl;
+                      this.underHumidityImageUrl = underHumidityImageUrl;
+                      this.overHumidityImageUrl = overHumidityImageUrl;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
@@ -45,6 +67,10 @@ public class PlantImage {
   private String overHumidityImageUrl;
 
   // Getters
+  public Long getId() {
+    return this.id;
+  }
+
   public String getHappyImageUrl() {
 		return this.happyImageUrl;
 	}

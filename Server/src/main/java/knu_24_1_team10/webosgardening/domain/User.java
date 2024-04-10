@@ -1,4 +1,4 @@
-package knu_24_1_team10.domain;
+package knu_24_1_team10.webosgardening.domain;
 
 import java.time.LocalDate;
 
