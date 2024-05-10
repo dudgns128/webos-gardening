@@ -15,6 +15,47 @@ const service = new Service(pkgInfo.name); // Create service by service name on 
 const logHeader = '[' + pkgInfo.name + ']';
 let greeting = 'Hello, World!';
 
+// 이 홈 가드닝 키트에서 관리중인 식물의 plant id
+let plantId;
+
+// 관리할 plant id 등록
+service.register('registerPlantId', function (message) {
+  if (!message.payload.plantId) {
+    message.respond({
+      success: false,
+    });
+  } else {
+    plantId = message.payload.plantId;
+    message.respond({
+      success: true,
+    });
+  }
+});
+
+// 관리 중인 plant id 조회
+service.register('inquiryPlantId', function () {
+  if (plantId) {
+    message.respond({
+      success: true,
+      plantId: plantId,
+    });
+  } else {
+    message.respond({
+      success: false,
+      plantId: null,
+    });
+  }
+});
+
+// 등록된 plant id 삭제
+service.register('deletePlantId', function () {
+  plantId = null;
+  message.respond({
+    success: true,
+  });
+});
+
+/************************ 예제 코드 ***********************/
 // a method that always returns the same value
 service.register('hello', function (message) {
   console.log(logHeader, 'SERVICE_METHOD_CALLED:/hello');
