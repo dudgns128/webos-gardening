@@ -14,7 +14,8 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "user_plant")
 public class UserPlant {
-  public UserPlant(User user, PlantInfo plantInfo, String name, LocalDate birthdate, boolean isAutoControl, int level) {
+  public UserPlant(User user, PlantInfo plantInfo, String name, LocalDate birthdate, boolean isAutoControl, int level)
+  {
     this.user = user;
     this.plantInfo = plantInfo;
     this.name = name;

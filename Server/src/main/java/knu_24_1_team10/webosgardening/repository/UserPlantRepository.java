@@ -2,6 +2,7 @@ package knu_24_1_team10.webosgardening.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import jakarta.persistence.EntityManager;
@@ -9,6 +10,8 @@ import knu_24_1_team10.webosgardening.domain.UserPlant;
 
 @Repository
 public class UserPlantRepository {
+
+
   private final EntityManager em;
 
   public UserPlantRepository(EntityManager em) {
