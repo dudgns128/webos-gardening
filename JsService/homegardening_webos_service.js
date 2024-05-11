@@ -10,10 +10,11 @@
 // eslint-disable-next-line import/no-unresolved
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
+const WebSocket = require('ws');
 
 const service = new Service(pkgInfo.name); // Create service by service name on package.json
 const logHeader = '[' + pkgInfo.name + ']';
-let greeting = 'Hello, World!';
+const wsurl = 'ws://example.com';
 
 // 이 홈 가드닝 키트에서 관리중인 식물의 plant id
 let plantId;
@@ -33,7 +34,7 @@ service.register('registerPlantId', function (message) {
 });
 
 // 관리 중인 plant id 조회
-service.register('inquiryPlantId', function () {
+service.register('inquiryPlantId', function (message) {
   if (plantId) {
     message.respond({
       success: true,
@@ -48,64 +49,122 @@ service.register('inquiryPlantId', function () {
 });
 
 // 등록된 plant id 삭제
-service.register('deletePlantId', function () {
+service.register('deletePlantId', function (message) {
   plantId = null;
   message.respond({
     success: true,
   });
 });
 
-/************************ 예제 코드 ***********************/
-// a method that always returns the same value
-service.register('hello', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED:/hello');
-  console.log('In hello callback');
-  const name = message.payload.name ? message.payload.name : 'World';
-
-  message.respond({
-    returnValue: true,
-    Response: 'Hello, ' + name + '!',
-  });
-});
-
-// set some state in the service
-service.register('/config/setGreeting', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED:/config/setGreeting');
-  console.log('In setGreeting callback');
-  if (message.payload.greeting) {
-    greeting = message.payload.greeting;
-  } else {
+// 식물 ID 등록 후 -> startSensing 호출로 서버에 센싱 데이터 전송 시작
+service.register('startSensing', function (message) {
+  if (!plantId) {
     message.respond({
-      returnValue: false,
-      errorText: "argument 'greeting' is required",
-      errorCode: 1,
+      success: false,
     });
+    return;
   }
+  // heartbeat 구독
+  const sub = service.subscribe(`luna://${pkgInfo.name}/heartbeat`, {
+    subscribe: true,
+  });
+  sub.addListener('response', function (msg) {
+    console.log(JSON.stringify(msg.payload));
+  });
+
+  // Websocket 관련 codes
+  const connection = new WebSocket(wsurl);
+
+  // 연결 성공
+  connection.onopen = () => {
+    console.log('WebSocket 연결 성공');
+  };
+
+  // 연결 종료
+  connection.onclose = () => {
+    console.log('WebSocket 연결 종료');
+  };
+
+  // 연결 중 에러 발생
+  connection.onerror = (error) => {
+    console.error('WebSocket 에러 발생:', error);
+  };
+
+  // 메시지 수신 (제어하는 경우)
+  connection.onmessage = (wMessage) => {
+    console.log('제어 명령 수신 : ', wMessage);
+    controlLight();
+    controlWater();
+  };
+
+  // 5초 주기로 센싱 데이터 전송
+  const intervalId = setInterval(function () {
+    connection.send({ plantId: plantId, data: getSensingDataJSON });
+  }, 5000);
+
   message.respond({
-    returnValue: true,
-    greeting: greeting,
+    success: true,
   });
 });
 
-// call another service
-service.register('time', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED:/time');
-  console.log('time callback');
-  service.call(
-    'luna://com.webos.service.systemservice/clock/getTime',
-    {},
-    function (m2) {
-      console.log(
-        logHeader,
-        'SERVICE_METHOD_CALLED:com.webos.service.systemservice/clock/getTime'
-      );
-      const response = 'You appear to have your UTC set to: ' + m2.payload.utc;
-      console.log(response);
-      message.respond({ message: response });
-    }
-  );
-});
+// sensors 조회/제어 관련 함수들
+function getSensingDataJSON() {
+  // 일단은 dummy data 랜덤으로 생성
+  // 추후 실제 센서 연결 후 실제 값 받아오게 변경
+  function getRandomInt(min, max) {
+    //min ~ max 사이의 임의의 정수 반환
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+  return {
+    water: getRandomInt(1, 100),
+    light: getRandomInt(1, 100),
+    temperature: getRandomInt(1, 100),
+    humidity: getRandomInt(1, 100),
+  };
+}
+function controlLight() {}
+function controlWater() {}
 
+// ***************************** Heartbeat *****************************
+// heart beat가 어떤 외부 서비스가 아닌, 특정 구독자에게 신호를 줘서 꺼지지 않도록 하는 걸 말하는 듯
+const heartbeat2 = service.register('heartbeat');
+heartbeat2.on('request', function (message) {
+  console.log(logHeader, 'SERVICE_METHOD_CALLED:/heartbeat/request');
+  console.log('heartbeat callback');
+  message.respond({ event: 'beat' });
+  if (message.isSubscription) {
+    subscriptions[message.uniqueToken] = message;
+    if (!interval) {
+      createInterval();
+    }
+  }
+});
+heartbeat2.on('cancel', function (message) {
+  console.log(logHeader, 'SERVICE_METHOD_CALLED:/heartbeat/cancel');
+  console.log('Canceled ' + message.uniqueToken);
+  delete subscriptions[message.uniqueToken];
+  const keys = Object.keys(subscriptions);
+  if (keys.length === 0) {
+    console.log('no more subscriptions, canceling interval');
+    clearInterval(interval);
+    interval = undefined;
+  }
+});
+// send responses to each subscribed client
+function sendResponses() {
+  // console.log(logHeader, "send_response");
+  // console.log("Sending responses, subscription count=" + Object.keys(subscriptions).length);
+  for (const i in subscriptions) {
+    if (Object.prototype.hasOwnProperty.call(subscriptions, i)) {
+      const s = subscriptions[i];
+      s.respond({
+        returnValue: true,
+        event: 'beat ' + x,
+      });
+    }
+  }
+  x++;
+}
 // handle subscription requests
 const subscriptions = {};
 let interval;
@@ -120,138 +179,3 @@ function createInterval() {
     sendResponses();
   }, 1000);
 }
-
-// send responses to each subscribed client
-function sendResponses() {
-  console.log(logHeader, 'send_response');
-  console.log(
-    'Sending responses, subscription count=' + Object.keys(subscriptions).length
-  );
-  for (const i in subscriptions) {
-    if (Object.prototype.hasOwnProperty.call(subscriptions, i)) {
-      const s = subscriptions[i];
-      s.respond({
-        returnValue: true,
-        event: 'beat ' + x,
-      });
-    }
-  }
-  x++;
-}
-
-// listen for requests, and handle subscriptions via implicit event handlers in call
-// to register
-service.register(
-  'heartbeat',
-  function (message) {
-    const uniqueToken = message.uniqueToken;
-    console.log(logHeader, 'SERVICE_METHOD_CALLED:/heartbeat');
-    console.log(
-      'heartbeat callback, uniqueToken: ' +
-        uniqueToken +
-        ', token: ' +
-        message.token
-    );
-    message.respond({ event: 'beat' });
-    if (message.isSubscription) {
-      subscriptions[uniqueToken] = message;
-      if (!interval) {
-        createInterval();
-      }
-    }
-  },
-  function (message) {
-    const uniqueToken = message.uniqueToken;
-    console.log('Canceled ' + uniqueToken);
-    delete subscriptions[uniqueToken];
-    const keys = Object.keys(subscriptions);
-    if (keys.length === 0) {
-      console.log('no more subscriptions, canceling interval');
-      clearInterval(interval);
-      interval = undefined;
-    }
-  }
-);
-
-// EventEmitter-based API for subscriptions
-// note that the previous examples are actually using this API as well, they're
-// just setting a "request" handler implicitly
-const heartbeat2 = service.register('heartbeat2');
-heartbeat2.on('request', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED:/heartbeat2/request');
-  console.log('heartbeat callback');
-  message.respond({ event: 'beat' });
-  if (message.isSubscription) {
-    subscriptions[message.uniqueToken] = message;
-    if (!interval) {
-      createInterval();
-    }
-  }
-});
-heartbeat2.on('cancel', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED:/heartbeat2/cancel');
-  console.log('Canceled ' + message.uniqueToken);
-  delete subscriptions[message.uniqueToken];
-  const keys = Object.keys(subscriptions);
-  if (keys.length === 0) {
-    console.log('no more subscriptions, canceling interval');
-    clearInterval(interval);
-    interval = undefined;
-  }
-});
-
-service.register('ping', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED:/ping');
-  console.log('Ping! setting up activity');
-  const methodName = 'luna://' + pkgInfo.name + '/pong';
-  const activitySpec = {
-    activity: {
-      name: 'My Activity', // this needs to be unique, per service
-      description: 'do something', // required
-      background: true, // can use foreground or background, or set individual properties (see Activity Specification below, for details)
-      persist: true, // this activity will be persistent across reboots
-      explicit: true, // this activity *must* be completed or cancelled explicitly, or it will be re-launched until it does
-      callback: {
-        // what service to call when this activity starts
-        method: methodName, // URI to service
-        params: {
-          // parameters/arguments to pass to service
-        },
-      },
-    },
-    start: true, // start the activity immediately when its requirements (if any) are met
-    replace: true, // if an activity with the same name already exists, replace it
-    subscribe: false, // if "subscribe" is false, the activity needs to be adopted immediately, or it gets canceled
-  };
-  service.call(
-    'luna://com.webos.service.activitymanager/create',
-    activitySpec,
-    function (reply) {
-      console.log(
-        logHeader,
-        'SERVICE_METHOD_CALLED:com.webos.service.activitymanager/create'
-      );
-      const activityId = reply.payload.activityId;
-      console.log('ActivityId = ' + activityId);
-      message.respond({ msg: 'Created activity ' + activityId });
-    }
-  );
-});
-
-service.register('pong', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED:/pong');
-  console.log('Pong!');
-  console.log(message.payload);
-  message.respond({ message: 'Pong' });
-});
-
-service.register('/do/re/me', function (message) {
-  console.log(logHeader, 'SERVICE_METHOD_CALLED://do/re/me');
-  message.respond({
-    verses: [
-      { doe: 'a deer, a female deer' },
-      { ray: 'a drop of golden sun' },
-      { me: 'a name I call myself' },
-    ],
-  });
-});
