@@ -99,7 +99,7 @@ service.register('startSensing', function (message) {
 
   // 5초 주기로 센싱 데이터 전송
   const intervalId = setInterval(function () {
-    connection.send({ plantId: plantId, data: getSensingDataJSON });
+    connection.send(JSON.stringify({ plantId: plantId, data: getSensingDataJSON }));
   }, 5000);
 
   message.respond({
