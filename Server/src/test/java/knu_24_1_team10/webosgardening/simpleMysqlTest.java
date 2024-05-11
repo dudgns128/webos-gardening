@@ -39,20 +39,20 @@ class simpleMysqlTest {
 
 	@Test
 	public void userInsert() {
-		User user = new User("parkJH", "male", "hwani", LocalDate.now());
+		User user = new User("hwani@gmail.com", "pw1234");
 		User insertedUser = userRepository.save(user);
 
 		Optional<User> findUser_Optional = userRepository.findById(insertedUser.getId());
 		User findUser = findUser_Optional.get();
-		assertEquals(user.getUsername(), findUser.getUsername());
+		assertEquals(user.getEmail(), findUser.getEmail());
 	}
 
 	@Test
 	public void userPlantInsert() {
-		PlantImage samplePlantImage = new PlantImage("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
+		PlantImage samplePlantImage = new PlantImage("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
 		PlantEnvironment samplePlantEnvironment = new PlantEnvironment(1, 21, 2, 3, 4, 5, 10, 8);
 		PlantInfo samplePlantInfo = new PlantInfo(samplePlantImage, samplePlantEnvironment, "scHwani", "It is very tall", 100);
-		User user = new User("parkJH", "male", "hwani", LocalDate.now());
+		User user = new User("hwani@gmail.com", "pw1234");
 		User insertedUser = userRepository.save(user);
 		testEm.persist(samplePlantImage);
 		testEm.persist(samplePlantEnvironment);

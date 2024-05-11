@@ -11,10 +11,11 @@ import jakarta.persistence.Table;
 @Table(name = "plant_image")
 public class PlantImage {
   // constructor for test
-  public PlantImage(String happyImageUrl, String sadImageUrl, String angryImageUrl,
+  public PlantImage(String normalImageUrl, String happyImageUrl, String sadImageUrl, String angryImageUrl,
                     String underWaterImageUrl, String overWaterImageUrl, String underLightImageUrl,
                     String overLightImageUrl, String underTemperatureImageUrl, String overTemperatureImageUrl,
                     String underHumidityImageUrl, String overHumidityImageUrl) {
+                      this.normalImageUrl = normalImageUrl;
                       this.happyImageUrl = happyImageUrl;
                       this.sadImageUrl = sadImageUrl;
                       this.angryImageUrl = angryImageUrl;
@@ -32,6 +33,9 @@ public class PlantImage {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
+
+  @Column(name = "normal_image_url", nullable = false, length = 300)
+  private String normalImageUrl;
 
   @Column(name = "happy_image_url", nullable = false, length = 300)
   private String happyImageUrl;
@@ -70,6 +74,10 @@ public class PlantImage {
   public Long getId() {
     return this.id;
   }
+
+  public String getNormalImageUrl() {
+		return this.normalImageUrl;
+	}
 
   public String getHappyImageUrl() {
 		return this.happyImageUrl;
