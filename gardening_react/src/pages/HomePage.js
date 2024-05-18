@@ -2,19 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-  const [paddingTopRatio] = useState(0.12);
-
-  useEffect(() => {
-    const clearLocalStorage = () => {
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userSex');
-      localStorage.removeItem('userBirthdate');
-    };
-
-    clearLocalStorage(); 
-  }, [paddingTopRatio]); 
-
   const nameStyle = {
     fontFamily: "Reem Kufi",
     fontSize: "36px",
@@ -27,6 +14,16 @@ const HomePage = () => {
     WebkitTextFillColor: "transparent",
   };
 
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigate('/user/login'); 
+    }, 3000); // 3000ms = 3s 후에 페이지를 이동
+
+    return () => clearTimeout(timer); // 
+  }, []); // 
+
   // 화면 크기에 따른 픽셀 값 계산
   const calculateWidthSize = (originalSize, ratio) => {
     return Math.round(window.innerWidth * ratio) || originalSize;
@@ -37,7 +34,7 @@ const HomePage = () => {
   };
 
   return (
-    <div style={{ backgroundImage: `url()`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', height: '100vh', overflow: 'hidden',paddingTop: 'px'}}>
+    <div style={{ backgroundImage: `url()`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', height: '100vh', overflow: 'hidden',padding: '200px'}}>
       <div className="container d-flex align-items-center justify-content-center vh-50">
         <div className="d-flex flex-column align-items-center">
           <div className="logo-container" style={{ width: calculateWidthSize(720, 0.52), height: calculateHeightSize(220, 0.3) }}>
@@ -52,26 +49,6 @@ const HomePage = () => {
 </svg>    
 
           <text style={nameStyle}>grown</text>
-          </div>
-
-          <div>
-            <div className="logo-container" style={{ width: calculateWidthSize(600, 0.45), height: calculateHeightSize(40, 0.1) }}>
-              <Link to="/user/login" style={{ textDecoration: 'none' }}>
-                <button type="button" style={{ background: 'transparent', border: 'none'}}>
-                  <img src={require('../img/LoginBtn.png')} alt="" className="logo-image"/>
-                </button>
-              </Link>
-            </div>
-          </div>
-          
-          <div>
-            <div className="logo-container" style={{ width: calculateWidthSize(600, 0.45), height: calculateHeightSize(40, 0.05) }}>
-              <Link to="/user/signup" style={{ textDecoration: 'none' }}>
-                <button type="button" style={{ background: 'transparent', border: 'none'}}>
-                  <img src={require('../img/SignupBtn.png')} alt="" className="logo-image"/>
-                </button>
-              </Link>
-            </div>
           </div>
         </div>
       </div>
