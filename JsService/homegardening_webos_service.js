@@ -19,7 +19,8 @@ const wsurl = 'ws://example.com';
 // 이 홈 가드닝 키트에서 관리중인 식물의 plant id
 let plantId;
 
-// 관리할 plant id 등록
+// ***************************** APIs *****************************
+// 초기 데이터 등록
 service.register('registerPlantId', function (message) {
   if (!message.payload.plantId) {
     message.respond({
@@ -33,31 +34,8 @@ service.register('registerPlantId', function (message) {
   }
 });
 
-// 관리 중인 plant id 조회
-service.register('inquiryPlantId', function (message) {
-  if (plantId) {
-    message.respond({
-      success: true,
-      plantId: plantId,
-    });
-  } else {
-    message.respond({
-      success: false,
-      plantId: null,
-    });
-  }
-});
-
-// 등록된 plant id 삭제
-service.register('deletePlantId', function (message) {
-  plantId = null;
-  message.respond({
-    success: true,
-  });
-});
-
-// 식물 ID 등록 후 -> startSensing 호출로 서버에 센싱 데이터 전송 시작
-service.register('startSensing', function (message) {
+// 백그라운드 작업 시작
+service.register('start-sensing', function (message) {
   if (!plantId) {
     message.respond({
       success: false,
@@ -99,7 +77,9 @@ service.register('startSensing', function (message) {
 
   // 5초 주기로 센싱 데이터 전송
   const intervalId = setInterval(function () {
-    connection.send(JSON.stringify({ plantId: plantId, data: getSensingDataJSON() }));
+    connection.send(
+      JSON.stringify({ plantId: plantId, data: getSensingDataJSON() })
+    );
   }, 5000);
 
   message.respond({
@@ -107,6 +87,28 @@ service.register('startSensing', function (message) {
   });
 });
 
+// 최근 센싱 데이터 가져오기
+service.register('get-sensing-data', function (message) {});
+
+// 식물 기본 정보 조회(캐릭터 이미지 url, 이름)
+service.register('get-plant-info', function (message) {});
+
+// 식물 만족도 조회하기
+service.register('get-plant-satisfaction', function (message) {});
+
+// 식물 레벨 조회하기
+service.register('get-plant-level', function (message) {});
+
+// 광량 제어하기
+service.register('control-light', function (message) {});
+
+// 물 제어하기
+service.register('control-water', function (message) {});
+
+// 자동제어 ON/OFF
+service.register('toggle-autocontrol', function (message) {});
+
+// ***************************** Service 로직 *****************************
 // sensors 조회/제어 관련 함수들
 function getSensingDataJSON() {
   // 일단은 dummy data 랜덤으로 생성
