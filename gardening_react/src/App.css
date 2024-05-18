@@ -54,3 +54,25 @@
 .info #info__id {
   position: relative;
 }
+
+.gauge-button {
+  position: relative;
+  width: 200px;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.gauge-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #007bff;
+  transition: width 0.5s ease;
+}
+
+.gauge-button:hover .gauge-fill {
+  width: 100%;
+}
