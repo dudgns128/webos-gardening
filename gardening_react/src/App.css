@@ -50,3 +50,7 @@
   animation-timing-function: ease-in-out;
   animation-duration: 600ms; */
 }
+
+.info #info__id {
+  position: relative;
+}
