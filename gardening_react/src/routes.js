@@ -5,28 +5,32 @@ import UserSignup from './pages/UserSignup';
 import UserPlantRegister from './pages/UserPlantRegister';
 
 import MainPage from './pages/MainPage';
-
+import PlantCondition from './pages/PlantCondition';
 
 const routes = [
     {
-        path :'/',
-        component : HomePage
+        path: '/',
+        component: HomePage
     },
     {
-        path : '/user/login',
-        component : UserLogin
+        path: '/user/login',
+        component: UserLogin
     },
     {
-        path : '/user/signup',
-        component : UserSignup
+        path: '/user/signup',
+        component: UserSignup
     },
     {
-        path : '/user/plant',
-        component : UserPlantRegister
+        path: '/user/plant',
+        component: UserPlantRegister
     },
     {
-        path :'/main',
-        component : MainPage
+        path: '/main',
+        component: MainPage
+    },
+    {
+        path: '/plant/condition',
+        component: PlantCondition
     },
 ]
 

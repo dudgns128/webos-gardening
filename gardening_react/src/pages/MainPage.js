@@ -51,7 +51,8 @@ const HomePage = () => {
   const handleBarClick = () => {
     // 페이지 이동 로직 구현
     // 예: 특정 URL로 이동
-    navigate()
+    navigate('/plant/condition');
+
   };
   // 화면 크기에 따른 픽셀 값 계산
   const calculateWidthSize = (originalSize, ratio) => {
@@ -111,11 +112,11 @@ const HomePage = () => {
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
             <map name="image-map">
-              <area shape="rect" coords="0,0,75,180" alt="Link 1" href="src/pages/UserLogin.js#/user/login" />
-              <area shape="rect" coords="75,0,150,180" alt="Link 2" href="/link-2" />
-              <area shape="rect" coords="150,0,225,180" alt="Link 3" href="/link-3" />
-              <area shape="rect" coords="225,0,300,180" alt="Link 4" href="/link-4" />
-              <area shape="rect" coords="300,0,375,180" alt="Link 5" href="/link-5" />
+              <area shape="rect" coords="0,0,75,180" alt="Link 1" href={<Link to="/user/login" />} />
+              <area shape="rect" coords="75,0,150,180" alt="Link 2" href={<Link to="/main" />} />
+              <area shape="rect" coords="150,0,225,180" alt="Link 3" href={<Link to="/user/plant" />} />
+              <area shape="rect" coords="225,0,300,180" alt="Link 4" href={<Link to="/user/plant" />} />
+              <area shape="rect" coords="300,0,375,180" alt="Link 5" href={<Link to="/user/login" />} />
             </map>
           </div>
 
