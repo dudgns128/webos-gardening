@@ -37,7 +37,7 @@ echo ">> Changed to build directory."
 
 # appinfo.json 파일 생성
 echo ">> Creating appinfo.json..."
-printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation" ]\n}' "$APP_ID" "$APP_VERSION" "$VENDOR_NAME" "$APP_TITLE" > appinfo.json
+printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team10.homegardening.service"]\n}' "$APP_ID" "$APP_VERSION" "$VENDOR_NAME" "$APP_TITLE" > appinfo.json
 
 # appinfo.json 파일 내용 확인
 echo ">> Displaying contents of appinfo.json:"
@@ -48,8 +48,9 @@ echo ">> Copying icon file..."
 cp ../icon.png icon.png
 
 # 애플리케이션 패키징
+cd ..
 echo ">> Packaging the application..."
-if ares-package . -o ../IPK; then
+if ares-package ./build ./JsService -o ./IPK; then
     echo ">> Package created successfully."
 else
     echo ">> Error creating package."
@@ -57,7 +58,7 @@ else
 fi
 
 # IPK directory로 변경
-cd ../IPK
+cd ./IPK
 echo ">> Changed to IPK directory."
 
 # 기존 앱 삭제.

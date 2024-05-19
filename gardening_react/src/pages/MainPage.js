@@ -14,7 +14,7 @@ const MainPage = () => {
     // 여기서는 임의의 값을 사용합니다.
 
     setTimeout(function () {
-      const serviceURL = "luna://com.team10.homegardening.service/satisfaction"; // 사용할 서비스의 URL
+      const serviceURL = "luna://com.team10.homegardening.service/get-plant-satisfaction"; // 사용할 서비스의 URL
       const bridge = new WebOSServiceBridge();
     
       bridge.onservicecallback = function (msg) {
