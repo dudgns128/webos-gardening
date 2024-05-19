@@ -1,51 +1,43 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { WebOSServiceBridge } from '@enact/webos';
 
 
-const HomePage = () => {
-
-
+const MainPage = () => {
   const navigate = useNavigate();
-  const [paddingTopRatio] = useState(0.12);
 
   const [sensorValue, setSensorValue] = useState(0);
   const [plantSatisfaction, setPlantSatisfaction] = useState('Neutral');
 
   useEffect(() => {
-    const clearLocalStorage = () => {
-      localStorage.removeItem('userId');
-      localStorage.removeItem('userName');
-      localStorage.removeItem('userSex');
-      localStorage.removeItem('userBirthdate');
-    };
-
-
     // 센서 값 가져오는 코드
     // 여기서는 임의의 값을 사용합니다.
-    const newSensorValue = Math.floor(Math.random() * 201);
-    setSensorValue(newSensorValue);
+
+    setTimeout(function () {
+      const serviceURL = "luna://com.team10.homegardening.service/satisfaction"; // 사용할 서비스의 URL
+      const bridge = new WebOSServiceBridge();
+    
+      bridge.onservicecallback = function (msg) {
+        const response = JSON.parse(msg);
+        setSensorValue(response.satisfaction);
+        
+      };
+    
+      bridge.call(serviceURL);
+    }, 5000);
+
+    
+    //setSensorValue(newSensorValue);
+
 
     // 센서 값에 따른 식물 만족도 설정
-    if (newSensorValue >= 100) {
+    if (sensorValue >= 100) {
       setPlantSatisfaction('Satisfied');
     } else {
       setPlantSatisfaction('Angry');
     }
 
-    clearLocalStorage();
-  }, [paddingTopRatio]);
-
-  const nameStyle = {
-    fontFamily: "Reem Kufi",
-    fontSize: "36px",
-    fontStyle: "normal",
-    fontWeight: 700,
-    lineHeight: "normal",
-    background: "linear-gradient(92deg, #62AB19 6.16%, #90CA57 20.47%, #6DCF0B 33.53%, #6ED209 45.14%, #6ED805 59.16%, #72DC09 71.73%, #75E00A 84.31%, #71DF03 94.95%, #76E903 99.01%)",
-    backgroundClip: "text",
-    WebkitBackgroundClip: "text",
-    WebkitTextFillColor: "transparent",
-  };
+  }, []);
 
   // 이벤트 핸들러 함수 추가
   const handleBarClick = () => {
@@ -118,7 +110,16 @@ const HomePage = () => {
               <area shape="rect" coords="300,0,375,180" alt="Link 5" href="/link-5" />
             </map>
           </div>
-
+          {/* <div className="menu-bar">
+            <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
+              <map name="image-map">
+                <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => handleNavigate('/main/info')} />
+                <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => handleNavigate('/main/calendar')} />
+                <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => handleNavigate('/main/plant')} />
+                <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => handleNavigate('/main/sun')} />
+                <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => handleNavigate('/main/water')} />
+              </map>
+          </div> */}
         </div>
 
 
@@ -129,4 +130,4 @@ const HomePage = () => {
 };
 
 
-export default HomePage;
+export default MainPage;
