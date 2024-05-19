@@ -17,53 +17,27 @@ const logHeader = '[' + pkgInfo.name + ']';
 const wsurl = 'ws://example.com';
 
 // 이 홈 가드닝 키트에서 관리중인 식물의 plant id
-let plantId;
+let plantInfos;
 
-// 관리할 plant id 등록
-service.register('registerPlantId', function (message) {
-  if (!message.payload.plantId) {
-    message.respond({
-      success: false,
-    });
-  } else {
-    plantId = message.payload.plantId;
-    message.respond({
-      success: true,
-    });
-  }
-});
-
-// 관리 중인 plant id 조회
-service.register('inquiryPlantId', function (message) {
-  if (plantId) {
-    message.respond({
-      success: true,
-      plantId: plantId,
-    });
-  } else {
-    message.respond({
-      success: false,
-      plantId: null,
-    });
-  }
-});
-
-// 등록된 plant id 삭제
-service.register('deletePlantId', function (message) {
-  plantId = null;
-  message.respond({
-    success: true,
-  });
-});
-
-// 식물 ID 등록 후 -> startSensing 호출로 서버에 센싱 데이터 전송 시작
-service.register('startSensing', function (message) {
-  if (!plantId) {
+// ***************************** APIs *****************************
+// 초기 데이터 등록
+service.register('register', function (message) {
+  if (!checkParamForRegister(message.payload)) {
     message.respond({
       success: false,
     });
     return;
   }
+  plantInfos = message.payload;
+  message.respond({
+    success: true,
+  });
+});
+
+// 백그라운드 작업 시작
+service.register('start-sensing', function (message) {
+  // 이전에 register로 필요한 정보 등록됐는지 확인
+
   // heartbeat 구독
   const sub = service.subscribe(`luna://${pkgInfo.name}/heartbeat`, {
     subscribe: true,
@@ -99,7 +73,9 @@ service.register('startSensing', function (message) {
 
   // 5초 주기로 센싱 데이터 전송
   const intervalId = setInterval(function () {
-    connection.send(JSON.stringify({ plantId: plantId, data: getSensingDataJSON() }));
+    connection.send(
+      JSON.stringify({ plantId: plantId, data: getSensingDataJSON() })
+    );
   }, 5000);
 
   message.respond({
@@ -107,6 +83,75 @@ service.register('startSensing', function (message) {
   });
 });
 
+// 최근 센싱 데이터 가져오기
+service.register('get-sensing-data', function (message) {
+  message.respond(getSensingDataJSON);
+});
+
+// 식물 기본 정보 조회(캐릭터 이미지 url, 이름)
+service.register('get-plant-info', function (message) {
+  message.respond({
+    normalImageUrl: 'example.image.url',
+    name: 'example name',
+  });
+});
+
+// 식물 만족도 조회하기
+service.register('get-plant-satisfaction', function (message) {
+  message.respond({
+    satisfaction: 50,
+  });
+});
+
+// 식물 레벨 조회하기
+service.register('get-plant-level', function (message) {
+  message.respond({
+    level: 11,
+  });
+});
+
+// 광량 제어하기
+service.register('control-light', function (message) {
+  if (!light) {
+    message.respond({
+      success: false,
+    });
+    return;
+  }
+  light = Number(message.payload.light);
+  controlLight(ligth);
+  message.respond({
+    success: true,
+  });
+});
+
+// 물 제어하기
+service.register('control-water', function (message) {
+  if (!water) {
+    message.respond({
+      success: false,
+    });
+    return;
+  }
+  water = Number(message.payload.water);
+  controlWater(ligth);
+  message.respond({
+    success: true,
+  });
+});
+
+// 자동제어 ON/OFF
+service.register('toggle-autocontrol', function (message) {
+  toggleAutocontrol();
+  message.respond({
+    success: true,
+  });
+});
+
+// ***************************** Service 로직 *****************************
+function checkParamForRegister(param) {
+  // 필요한 정보들 다 제대로 들어있나 확인
+}
 // sensors 조회/제어 관련 함수들
 function getSensingDataJSON() {
   // 일단은 dummy data 랜덤으로 생성
@@ -122,8 +167,15 @@ function getSensingDataJSON() {
     humidity: getRandomInt(1, 100),
   };
 }
-function controlLight() {}
-function controlWater() {}
+function controlLight(lightValue) {
+  console.log(`adjust light value to ${lightValue}!!`);
+}
+function controlWater(waterValue) {
+  console.log(`adjust water value to ${waterValue}!!`);
+}
+function toggleAutocontrol() {
+  // some task to do
+}
 
 // ***************************** Heartbeat *****************************
 // heart beat가 어떤 외부 서비스가 아닌, 특정 구독자에게 신호를 줘서 꺼지지 않도록 하는 걸 말하는 듯
