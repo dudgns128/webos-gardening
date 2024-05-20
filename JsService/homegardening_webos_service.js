@@ -10,7 +10,7 @@
 // eslint-disable-next-line import/no-unresolved
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
-const WebSocket = require('ws');
+// const WebSocket = require('ws');
 
 const service = new Service(pkgInfo.name); // Create service by service name on package.json
 const logHeader = '[' + pkgInfo.name + ']';
@@ -35,7 +35,7 @@ service.register('register', function (message) {
 });
 
 // 백그라운드 작업 시작
-service.register('start-sensing', function (message) {
+service.register('startSensing', function (message) {
   // 이전에 register로 필요한 정보 등록됐는지 확인
 
   // heartbeat 구독
@@ -84,12 +84,12 @@ service.register('start-sensing', function (message) {
 });
 
 // 최근 센싱 데이터 가져오기
-service.register('get-sensing-data', function (message) {
+service.register('getSensingData', function (message) {
   message.respond(getSensingDataJSON);
 });
 
 // 식물 기본 정보 조회(캐릭터 이미지 url, 이름)
-service.register('get-plant-info', function (message) {
+service.register('getPlantInfo', function (message) {
   message.respond({
     normalImageUrl: 'example.image.url',
     name: 'example name',
@@ -97,21 +97,21 @@ service.register('get-plant-info', function (message) {
 });
 
 // 식물 만족도 조회하기
-service.register('get-plant-satisfaction', function (message) {
+service.register('getPlantSatisfaction', function (message) {
   message.respond({
     satisfaction: 50,
   });
 });
 
 // 식물 레벨 조회하기
-service.register('get-plant-level', function (message) {
+service.register('getPlantLevel', function (message) {
   message.respond({
     level: 11,
   });
 });
 
 // 광량 제어하기
-service.register('control-light', function (message) {
+service.register('controlLight', function (message) {
   if (!light) {
     message.respond({
       success: false,
@@ -126,7 +126,7 @@ service.register('control-light', function (message) {
 });
 
 // 물 제어하기
-service.register('control-water', function (message) {
+service.register('controlWater', function (message) {
   if (!water) {
     message.respond({
       success: false,
@@ -141,7 +141,7 @@ service.register('control-water', function (message) {
 });
 
 // 자동제어 ON/OFF
-service.register('toggle-autocontrol', function (message) {
+service.register('toggleAutocontrol', function (message) {
   toggleAutocontrol();
   message.respond({
     success: true,
