@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 // import { WebOSServiceBridge } from '@enact/webos';
 
+const bridge = new WebOSServiceBridge();
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -14,12 +15,10 @@ const MainPage = () => {
   useEffect(() => {
     const serviceURL = "luna://com.team11.homegardening.service/satisfaction"; // 사용할 서비스의 URL
 
-
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
       setSensorValue(response.satisfaction);
     };
-
 
     // 5초마다 센서 값을 가져오는 인터벌 설정
     const intervalId = setInterval(bridge.call(serviceURL), 5000);
