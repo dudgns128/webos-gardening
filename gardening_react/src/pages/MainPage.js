@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { WebOSServiceBridge } from '@enact/webos';
+// import { WebOSServiceBridge } from '@enact/webos';
 
+const bridge = new WebOSServiceBridge();
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -10,48 +11,35 @@ const MainPage = () => {
   const [plantSatisfaction, setPlantSatisfaction] = useState('Neutral');
 
   useEffect(() => {
-    // 센서 값 가져오는 코드
-    // 여기서는 임의의 값을 사용합니다.
+    const serviceURL = "luna://com.team11.homegardening.service/satisfaction"; // 사용할 서비스의 URL
 
-    setTimeout(function () {
-      const serviceURL = "luna://com.team10.homegardening.service/get-plant-satisfaction"; // 사용할 서비스의 URL
-      const bridge = new WebOSServiceBridge();
-    
-      bridge.onservicecallback = function (msg) {
-        const response = JSON.parse(msg);
-        setSensorValue(response.satisfaction);
-        
-      };
-    
-      bridge.call(serviceURL);
-    }, 5000);
+    bridge.onservicecallback = function (msg) {
+      const response = JSON.parse(msg);
+      setSensorValue(response.satisfaction);
+    };
 
-    
-    //setSensorValue(newSensorValue);
+    // 5초마다 센서 값을 가져오는 인터벌 설정
+    const intervalId = setInterval(bridge.call(serviceURL), 5000);
 
+    // 컴포넌트가 언마운트될 때 인터벌 정리
+    return () => clearInterval(intervalId);
+  }, []);
 
+  useEffect(() => {
     // 센서 값에 따른 식물 만족도 설정
     if (sensorValue >= 100) {
       setPlantSatisfaction('Satisfied');
     } else {
       setPlantSatisfaction('Angry');
     }
-
-  }, []);
+  }, [sensorValue]);
 
   // 이벤트 핸들러 함수 추가
   const handleBarClick = () => {
     // 페이지 이동 로직 구현
     // 예: 특정 URL로 이동
-    navigate()
-  };
-  // 화면 크기에 따른 픽셀 값 계산
-  const calculateWidthSize = (originalSize, ratio) => {
-    return Math.round(window.innerWidth * ratio) || originalSize;
-  };
+    navigate('/plant/condition');
 
-  const calculateHeightSize = (originalSize, ratio) => {
-    return Math.round(window.innerHeight * ratio) || originalSize;
   };
 
   return (
@@ -103,11 +91,11 @@ const MainPage = () => {
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
             <map name="image-map">
-              <area shape="rect" coords="0,0,75,180" alt="Link 1" href="src/pages/UserLogin.js#/user/login" />
-              <area shape="rect" coords="75,0,150,180" alt="Link 2" href="/link-2" />
-              <area shape="rect" coords="150,0,225,180" alt="Link 3" href="/link-3" />
-              <area shape="rect" coords="225,0,300,180" alt="Link 4" href="/link-4" />
-              <area shape="rect" coords="300,0,375,180" alt="Link 5" href="/link-5" />
+              <area shape="rect" coords="0,0,75,180" alt="Link 1" href={<Link to="/user/login" />} />
+              <area shape="rect" coords="75,0,150,180" alt="Link 2" href={<Link to="/main" />} />
+              <area shape="rect" coords="150,0,225,180" alt="Link 3" href={<Link to="/user/plant" />} />
+              <area shape="rect" coords="225,0,300,180" alt="Link 4" href={<Link to="/user/plant" />} />
+              <area shape="rect" coords="300,0,375,180" alt="Link 5" href={<Link to="/user/login" />} />
             </map>
           </div>
           {/* <div className="menu-bar">
