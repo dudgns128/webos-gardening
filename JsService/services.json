@@ -1,0 +1,9 @@
+{
+  "id": "com.team11.homegardening.service",
+  "description": "JS Services for home gardening kit project",
+  "services": [
+    {
+      "name": "com.team11.homegardening.service"
+    }
+  ]
+}

@@ -49,8 +49,9 @@ echo ">> Copying icon file..."
 cp ../icon.png icon.png
 
 # 애플리케이션 패키징
+cd ..
 echo ">> Packaging the application..."
-if ares-package . -o ../IPK; then
+if ares-package ./build ./JsService -o ./IPK; then
     echo ">> Package created successfully."
 else
     echo ">> Error creating package."
@@ -58,7 +59,7 @@ else
 fi
 
 # IPK directory로 변경
-cd ../IPK
+cd ./IPK
 echo ">> Changed to IPK directory."
 
 # 기존 앱 삭제.
