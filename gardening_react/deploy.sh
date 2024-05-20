@@ -51,7 +51,7 @@ cp ../icon.png icon.png
 # 애플리케이션 패키징
 cd ..
 echo ">> Packaging the application..."
-if ares-package ./build ./JsService -o ./IPK; then
+if ares-package ./build ../JsService -o ./IPK; then
     echo ">> Package created successfully."
 else
     echo ">> Error creating package."

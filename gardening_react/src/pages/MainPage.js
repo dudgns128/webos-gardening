@@ -11,7 +11,7 @@ const MainPage = () => {
   const [plantSatisfaction, setPlantSatisfaction] = useState('Neutral');
 
   useEffect(() => {
-    const serviceURL = "luna://com.team11.homegardening.service/satisfaction"; // 사용할 서비스의 URL
+    const serviceURL = "luna://com.team11.homegardening.service/getPlantSatisfaction"; // 사용할 서비스의 URL
 
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
@@ -19,7 +19,7 @@ const MainPage = () => {
     };
 
     // 5초마다 센서 값을 가져오는 인터벌 설정
-    const intervalId = setInterval(bridge.call(serviceURL), 5000);
+    const intervalId = setInterval(bridge.call(serviceURL, '{}'), 5000);
 
     // 컴포넌트가 언마운트될 때 인터벌 정리
     return () => clearInterval(intervalId);
