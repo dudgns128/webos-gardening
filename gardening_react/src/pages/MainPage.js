@@ -10,8 +10,6 @@ const MainPage = () => {
   const [sensorValue, setSensorValue] = useState(0);
   const [plantSatisfaction, setPlantSatisfaction] = useState('Neutral');
 
-  const bridge = new WebOSServiceBridge();
-
   useEffect(() => {
     const serviceURL = "luna://com.team11.homegardening.service/satisfaction"; // 사용할 서비스의 URL
 
