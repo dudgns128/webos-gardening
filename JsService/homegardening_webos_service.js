@@ -20,7 +20,7 @@ const wsurl = 'ws://example.com';
 // 임시 API
 service.register('getPlantInfos', function (message) {
   message.respond({
-    normalImageUrl: 'example.image.url',
+    normalImageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Sunflower_sky_backdrop.jpg/1200px-Sunflower_sky_backdrop.jpg',
     name: 'example name',
     satisfaction: getRandomInt(0, 100),
     level: 11,
