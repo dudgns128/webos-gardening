@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { display } from '../constants';
 
+const bridge = new WebOSServiceBridge();
+
 function UserPlantRegister() {
   const today = new Date();
   const currentYear = today.getFullYear();
@@ -38,8 +40,9 @@ function UserPlantRegister() {
       password,
     };
 
-    // 사용자가 선택한 해당 식물 종 이미지 불러와서 localStorage에 저장하기
-    fetchImageUrl(plantSpecies);
+    // localStorage.setItem('plantSpecies', plantSpecies);
+    // // 사용자가 선택한 해당 식물 종 이미지 불러와서 localStorage에 저장하기
+    // fetchImageUrl(plantSpecies);
 
     // 웹소켓이 연결되면 정보 전송
     if(ws && ws.readyState === WebSocket.OPEN) {
@@ -54,34 +57,33 @@ function UserPlantRegister() {
     //sendToLunaService(plantInfo);       
   };
 
-  const fetchImageUrl = (plantSpecies) => {
-    console.log(`${plantSpecies} 이미지 URL을 불러옵니다.`);
-    // 예시 URL, 실제 요청할 서버의 URL로 변경해야 함
-    const requestUrl = `https://example.com/api/images?species=${encodeURIComponent(plantSpecies)}`;
+  // const fetchImageUrl = (plantSpecies) => {
+  //   console.log(`${plantSpecies} 이미지 URL을 불러옵니다.`);
+  //   // 예시 URL, 실제 요청할 서버의 URL로 변경해야 함
+  //   const requestUrl = `https://example.com/api/images?species=${encodeURIComponent(plantSpecies)}`;
   
-    fetch(requestUrl)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('식물 종 이미지 로드 시 네트워크 연결 이상');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // 예시로 'imageUrl'을 사용했으나, 실제 응답의 이미지 URL 키에 맞춰 변경해야 함
-        const imageUrl = data.imageUrl;
-        console.log(`${plantSpecies} 이미지 URL을 저장합니다: ${imageUrl}`);
-        // localStorage에 이미지 URL 저장
-        localStorage.setItem(`${plantSpecies}-image`, imageUrl);
-        setPlantSpecies(plantSpecies);
-      })
-      .catch(error => {
-        console.error('이미지를 불러오는 데 실패했습니다:', error);
-      });
-  };
+  //   fetch(requestUrl)
+  //     .then(response => {
+  //       if (!response.ok) {
+  //         throw new Error('식물 종 이미지 로드 시 네트워크 연결 이상');
+  //       }
+  //       return response.json();
+  //     })
+  //     .then(data => {
+  //       // 예시로 'imageUrl'을 사용했으나, 실제 응답의 이미지 URL 키에 맞춰 변경해야 함
+  //       const imageUrl = data.imageUrl;
+  //       console.log(`${plantSpecies} 이미지 URL을 저장합니다: ${imageUrl}`);
+  //       // localStorage에 이미지 URL 저장
+  //       localStorage.setItem(`${plantSpecies}-image`, imageUrl);
+  //       setPlantSpecies(plantSpecies);
+  //     })
+  //     .catch(error => {
+  //       console.error('이미지를 불러오는 데 실패했습니다:', error);
+  //     });
+  // };
 
 //   function sendToLunaService(plantInfo) {
 //     const serviceURL = "luna://com.your.service/createUser"; // 사용할 서비스의 URL
-//     const bridge = new WebOSServiceBridge();
     
 //     bridge.onservicecallback = function (msg) {
 //         const response = JSON.parse(msg);

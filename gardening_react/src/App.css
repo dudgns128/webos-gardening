@@ -1,4 +1,9 @@
-.App {
+body {
+  font-family: 'SansM';
+  background-color: #f0f8ff;
+}
+
+/* .App {
   text-align: center;
 }
 
@@ -12,11 +17,11 @@
   background: #FFF;
 }
 
-/* @media (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
-} */
+}
 
 .App-header {
   background-color: white;
@@ -31,7 +36,7 @@
 
 .App-link {
   color: #61dafb;
-}
+} */
 
 /* @keyframes App-logo-spin {
   from {
@@ -49,10 +54,6 @@
   /* animation-delay: 2000ms;
   animation-timing-function: ease-in-out;
   animation-duration: 600ms; */
-}
-
-.info #info__id {
-  position: relative;
 }
 
 .gauge-button {

@@ -83,12 +83,12 @@ const UserLogin = () => {
 
     return (
         <div style = {{padding: '140px'}}>
-             <UserLoginModal 
+            <UserLoginModal 
             content={modalMessage} 
             isOpen={showModal} 
             setIsOpen={setShowModal} 
             closeMethod={() => setShowModal(false)}  
-        />
+            />
             <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
                 <div className="d-flex flex-column align-items-center">
                     <h1 style = {{fontFamily: 'SansM', fontSize:'35px'}}>로그인</h1>
