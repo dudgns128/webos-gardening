@@ -17,6 +17,16 @@ const logHeader = '[' + pkgInfo.name + ']';
 const wsurl = 'ws://example.com';
 
 // ***************************** APIs *****************************
+// 임시 API
+service.register('getPlantInfos', function (message) {
+  message.respond({
+    normalImageUrl: 'example.image.url',
+    name: 'example name',
+    satisfaction: getRandomInt(0, 100),
+    level: 11,
+  });
+});
+
 // 초기 데이터 등록
 service.register('register', function (message) {
   if (!checkParamForRegister(message.payload)) {
