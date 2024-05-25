@@ -157,10 +157,6 @@ function checkParamForRegister(param) {
 function getSensingDataJSON() {
   // 일단은 dummy data 랜덤으로 생성
   // 추후 실제 센서 연결 후 실제 값 받아오게 변경
-  function getRandomInt(min, max) {
-    //min ~ max 사이의 임의의 정수 반환
-    return Math.floor(Math.random() * (max - min)) + min;
-  }
   return {
     water: getRandomInt(1, 100),
     light: getRandomInt(1, 100),
@@ -233,4 +229,9 @@ function createInterval() {
   interval = setInterval(function () {
     sendResponses();
   }, 1000);
+}
+
+function getRandomInt(min, max) {
+  //min ~ max 사이의 임의의 정수 반환
+  return Math.floor(Math.random() * (max - min)) + min;
 }
