@@ -16,9 +16,6 @@ const service = new Service(pkgInfo.name); // Create service by service name on 
 const logHeader = '[' + pkgInfo.name + ']';
 const wsurl = 'ws://example.com';
 
-// 이 홈 가드닝 키트에서 관리중인 식물의 plant id
-let plantInfos;
-
 // ***************************** APIs *****************************
 // 초기 데이터 등록
 service.register('register', function (message) {
@@ -85,7 +82,7 @@ service.register('startSensing', function (message) {
 
 // 최근 센싱 데이터 가져오기
 service.register('getSensingData', function (message) {
-  message.respond(getSensingDataJSON);
+  message.respond(getSensingDataJSON());
 });
 
 // 식물 기본 정보 조회(캐릭터 이미지 url, 이름)
@@ -119,7 +116,7 @@ service.register('controlLight', function (message) {
     return;
   }
   light = Number(message.payload.light);
-  controlLight(ligth);
+  controlLight(light);
   message.respond({
     success: true,
   });
@@ -127,14 +124,7 @@ service.register('controlLight', function (message) {
 
 // 물 제어하기
 service.register('controlWater', function (message) {
-  if (!water) {
-    message.respond({
-      success: false,
-    });
-    return;
-  }
-  water = Number(message.payload.water);
-  controlWater(ligth);
+  controlWater();
   message.respond({
     success: true,
   });
@@ -168,10 +158,12 @@ function getSensingDataJSON() {
   };
 }
 function controlLight(lightValue) {
+  // [light 제어 api 사용하기]
   console.log(`adjust light value to ${lightValue}!!`);
 }
-function controlWater(waterValue) {
-  console.log(`adjust water value to ${waterValue}!!`);
+function controlWater() {
+  // [water 제어 api 사용하기]
+  console.log(`adjust water value!!`);
 }
 function toggleAutocontrol() {
   // some task to do
