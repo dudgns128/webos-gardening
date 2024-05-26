@@ -11,6 +11,7 @@
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
 // const WebSocket = require('ws');
+const plantInfoDB = require('db8/plantInfo');
 
 const service = new Service(pkgInfo.name); // Create service by service name on package.json
 const logHeader = '[' + pkgInfo.name + ']';
@@ -19,6 +20,24 @@ const wsurl = 'ws://example.com';
 // ***************************** APIs *****************************
 // 임시 API
 service.register('getPlantInfos', function (message) {
+  plantInfoDB.putKind();
+  plantInfoDB.putPermissions();
+  plantInfoDB.replaceData({
+    plantId: 123,
+    plantName: 'my_plant',
+    plantBirthDate: 1716712448,
+    scientificName: 'my_plant',
+    shortDescription: 'this is my plant',
+    maxLevel: 50,
+  });
+  message.respond({
+    normalImageUrl:
+      'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/5f4bd7a6-f763-4518-9b81-bdfd40ce3fc9/d26yer1-421bb5b8-9fc2-4d5a-b2d1-1e1f81b26b82.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzVmNGJkN2E2LWY3NjMtNDUxOC05YjgxLWJkZmQ0MGNlM2ZjOVwvZDI2eWVyMS00MjFiYjViOC05ZmMyLTRkNWEtYjJkMS0xZTFmODFiMjZiODIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p5vfqGmq9kIylfG3glHGa20CAPUtoWlAxKEGpIvGOi8',
+    name: plantInfoDB.getData()[0].plantName,
+    satisfaction: getRandomInt(0, 100),
+    level: 11,
+  });
+  /*
   message.respond({
     normalImageUrl:
       'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/5f4bd7a6-f763-4518-9b81-bdfd40ce3fc9/d26yer1-421bb5b8-9fc2-4d5a-b2d1-1e1f81b26b82.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzVmNGJkN2E2LWY3NjMtNDUxOC05YjgxLWJkZmQ0MGNlM2ZjOVwvZDI2eWVyMS00MjFiYjViOC05ZmMyLTRkNWEtYjJkMS0xZTFmODFiMjZiODIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p5vfqGmq9kIylfG3glHGa20CAPUtoWlAxKEGpIvGOi8',
@@ -26,6 +45,7 @@ service.register('getPlantInfos', function (message) {
     satisfaction: getRandomInt(0, 100),
     level: 11,
   });
+  */
 });
 
 // 초기 데이터 등록
