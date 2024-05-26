@@ -141,18 +141,106 @@ service.register('controlWater', function (message) {
   });
 });
 
+// 캘린더 데이터 조회
+service.register('calendar', function (message) {
+  const year = message.payload.year;
+  const month = message.payload.month;
+
+  message.respons({
+    success: true,
+    isWater: {
+      day1: getRandomTF(),
+      day2: getRandomTF(),
+      day3: getRandomTF(),
+      day4: getRandomTF(),
+      day5: getRandomTF(),
+      day6: getRandomTF(),
+      day7: getRandomTF(),
+      day8: getRandomTF(),
+      day9: getRandomTF(),
+      day10: getRandomTF(),
+      day11: getRandomTF(),
+      day12: getRandomTF(),
+      day13: getRandomTF(),
+      day14: getRandomTF(),
+      day15: getRandomTF(),
+      day16: getRandomTF(),
+      day17: getRandomTF(),
+      day18: getRandomTF(),
+      day19: getRandomTF(),
+      day20: getRandomTF(),
+      day21: getRandomTF(),
+      day22: getRandomTF(),
+      day23: getRandomTF(),
+      day24: getRandomTF(),
+      day25: getRandomTF(),
+      day26: getRandomTF(),
+      day27: getRandomTF(),
+      day28: getRandomTF(),
+      day29: getRandomTF(),
+      day30: getRandomTF(),
+      day31: getRandomTF(),
+    },
+    satisfaction: {
+      day1: getRandomInt(1, 100),
+      day2: getRandomInt(1, 100),
+      day3: getRandomInt(1, 100),
+      day4: getRandomInt(1, 100),
+      day5: getRandomInt(1, 100),
+      day6: getRandomInt(1, 100),
+      day7: getRandomInt(1, 100),
+      day8: getRandomInt(1, 100),
+      day9: getRandomInt(1, 100),
+      day10: getRandomInt(1, 100),
+      day11: getRandomInt(1, 100),
+      day12: getRandomInt(1, 100),
+      day13: getRandomInt(1, 100),
+      day14: getRandomInt(1, 100),
+      day15: getRandomInt(1, 100),
+      day16: getRandomInt(1, 100),
+      day17: getRandomInt(1, 100),
+      day18: getRandomInt(1, 100),
+      day19: getRandomInt(1, 100),
+      day20: getRandomInt(1, 100),
+      day21: getRandomInt(1, 100),
+      day22: getRandomInt(1, 100),
+      day23: getRandomInt(1, 100),
+      day24: getRandomInt(1, 100),
+      day25: getRandomInt(1, 100),
+      day26: getRandomInt(1, 100),
+      day27: getRandomInt(1, 100),
+      day28: getRandomInt(1, 100),
+      day29: getRandomInt(1, 100),
+      day30: getRandomInt(1, 100),
+      day31: getRandomInt(1, 100),
+    },
+  });
+});
+
 // 자동제어 ON/OFF
 service.register('toggleAutocontrol', function (message) {
-  toggleAutocontrol();
+  currentState = toggleAutocontrol();
   message.respond({
     success: true,
+    currentState,
   });
 });
 
 // ***************************** Service 로직 *****************************
+function getRandomInt(min, max) {
+  //min ~ max 사이의 임의의 정수 반환
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function getRandomTF() {
+  if (getRandomInt(1, 100) < 50) return true;
+  return false;
+}
+
 function checkParamForRegister(param) {
   // 필요한 정보들 다 제대로 들어있나 확인
 }
+
 // sensors 조회/제어 관련 함수들
 function getSensingDataJSON() {
   // 일단은 dummy data 랜덤으로 생성
@@ -164,15 +252,19 @@ function getSensingDataJSON() {
     humidity: getRandomInt(1, 100),
   };
 }
+
 function controlLight(lightValue) {
   // [light 제어 api 사용하기]
   console.log(`adjust light value to ${lightValue}!!`);
 }
+
 function controlWater() {
   // [water 제어 api 사용하기]
   console.log(`adjust water value!!`);
 }
+
 function toggleAutocontrol() {
+  return getRandomTF();
   // some task to do
 }
 
@@ -229,9 +321,4 @@ function createInterval() {
   interval = setInterval(function () {
     sendResponses();
   }, 1000);
-}
-
-function getRandomInt(min, max) {
-  //min ~ max 사이의 임의의 정수 반환
-  return Math.floor(Math.random() * (max - min)) + min;
 }
