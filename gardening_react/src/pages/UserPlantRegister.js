@@ -18,6 +18,12 @@ function UserPlantRegister() {
   const [day, setDay] = useState(`${currentDay}일`);
   const [ws, setWs] = useState(null); // 웹소켓 인스턴스를 저장할 상태 생성
 
+  ///////////////////////////////////
+  useEffect(() => {
+    bridge.call("luna://com.team17.homegardening.service/register", '{}');
+  }, []);
+  //////////////////////////////////
+
   useEffect(() => {
     const ws = new WebSocket('ws://localhost:3000'); // 웹소켓 연결
     setWs(ws); // 상태에 웹소켓 인스턴스 저장

@@ -20,7 +20,7 @@
     z-index: 2; /* 백그라운드 위에 표시 */
 }
 
-.PlantConditionModal h1 {
+.PlantModal h1 {
     margin-bottom: 20px;
     color: #4CAF50;
 }
@@ -42,7 +42,7 @@
     font-weight: bold;
 }
 
-.PlantConditionModal button {
+.PlantModal button {
     padding: 10px 20px;
     background-color: #4CAF50;
     color: white;
@@ -52,16 +52,16 @@
     margin-bottom: 10px;
 }
 
-.PlantConditionModal button:hover {
+.PlantModal button:hover {
     background-color: #45a049;
 }
 
-.PlantConditionModal a {
+.PlantModal a {
     color: #4CAF50;
     text-decoration: none;
     font-weight: bold;
 }
 
-.PlantConditionModal a:hover {
+.PlantModal a:hover {
     text-decoration: underline;
 }

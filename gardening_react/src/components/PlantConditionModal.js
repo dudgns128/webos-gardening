@@ -16,7 +16,7 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
         return;
       }
       
-    const serviceURL = "luna://com.team11.homegardening.service/getSensingData";
+    const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
     
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
@@ -36,7 +36,7 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
   }
 
   return (
-    <div class="PlantConditionModal">
+    <div class="PlantModal">
       <div className="modal-backdrop">
         <div className="plant-container">
           <h1>환경 상태</h1>

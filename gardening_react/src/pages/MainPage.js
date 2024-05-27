@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import PlantConditionModal from '../components/PlantConditionModal';
-
-const bridge = new WebOSServiceBridge();
+import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
+import CalendarModal from '../components/CalendarModal';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -12,10 +12,12 @@ const MainPage = () => {
   const [plantImageUrl, setPlantImageUrl] = useState('');
   const [plantName, setPlantName] = useState('초기');
   const [plantLevel, setPlantLevel] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConditionModalOpen, conditionModalOpen] = useState(false);
+  const [isToggleModalOpen, toggleModalOpen] = useState(false);
+  const [isCalendarModalOpen, calendarModalOpen] = useState(false);
 
   const satisfactionColors = {
-    '매우 좋음': 'green', 
+    '매우 좋음': '#00A35E', 
     '좋음': 'lightgreen', 
     '보통': 'yellow', 
     '나쁨': 'orange',
@@ -23,51 +25,74 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    const serviceURL = "luna://com.team11.homegardening.service/getPlantSatisfaction"; // 사용할 서비스의 URL
+    const bridge = new WebOSServiceBridge();
+
+    const serviceURL = "luna://com.team17.homegardening.service/getPlantInfos"; // 사용할 서비스의 URL
 
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
       setSensorValue(response.satisfaction);
+      setPlantImageUrl(response.normalImageUrl);
+      setPlantName(response.name);
+      setPlantLevel(response.level);
     };
 
     // 5초마다 센서 값을 가져오는 인터벌 설정
-    const intervalId = setInterval(bridge.call(serviceURL, '{}'), 5000);
+    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
     // 컴포넌트가 언마운트될 때 인터벌 정리
     return () => clearInterval(intervalId);
   }, []);
 
-  useEffect(() => {
-    const serviceURL = "luna://com.team11.homegardening.service/getPlantInfo"; // 사용할 서비스의 URL
+  // useEffect(() => {
+  //   const bridge = new WebOSServiceBridge();
+  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantSatisfaction"; // 사용할 서비스의 URL
+
+  //   bridge.onservicecallback = function (msg) {
+  //     const response = JSON.parse(msg);
+  //     setSensorValue(response.satisfaction);
+  //   };
+
+  //   // 5초마다 센서 값을 가져오는 인터벌 설정
+  //   const intervalId = setInterval(bridge.call(serviceURL, '{}'), 5000);
+
+  //   // 컴포넌트가 언마운트될 때 인터벌 정리
+  //   return () => clearInterval(intervalId);
+  // }, []);
+
+  // useEffect(() => {
+  //   const bridge2 = new WebOSServiceBridge();
+  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantInfo"; // 사용할 서비스의 URL
 
 
-    bridge.onservicecallback = function (msg) {
-      const response = JSON.parse(msg);
-      setPlantImageUrl(response.normalImageUrl);
-      setPlantName(response.name);
-    };
+  //   bridge2.onservicecallback = function (msg) {
+  //     const response = JSON.parse(msg);
+  //     setPlantImageUrl(response.normalImageUrl);
+  //     setPlantName(response.name);
+  //   };
 
-    bridge.call(serviceURL, '{}');
+  //   bridge2.call(serviceURL, '{}');
 
-    const levelserviceURL = "luna://com.team11.homegardening.service/getPlantLevel"; // 사용할 서비스의 URL
+  //   const bridge3 = new WebOSServiceBridge();
+  //   const levelserviceURL = "luna://com.team11.homegardening.service/getPlantLevel"; // 사용할 서비스의 URL
 
-    bridge.onservicecallback = function (msg) {
-      const response = JSON.parse(msg);
-      setPlantLevel(response.level);
-    };
+  //   bridge3.onservicecallback = function (msg) {
+  //     const response = JSON.parse(msg);
+  //     setPlantLevel(response.level);
+  //   };
 
-    bridge.call(levelserviceURL, '{}');
-    // // localStorage에서 plantSpecies 이름을 가져옴
-    // const plantSpecies = localStorage.getItem('plantSpecies');
-    // // plantSpecies 이름을 기반으로 이미지 URL 키 생성
-    // const imageKey = `${plantSpecies}-image`;
-    // // 생성된 키로 localStorage에서 이미지 URL 가져오기
-    // const storedImageUrl = localStorage.getItem(imageKey);
+  //   bridge3.call(levelserviceURL, '{}');
+  //   // // localStorage에서 plantSpecies 이름을 가져옴
+  //   // const plantSpecies = localStorage.getItem('plantSpecies');
+  //   // // plantSpecies 이름을 기반으로 이미지 URL 키 생성
+  //   // const imageKey = `${plantSpecies}-image`;
+  //   // // 생성된 키로 localStorage에서 이미지 URL 가져오기
+  //   // const storedImageUrl = localStorage.getItem(imageKey);
   
-    // if (storedImageUrl) {
-    //   setPlantImageUrl(storedImageUrl);
-    // }
-  }, [])
+  //   // if (storedImageUrl) {
+  //   //   setPlantImageUrl(storedImageUrl);
+  //   // }
+  // }, [])
 
 
 
@@ -81,14 +106,14 @@ const MainPage = () => {
       setPlantSatisfaction('보통');
     } else if (20 < sensorValue && sensorValue <= 40) {
       setPlantSatisfaction('나쁨');
-    } else if (0 < sensorValue && sensorValue <= 20) {
+    } else if (0 <= sensorValue && sensorValue <= 20) {
       setPlantSatisfaction('아주 나쁨');
     }
   }, [sensorValue]);
 
 
   const handleBarClick = () => {
-    setIsModalOpen(true);
+    conditionModalOpen(true);
   };
 
   const boxStyle = {
@@ -117,8 +142,16 @@ const MainPage = () => {
       <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
         <div className="d-flex flex-column align-items-center">
         <PlantConditionModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+          isOpen={isConditionModalOpen}
+          onClose={() => conditionModalOpen(false)}
+        />
+        <PlantAutocontrolModal
+          isOpen={isToggleModalOpen}
+          onClose={() => toggleModalOpen(false)}
+        />
+        <CalendarModal
+          isOpen={isCalendarModalOpen}
+          onClose={() => calendarModalOpen(false)}
         />
           {/* 센서값에 따른 바 표시 */}
           <div>
@@ -138,11 +171,6 @@ const MainPage = () => {
           {/* 식물 이미지가 들어 갈 자리 */}
           <div className="plant_image" style={{ marginTop: '40px' }}>
             <img src={plantImageUrl} alt="식물 이미지" />
-            {/* {plantImageUrl ? (
-              <img src={plantImageUrl} alt="식물 이미지" />
-            ) : (
-              <img src={require('../img/cacus.png')} alt="선인장 이미지" />
-            )}*/}
           </div> 
 
           {/* 식물 이름이 들어 갈 자리 */}
@@ -154,8 +182,8 @@ const MainPage = () => {
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
               <map name="image-map">
                 <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} />
-                <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => navigate('/main/calendar')} />
-                <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => navigate('/main/plant')} />
+                <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
+                <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
                 <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => navigate('/main/sun')} />
                 <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => navigate('/main/water')} />
               </map>
