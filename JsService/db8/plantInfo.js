@@ -1,4 +1,3 @@
-
 const kindID = 'com.team17.homegardening.plantInfo:1';
 const busID = 'com.team17.homegardening.service';
 const pkgInfo = require('./package.json');
