@@ -1,5 +1,5 @@
-const kindID = 'com.team13.homegardening.plantInfo:1';
-const appID = 'com.team13.homegardening';
+const kindID = 'com.team17.homegardening.plantInfo:1';
+const busID = 'com.team17.homegardening.service';
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
 
@@ -9,7 +9,7 @@ const putKind = function () {
   let url = 'luna://com.webos.service.db/putKind';
   let params = {
     id: kindID,
-    owner: appID,
+    owner: busID,
     indexes: [
       {
         name: 'index0',
@@ -33,7 +33,7 @@ const putPermissions = function () {
         },
         object: kindID,
         type: 'db.kind',
-        caller: appID,
+        caller: busID,
       },
     ],
   };
@@ -66,11 +66,11 @@ const getData = function () {
       from: kindID,
     },
   };
-  let result;
-  service.call(url, JSON.stringify(params), (res) => {
-    result = JSON.parse(res.results);
+  return new Promise((resolve, reject) => {
+    service.call(url, params, (res) => {
+      resolve(res.payload.results);
+    });
   });
-  return result;
 };
 
 const emptyDB = function () {
