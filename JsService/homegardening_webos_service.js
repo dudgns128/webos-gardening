@@ -11,15 +11,26 @@
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
 // const WebSocket = require('ws');
-const plantInfoDB = require('db8/plantInfo');
 
-const service = new Service(pkgInfo.name); // Create service by service name on package.json
+const service = new Service(pkgInfo.name);
 const logHeader = '[' + pkgInfo.name + ']';
 const wsurl = 'ws://example.com';
 
-// ***************************** APIs *****************************
+// *************************************** APIs ***************************************
 // 임시 API
-service.register('getPlantInfos', function (message) {
+service.register('getPlantInfos', async function (message) {
+  let results = await plantInfoDB.getData();
+  message.respond({
+    normalImageUrl:
+      'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/5f4bd7a6-f763-4518-9b81-bdfd40ce3fc9/d26yer1-421bb5b8-9fc2-4d5a-b2d1-1e1f81b26b82.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzVmNGJkN2E2LWY3NjMtNDUxOC05YjgxLWJkZmQ0MGNlM2ZjOVwvZDI2eWVyMS00MjFiYjViOC05ZmMyLTRkNWEtYjJkMS0xZTFmODFiMjZiODIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p5vfqGmq9kIylfG3glHGa20CAPUtoWlAxKEGpIvGOi8',
+    name: results[0].plantName,
+    satisfaction: getRandomInt(0, 100),
+    level: 11,
+  });
+});
+
+// 초기 데이터 등록
+service.register('register', function (message) {
   plantInfoDB.putKind();
   plantInfoDB.putPermissions();
   plantInfoDB.replaceData({
@@ -30,26 +41,7 @@ service.register('getPlantInfos', function (message) {
     shortDescription: 'this is my plant',
     maxLevel: 50,
   });
-  message.respond({
-    normalImageUrl:
-      'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/5f4bd7a6-f763-4518-9b81-bdfd40ce3fc9/d26yer1-421bb5b8-9fc2-4d5a-b2d1-1e1f81b26b82.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzVmNGJkN2E2LWY3NjMtNDUxOC05YjgxLWJkZmQ0MGNlM2ZjOVwvZDI2eWVyMS00MjFiYjViOC05ZmMyLTRkNWEtYjJkMS0xZTFmODFiMjZiODIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p5vfqGmq9kIylfG3glHGa20CAPUtoWlAxKEGpIvGOi8',
-    name: plantInfoDB.getData()[0].plantName,
-    satisfaction: getRandomInt(0, 100),
-    level: 11,
-  });
   /*
-  message.respond({
-    normalImageUrl:
-      'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/5f4bd7a6-f763-4518-9b81-bdfd40ce3fc9/d26yer1-421bb5b8-9fc2-4d5a-b2d1-1e1f81b26b82.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzVmNGJkN2E2LWY3NjMtNDUxOC05YjgxLWJkZmQ0MGNlM2ZjOVwvZDI2eWVyMS00MjFiYjViOC05ZmMyLTRkNWEtYjJkMS0xZTFmODFiMjZiODIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p5vfqGmq9kIylfG3glHGa20CAPUtoWlAxKEGpIvGOi8',
-    name: 'My Lovely Plant',
-    satisfaction: getRandomInt(0, 100),
-    level: 11,
-  });
-  */
-});
-
-// 초기 데이터 등록
-service.register('register', function (message) {
   if (!checkParamForRegister(message.payload)) {
     message.respond({
       success: false,
@@ -60,6 +52,7 @@ service.register('register', function (message) {
   message.respond({
     success: true,
   });
+  */
 });
 
 // 백그라운드 작업 시작
@@ -246,7 +239,7 @@ service.register('toggleAutocontrol', function (message) {
   });
 });
 
-// ***************************** Service 로직 *****************************
+// *************************************** Service 로직 ***************************************
 function getRandomInt(min, max) {
   //min ~ max 사이의 임의의 정수 반환
   return Math.floor(Math.random() * (max - min)) + min;
@@ -288,7 +281,7 @@ function toggleAutocontrol() {
   // some task to do
 }
 
-// ***************************** Heartbeat *****************************
+// *************************************** Heartbeat ***************************************
 // heart beat가 어떤 외부 서비스가 아닌, 특정 구독자에게 신호를 줘서 꺼지지 않도록 하는 걸 말하는 듯
 const heartbeat2 = service.register('heartbeat');
 heartbeat2.on('request', function (message) {
@@ -342,3 +335,90 @@ function createInterval() {
     sendResponses();
   }, 1000);
 }
+
+// *************************************** DB ***************************************
+const kindID = 'com.team17.homegardening.plantInfo:1';
+const busID = 'com.team17.homegardening.service';
+
+// ***************************** plantInfo *****************************
+const plantInfoDB = {
+  putKind: function () {
+    let url = 'luna://com.webos.service.db/putKind';
+    let params = {
+      id: kindID,
+      owner: busID,
+      indexes: [
+        {
+          name: 'index0',
+          props: [{ name: 'plantId' }],
+        },
+      ],
+    };
+    service.call(url, params, (msg) => {
+      findResult = msg;
+    });
+  },
+
+  putPermissions: function () {
+    let url = 'luna://com.webos.service.db/putPermissions';
+    let params = {
+      permissions: [
+        {
+          operations: {
+            read: 'allow',
+            create: 'allow',
+            update: 'allow',
+            delete: 'allow',
+          },
+          object: kindID,
+          type: 'db.kind',
+          caller: '*',
+        },
+      ],
+    };
+    service.call(url, params, (msg) => {});
+  },
+
+  replaceData: function (newData) {
+    emptyDB();
+    let url = 'luna://com.webos.service.db/put';
+    let params = {
+      objects: [
+        {
+          _kind: kindID,
+          plantId: newData.plantId,
+          plantName: newData.plantName,
+          plantBirthDate: newData.plantBirthDate,
+          scientificName: newData.scientificName,
+          shortDescription: newData.shortDescription,
+          maxLevel: newData.maxLevel,
+        },
+      ],
+    };
+    service.call(url, params, (msg) => {});
+  },
+
+  getData: function () {
+    let url = 'luna://com.webos.service.db/find';
+    let params = {
+      query: {
+        from: kindID,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        resolve(res.payload.results);
+      });
+    });
+  },
+
+  emptyDB: function () {
+    let url = 'luna://com.webos.service.db/del';
+    let params = {
+      query: {
+        from: kindID,
+      },
+    };
+    service.call(url, params, (msg) => {});
+  },
+};
