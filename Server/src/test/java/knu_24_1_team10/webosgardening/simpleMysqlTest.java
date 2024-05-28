@@ -39,7 +39,7 @@ class simpleMysqlTest {
 
 	@Test
 	public void userInsert() {
-		User user = new User("hwani@gmail.com", "pw1234");
+		User user = new User("hwani@gmail.com", "pw1234","hwan","hwan",true,"2000-10-15");
 		User insertedUser = userRepository.save(user);
 
 		Optional<User> findUser_Optional = userRepository.findById(insertedUser.getId());
@@ -52,12 +52,12 @@ class simpleMysqlTest {
 		PlantImage samplePlantImage = new PlantImage("0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11");
 		PlantEnvironment samplePlantEnvironment = new PlantEnvironment(1, 21, 2, 3, 4, 5, 10, 8);
 		PlantInfo samplePlantInfo = new PlantInfo(samplePlantImage, samplePlantEnvironment, "scHwani", "It is very tall", 100);
-		User user = new User("hwani@gmail.com", "pw1234");
+		User user = new User("hwani@gmail.com", "pw1234","hwan","hwan",true,"2000-10-15");
 		User insertedUser = userRepository.save(user);
 		testEm.persist(samplePlantImage);
 		testEm.persist(samplePlantEnvironment);
 		testEm.persist(samplePlantInfo);
-		UserPlant sampleUserPlant = new UserPlant(insertedUser, samplePlantInfo, "myFirstPlant", LocalDate.now(), false, 1);
+		UserPlant sampleUserPlant = new UserPlant(insertedUser, samplePlantInfo, "myFirstPlant", "2024-05-27", false, 1);
 		userPlantRepository.save(sampleUserPlant);
 
 		assertEquals(sampleUserPlant.getPlantInfo().getScientificName(), "scHwani");
