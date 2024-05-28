@@ -19,11 +19,11 @@ const wsurl = 'ws://example.com';
 // *************************************** APIs ***************************************
 // 임시 API
 service.register('getPlantInfos', async function (message) {
-  let results = await plantInfoDB.getData();
+  let plantName = await plantInfoDB.getPlantName();
   message.respond({
     normalImageUrl:
       'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/5f4bd7a6-f763-4518-9b81-bdfd40ce3fc9/d26yer1-421bb5b8-9fc2-4d5a-b2d1-1e1f81b26b82.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzVmNGJkN2E2LWY3NjMtNDUxOC05YjgxLWJkZmQ0MGNlM2ZjOVwvZDI2eWVyMS00MjFiYjViOC05ZmMyLTRkNWEtYjJkMS0xZTFmODFiMjZiODIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p5vfqGmq9kIylfG3glHGa20CAPUtoWlAxKEGpIvGOi8',
-    name: results[0].plantName,
+    name: plantName,
     satisfaction: getRandomInt(0, 100),
     level: 11,
   });
@@ -133,7 +133,7 @@ service.register('getPlantLevel', function (message) {
 
 // 광량 제어하기
 service.register('controlLight', function (message) {
-  if (!light) {
+  if (!message.payload.light) {
     message.respond({
       success: false,
     });
@@ -159,7 +159,7 @@ service.register('calendar', function (message) {
   const year = message.payload.year;
   const month = message.payload.month;
 
-  message.respons({
+  message.respond({
     success: true,
     isWater: {
       day1: getRandomTF(),
@@ -337,31 +337,22 @@ function createInterval() {
 }
 
 // *************************************** DB ***************************************
-const kindID = 'com.team17.homegardening.plantInfo:1';
 const busID = 'com.team17.homegardening.service';
 
-// ***************************** plantInfo *****************************
+///////////////////////// DB: plantInfo
+const kindID_plantInfo = 'com.team17.homegardening.plantInfo:1';
 const plantInfoDB = {
   putKind: function () {
-    let url = 'luna://com.webos.service.db/putKind';
-    let params = {
-      id: kindID,
+    const url = 'luna://com.webos.service.db/putKind';
+    const params = {
+      id: kindID_plantInfo,
       owner: busID,
-      indexes: [
-        {
-          name: 'index0',
-          props: [{ name: 'plantId' }],
-        },
-      ],
     };
-    service.call(url, params, (msg) => {
-      findResult = msg;
-    });
+    service.call(url, params, (res) => {});
   },
-
   putPermissions: function () {
-    let url = 'luna://com.webos.service.db/putPermissions';
-    let params = {
+    const url = 'luna://com.webos.service.db/putPermissions';
+    const params = {
       permissions: [
         {
           operations: {
@@ -370,22 +361,21 @@ const plantInfoDB = {
             update: 'allow',
             delete: 'allow',
           },
-          object: kindID,
+          object: kindID_plantInfo,
           type: 'db.kind',
-          caller: '*',
+          caller: busID,
         },
       ],
     };
-    service.call(url, params, (msg) => {});
+    service.call(url, params, (res) => {});
   },
-
   replaceData: function (newData) {
     emptyDB();
-    let url = 'luna://com.webos.service.db/put';
-    let params = {
+    const url = 'luna://com.webos.service.db/put';
+    const params = {
       objects: [
         {
-          _kind: kindID,
+          _kind: kindID_plantInfo,
           plantId: newData.plantId,
           plantName: newData.plantName,
           plantBirthDate: newData.plantBirthDate,
@@ -395,30 +385,556 @@ const plantInfoDB = {
         },
       ],
     };
-    service.call(url, params, (msg) => {});
+    service.call(url, params, (res) => {});
   },
-
-  getData: function () {
-    let url = 'luna://com.webos.service.db/find';
-    let params = {
+  getPlantName: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
       query: {
-        from: kindID,
+        from: kindID_plantInfo,
       },
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        resolve(res.payload.results);
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].plantName);
+        else reject();
       });
     });
   },
-
   emptyDB: function () {
-    let url = 'luna://com.webos.service.db/del';
-    let params = {
+    const url = 'luna://com.webos.service.db/del';
+    const params = {
       query: {
-        from: kindID,
+        from: kindID_plantInfo,
       },
     };
-    service.call(url, params, (msg) => {});
+    service.call(url, params, (res) => {});
+  },
+};
+
+///////////////////////// DB: plantCurrentInfo
+const kindID_plantCurrentInfo = 'com.team11.homegardening.plantCurrentInfo:1';
+const plantCurrentInfo = {
+  putKind: function () {
+    const url = 'luna://com.webos.service.db/putKind';
+    const params = {
+      id: kindID_plantCurrentInfo,
+      owner: busID,
+    };
+    service.call(url, params, (res) => {});
+  },
+  putPermissions: function () {
+    const url = 'luna://com.webos.service.db/putPermissions';
+    const params = {
+      permissions: [
+        {
+          operations: {
+            read: 'allow',
+            create: 'allow',
+            update: 'allow',
+            delete: 'allow',
+          },
+          object: kindID_plantCurrentInfo,
+          type: 'db.kind',
+          caller: busID,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  updateCurrentLevel: function (currentLevel) {
+    const url = 'luna://com.webos.service.db/merge';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+      props: {
+        currentLevel,
+      },
+    };
+    service.call(url, params, (res) => {});
+  },
+  updateIsAutoControl: function (isAutoControl) {
+    const url = 'luna://com.webos.service.db/merge';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+      props: {
+        isAutoControl,
+      },
+    };
+    service.call(url, params, (res) => {});
+  },
+  updateSatisfaction: function (satisfaction) {
+    const url = 'luna://com.webos.service.db/merge';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+      props: {
+        satisfaction,
+      },
+    };
+    service.call(url, params, (res) => {});
+  },
+  replaceData: function (newData) {
+    emptyDB();
+    const url = 'luna://com.webos.service.db/put';
+    const params = {
+      objects: [
+        {
+          _kind: kindID_plantCurrentInfo,
+          currentLevel: newData.currentLevel,
+          isAutoControl: newData.isAutoControl,
+          satisfaction: newData.satisfaction,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  getCurrentLevel: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].currentLevel);
+        else reject();
+      });
+    });
+  },
+  getIsAutoControl: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].isAutoControl);
+        else reject();
+      });
+    });
+  },
+  getSatisfaction: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].satisfaction);
+        else reject();
+      });
+    });
+  },
+  emptyDB: function () {
+    const url = 'luna://com.webos.service.db/del';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+    };
+    service.call(url, params, (res) => {});
+  },
+};
+
+///////////////////////// DB: imageUrl
+const kindID_imageUrl = 'com.team11.homegardening.imageUrl:1';
+const imageUrl = {
+  putKind: function () {
+    const url = 'luna://com.webos.service.db/putKind';
+    const params = {
+      id: kindID_imageUrl,
+      owner: busID,
+    };
+    service.call(url, params, (res) => {});
+  },
+  putPermissions: function () {
+    const url = 'luna://com.webos.service.db/putPermissions';
+    const params = {
+      permissions: [
+        {
+          operations: {
+            read: 'allow',
+            create: 'allow',
+            update: 'allow',
+            delete: 'allow',
+          },
+          object: kindID_imageUrl,
+          type: 'db.kind',
+          caller: busID,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  replaceData: function (newData) {
+    emptyDB();
+    const url = 'luna://com.webos.service.db/put';
+    const params = {
+      objects: [
+        {
+          _kind: kindID_imageUrl,
+          normalImageUrl: newData.normal,
+          happyImageUrl: newData.happy,
+          sadImageUrl: newData.sad,
+          angryImageUrl: newData.angry,
+          underWaterImageUrl: newData.underWater,
+          overWaterImageUrl: newData.overWater,
+          underLightImageUrl: newData.underLight,
+          overLightImageUrl: newData.overLight,
+          underTemperatureImageUrl: newData.underTemperature,
+          overTemperatureImageUrl: newData.overTemperature,
+          underHumidityImageUrl: newData.underHumidity,
+          overHumidityImageUrl: newData.overHumidity,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  getNormalImageUrl: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_imageUrl,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].normalImageUrl);
+        else reject();
+      });
+    });
+  },
+  emptyDB: function () {
+    const url = 'luna://com.webos.service.db/del';
+    const params = {
+      query: {
+        from: kindID_imageUrl,
+      },
+    };
+    service.call(url, params, (res) => {});
+  },
+};
+
+///////////////////////// DB: plantEnvInfo
+const kindID_plantEnvInfo = 'com.team11.homegardening.plantEnvInfo:1';
+const plantEnvInfo = {
+  putKind: function () {
+    const url = 'luna://com.webos.service.db/putKind';
+    const params = {
+      id: kindID_plantEnvInfo,
+      owner: busID,
+    };
+    service.call(url, params, (res) => {});
+  },
+  putPermissions: function () {
+    const url = 'luna://com.webos.service.db/putPermissions';
+    const params = {
+      permissions: [
+        {
+          operations: {
+            read: 'allow',
+            create: 'allow',
+            update: 'allow',
+            delete: 'allow',
+          },
+          object: kindID_plantEnvInfo,
+          type: 'db.kind',
+          caller: busID,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  replaceData: function (newData) {
+    emptyDB();
+    const url = 'luna://com.webos.service.db/put';
+    const params = {
+      objects: [
+        {
+          _kind: kindID_plantEnvInfo,
+          waterValue: newData.waterValue,
+          waterRange: newData.waterRange,
+          lightValue: newData.lightValue,
+          lightRange: newData.lightRange,
+          temperatureValue: newData.temperatureValue,
+          temperatureRange: newData.temperatureRange,
+          humidityValue: newData.humidityValue,
+          humidityRange: newData.humidityRange,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  getWaterValue: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].waterValue);
+        else reject();
+      });
+    });
+  },
+  getWaterRange: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].waterRange);
+        else reject();
+      });
+    });
+  },
+  getLightValue: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].lightValue);
+        else reject();
+      });
+    });
+  },
+  getLightRange: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].lightRange);
+        else reject();
+      });
+    });
+  },
+  getTemperatureValue: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].temperatureValue);
+        else reject();
+      });
+    });
+  },
+  getTemperatureRange: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].temperatureRange);
+        else reject();
+      });
+    });
+  },
+  getHumidityValue: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].humidityValue);
+        else reject();
+      });
+    });
+  },
+  getHumidityRange: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].humidityRange);
+        else reject();
+      });
+    });
+  },
+  emptyDB: function () {
+    const url = 'luna://com.webos.service.db/del';
+    const params = {
+      query: {
+        from: kindID_plantEnvInfo,
+      },
+    };
+    service.call(url, params, (res) => {});
+  },
+};
+
+///////////////////////// DB: envSensingData
+const kindID_envSensingData = 'com.team11.homegardening.envSensingData:1';
+const envSensingData = {
+  putKind: function () {
+    const url = 'luna://com.webos.service.db/putKind';
+    const params = {
+      id: kindID_envSensingData,
+      owner: busID,
+      indexes: [
+        {
+          name: 'index0',
+          props: [{ name: 'time' }],
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  putPermissions: function () {
+    const url = 'luna://com.webos.service.db/putPermissions';
+    const params = {
+      permissions: [
+        {
+          operations: {
+            read: 'allow',
+            create: 'allow',
+            update: 'allow',
+            delete: 'allow',
+          },
+          object: kindID_envSensingData,
+          type: 'db.kind',
+          caller: busID,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  putData: function (data) {
+    const url = 'luna://com.webos.service.db/put';
+    const params = {
+      objects: [
+        {
+          _kind: kindID_envSensingData,
+          time: data.time,
+          water: data.water,
+          light: data.light,
+          humidity: data.humidity,
+          temperature: data.temperature,
+          satisfaction: data.satisfaction,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+};
+
+///////////////////////// DB: latestSensingData  -> db 쿼리 효율 위해 가장 최신 데이터 하나만 따로 유지
+const kindID_latestSensingData = 'com.team11.homegardening.latestSensingData:1';
+const latestSensingData = {
+  putKind: function () {
+    const url = 'luna://com.webos.service.db/putKind';
+    const params = {
+      id: kindID_latestSensingData,
+      owner: busID,
+    };
+    service.call(url, params, (res) => {});
+  },
+  putPermissions: function () {
+    const url = 'luna://com.webos.service.db/putPermissions';
+    const params = {
+      permissions: [
+        {
+          operations: {
+            read: 'allow',
+            create: 'allow',
+            update: 'allow',
+            delete: 'allow',
+          },
+          object: kindID_latestSensingData,
+          type: 'db.kind',
+          caller: busID,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  replaceData: function (newData) {
+    emptyDB();
+    const url = 'luna://com.webos.service.db/put';
+    const params = {
+      objects: [
+        {
+          _kind: kindID_latestSensingData,
+          time: newData.time,
+          water: newData.water,
+          light: newData.light,
+          humidity: newData.humidity,
+          temperature: newData.temperature,
+          satisfaction: newData.satisfaction,
+        },
+      ],
+    };
+    service.call(url, params, (res) => {});
+  },
+  getLatestData: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_latestSensingData,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.results.length != 0) resolve(res.payload.results[0]);
+        else reject();
+      });
+    });
+  },
+  emptyDB: function () {
+    const url = 'luna://com.webos.service.db/del';
+    const params = {
+      query: {
+        from: kindID_latestSensingData,
+      },
+    };
+    service.call(url, params, (res) => {});
   },
 };
