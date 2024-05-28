@@ -14,7 +14,11 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "user_plant")
 public class UserPlant {
-  public UserPlant(User user, PlantInfo plantInfo, String name, LocalDate birthdate, boolean isAutoControl, int level)
+
+  public UserPlant() {
+
+  }
+  public UserPlant(User user, PlantInfo plantInfo, String name, String birthdate, boolean isAutoControl, int level)
   {
     this.user = user;
     this.plantInfo = plantInfo;
@@ -40,14 +44,15 @@ public class UserPlant {
   @Column(name = "name", nullable = false, length = 20)
   private String name;
 
-  @Column(name = "birthdate", nullable = false)
-  private LocalDate birthdate;
+  @Column(name = "birthdate", nullable = false, length = 30)
+  private String birthdate;
 
   @Column(name = "is_auto_control", nullable = false)
   private boolean isAutoControl;
 
   @Column(name = "level", nullable = false)
   private int level;
+
 
   // Getters
   public Long getId() {
@@ -66,7 +71,7 @@ public class UserPlant {
     return this.name;
   }
 
-  public LocalDate getBirthDate() {
+  public String getBirthDate() {
     return this.birthdate;
   }
 
