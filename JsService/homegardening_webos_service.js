@@ -22,7 +22,7 @@ service.register('getPlantInfos', async function (message) {
   let results = await plantInfoDB.getData();
   message.respond({
     normalImageUrl:
-      'https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/5f4bd7a6-f763-4518-9b81-bdfd40ce3fc9/d26yer1-421bb5b8-9fc2-4d5a-b2d1-1e1f81b26b82.png?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiJcL2ZcLzVmNGJkN2E2LWY3NjMtNDUxOC05YjgxLWJkZmQ0MGNlM2ZjOVwvZDI2eWVyMS00MjFiYjViOC05ZmMyLTRkNWEtYjJkMS0xZTFmODFiMjZiODIucG5nIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.p5vfqGmq9kIylfG3glHGa20CAPUtoWlAxKEGpIvGOi8',
+      'https://i.namu.wiki/i/vDpd0CaQ-5cgC_CYSebzG3TK7s7NYZCoYANi7aGQpT2lcq1DBrNUyzsVGB7wBVlN246LzPrf7TdlPHedfWvNHg.webp',
     name: results[0].plantName,
     satisfaction: getRandomInt(0, 100),
     level: 11,
@@ -133,7 +133,7 @@ service.register('getPlantLevel', function (message) {
 
 // 광량 제어하기
 service.register('controlLight', function (message) {
-  if (!light) {
+  if (!message.payload.light) {
     message.respond({
       success: false,
     });
@@ -159,7 +159,7 @@ service.register('calendar', function (message) {
   const year = message.payload.year;
   const month = message.payload.month;
 
-  message.respons({
+  message.respond({
     success: true,
     isWater: {
       day1: getRandomTF(),

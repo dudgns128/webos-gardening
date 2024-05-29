@@ -7,9 +7,9 @@ import moment from 'moment';
 const theme = {
     gray_1: '#333',
     red_1: '#ff0000',
-    blue: '#007bff',
     gray_5: '#f7f7f7',
     yellow_2: '#FFED8C',
+    blue: '#007bff',
     wine: '#8b0000',
     green: '#009C4D',
     orange: '#FFA500',
@@ -90,13 +90,6 @@ const theme = {
     padding: 0;
   }
 
-  /* 네비게이션 현재 월 스타일 적용 */
-  .react-calendar__tile--hasActive {
-    background-color: ${(props) => props.theme.blue};
-    abbr {
-      color: white;
-    }
-  }
 
   /* 일 날짜 간격 */
   .react-calendar__tile {
@@ -120,25 +113,27 @@ const theme = {
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus,
   .react-calendar__tile--active {
-    background-color: ${(props) => props.theme.yellow_2};
-    border-radius: 0.3rem;
+    background-color: ${(props) => props.theme.gray_5};
+    // border-radius: 0.3rem;
   }
+
+  /* 이미지를 중앙에 배치하기 위한 스타일 적용 */
+  .react-calendar__tile--content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .react-calendar__tile--waterDay abbr {
+    color: ${(props) => props.theme.blue};
+  }  
 `;
+
 
 const StyledCalendar = styled(Calendar)``;
 
-/* 오늘 날짜에 텍스트 삽입 스타일 */
-const StyledToday = styled.div`
-  font-size: x-small;
-  color: ${(props) => props.theme.wine};
-  font-weight: 600;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translateX(-50%);
-`;
-
-/* 출석한 날짜에 점 표시 스타일 */
+/* 물을 준 날짜에 점 표시 스타일 */
 const StyledDot = styled.div`
   background-color: ${(props) => props.theme.green};
   border-radius: 50%;
@@ -163,51 +158,77 @@ const ModalBackdrop = styled.div`
   z-index: 1;
 `;
 
+const bridge = new WebOSServiceBridge();
 
 const CalendarModal = ({ isOpen, onClose }) => {
     
     const today = new Date();
     const [date, setDate] = useState(today);
-    const attendDay = ["2023-12-03", "2023-12-13"]; // 출석한 날짜 예시
-    
+    const [waterDay, setWaterDay] = useState([]); 
+    const [satisfactionDay, setSatisfactionDay] = useState({}); 
+
+    // 날짜를 선택해서 제어할 수 있는 코드ㅡ -> 추후 개발
     const handleDateChange = (newDate) => {
       setDate(newDate);
     };
+    
 
-    // const [currentState, setCurrentState] = useState({
-    //     isWater: {},
-    //     satisfaction: {}
-    // });
+    useEffect(() => {
+        if (!isOpen) {
+            return;
+        }
 
-    // const params = JSON.stringify({
-    //     "year": today.getFullYear(),
-    //     "month": today.getMonth() + 1
-    // });
+        const updatedYear = date.getFullYear();
+        const updatedMonth = date.getMonth() + 1;
+    
+        const params = JSON.stringify({
+            "year": updatedYear,
+            "month": updatedMonth
+        });
 
-    // useEffect(() => {
-    //     if (!isOpen) {
-    //         return;
-    //     }
+        const serviceURL = "luna://com.team17.homegardening.service/calendar";
 
-    //     const serviceURL = "luna://com.team17.homegardening.service/calendar";
+        bridge.onservicecallback = function (msg) {
+            const response = JSON.parse(msg);
+            if (response.success) {
+                // isWater 데이터를 사용하여 waterDay 업데이트
+                const newWaterDays = [];
+                for (let day = 1; day <= 31; day++) {
+                    if (response.isWater[`day${day}`]) {
+                        const dateStr = `${updatedYear}-${String(updatedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+                        newWaterDays.push(dateStr);
+                    }
+                }
+                setWaterDay(newWaterDays);
 
-    //     bridge.onservicecallback = function (msg) {
-    //     const response = JSON.parse(msg);
-    //     if (response.success) {
-    //         setCurrentState({
-    //             isWater: response.isWater,
-    //             satisfaction: response.satisfaction
-    //         });
-    //         }
-    //     };
+                // satisfaction 데이터를 사용하여 satisfactionDay 업데이트
+                const newSatisfactionDays = {};
+                for (let day = 1; day <= 31; day++) {
+                    if (response.satisfaction[`day${day}`] !== undefined) {
+                        newSatisfactionDays[day] = response.satisfaction[`day${day}`];
+                    }
+                }
+                setSatisfactionDay(newSatisfactionDays);
+            }
+        };
 
-    //     bridge.call(serviceURL, params);
-    //     }, [isOpen, today]);
+        bridge.call(serviceURL, params);
+    }, [isOpen, date]);
 
 
     if (!isOpen) {
         return null;
     }
+
+    const getSatisfactionImage = (value) => {
+      if (value >= 0 && value <= 20) return require('../img/verybad.png');
+      if (value >= 21 && value <= 40) return require('../img/bad.png');
+      if (value >= 41 && value <= 60) return require('../img/soso.png');
+      if (value >= 61 && value <= 80) return require('../img/good.png');
+      if (value >= 81 && value <= 100) return require('../img/verygood.png');
+      return null;
+  };
+
 
     return (
         <ModalBackdrop onClick={onClose}>
@@ -216,7 +237,8 @@ const CalendarModal = ({ isOpen, onClose }) => {
                     <StyledCalendarWrapper>
                         <StyledCalendar
                             value={date}
-                            onChange={handleDateChange}
+                            // onChange={handleDateChange}
+                            onActiveStartDateChange={({ activeStartDate }) => setDate(activeStartDate)}
                             locale="ko"
                             formatDay={(locale, date) => moment(date).format("D")}
                             formatYear={(locale, date) => moment(date).format("YYYY")}
@@ -226,22 +248,36 @@ const CalendarModal = ({ isOpen, onClose }) => {
                             next2Label={null}
                             prev2Label={null}
                             minDetail="year"
+                            tileClassName={({ date, view }) => {
+                              if (view === "month" && date.getMonth() !== 0 &&  waterDay.find((x) => x === moment(date).format("YYYY-MM-DD"))) {
+                                return "react-calendar__tile--waterDay";
+                              }
+                            }}
 
-                            // 오늘 날짜에 '오늘' 텍스트 삽입하고 출석한 날짜에 점 표시를 위한 설정
+                            // 오늘 날짜에 '오늘' 텍스트 삽입하고 물을 준 날짜에 점 표시를 위한 설정
                             tileContent={({ date, view }) => {
                                 let html = [];
-                                if (
-                                view === "month" &&
-                                date.getMonth() === today.getMonth() &&
-                                date.getDate() === today.getDate()
-                                ) {
-                                html.push(<StyledToday key={"today"}>오늘</StyledToday>);
+                                
+                                // 임시 - 물을 준 날짜에 점 표시, 단 view가 'month'이고 첫 달(1월)이 아닌 경우에만
+                                // if (view === "month" && date.getMonth() !== 0 && waterDay.find((x) => x === moment(date).format("YYYY-MM-DD"))) {
+                                //   html.push(<StyledDot key={moment(date).format("YYYY-MM-DD")} />);
+                                // }
+                                // if ( waterDay.find((x) => x === moment(date).format("YYYY-MM-DD"))) {
+                                //   html.push(<StyledDot key={moment(date).format("YYYY-MM-DD")} />);
+                                // }
+
+                                const satisfactionValue = satisfactionDay[date.getDate()];
+                                if (view === "month" && date.getMonth() !== 0  && satisfactionValue !== undefined) {
+                                    const imgSrc = getSatisfactionImage(satisfactionValue);
+                                    if (imgSrc) { //html.push(<img key={`satisfaction-${date.getDate()}`} src={imgSrc} alt="satisfaction" />);
+                                      html.push(
+                                        <div className="react-calendar__tile--content" key={`satisfaction-${date.getDate()}`}>
+                                          <img src={imgSrc} alt="satisfaction" />
+                                        </div>
+                                      );
+                                    }
                                 }
-                                if (
-                                attendDay.find((x) => x === moment(date).format("YYYY-MM-DD"))
-                                ) {
-                                html.push(<StyledDot key={moment(date).format("YYYY-MM-DD")} />);
-                                }
+                      
                                 return <>{html}</>;
                             }}
                             />

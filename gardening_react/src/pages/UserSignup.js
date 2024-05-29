@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { display } from '../constants';
 import UserLoginModal from '../components/UserLoginModal';
 
 const UserSignup = () => {
     const navigate = useNavigate();
     const [name,setName] = useState('');
-    const [sex,setSex] = useState('');
+    const [sex,setSex] = useState(true);
     const [nickname,setNickname] = useState('');
     const [year,setYear] = useState('');
     const [month,setMonth] = useState('');
@@ -14,52 +13,55 @@ const UserSignup = () => {
     const [email,setEmail] = useState('');
     const [pwd,setPwd] = useState('');
     const [pwdconfirm,setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
-    const [ws, setWs] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        // 웹소켓 연결 생성
-        const websocket = new WebSocket('ws://localhost:3000');
-        websocket.onopen = () => {
-            console.log('웹소켓 연결 성공');
-        };
-
-        websocket.onerror = (error) => {
-            console.error('웹소켓 오류', error);
-        };
-        setWs(websocket);
-
-        // 컴포넌트 언마운트 시 웹소켓 연결 종료
-        return () => {
-            websocket.close();
-        };
-    }, [navigate]);
-
     const checkPassword = () => {
         if (pwd !== pwdconfirm) {
           setErrorMessage('비밀번호가 일치하지 않습니다. 다시 시도해주세요.');
+          return false;
         } else {
           setErrorMessage('');
+          return true;
         }
     };
 
-    const onSubmit = () => {
-        if (ws) {
-            // year, month, day를 'YYYY-MM-DD' 형식의 문자열로 합치기
-            const birthdate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    const onSubmit = async () => {
+        if (!checkPassword()) return;
 
-            const userData = {
-                name: name,
-                sex: sex,
-                nickname: nickname,
-                birthdate: birthdate,
-                email: email,
-                password: pwd
-            };
+        
+        const formatYear = year.replace('년', '');
+        const formatMonth = month.replace('월', '').padStart(2, '0');
+        const formatDay = day.replace('일', '').padStart(2, '0');
+
+        // year, month, day를 'YYYY-MM-DD' 형식의 문자열로 합치기
+        const birthdate = `${formatYear}-${formatMonth}-${formatDay}`;
+        
+        const userData = {
+            username: name,
+            gender: sex,
+            nickname: nickname,
+            birth: birthdate,
+            email: email,
+            password: pwd
+        };
             
-            ws.send(JSON.stringify(userData));  // 웹소켓을 통해 서버로 데이터 전송
+        try {
+            const response = await axios.post('/api/user', userData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            if (response.status === 201) {
+                console.log("User registered successfully");
+                navigate('/user/login');
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || '회원가입에 실패했습니다. 다시 시도해 주세요.';
+            setModalMessage(message);
+            setShowModal(true);
         }
     };
 
@@ -72,6 +74,11 @@ const UserSignup = () => {
     const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
     const BIRTHDAY_DAY_LIST = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
     const SEX_LIST = ['남', '여'];
+
+    const handleSexChange = (e) => {
+        const selectedSex = e.target.value;
+        setSex(selectedSex === '남');
+      };
 
     const calculateWidthSize = (originalSize, ratio) => {
         return Math.round(window.innerWidth * ratio) || originalSize;
@@ -145,16 +152,13 @@ const UserSignup = () => {
                                 }}
                                 required
                             />
-                            <select
+                                <select
                                 className="sexBox"
-                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
-                                type="sex"
-                                value={sex}
-                                onChange={(e) => {
-                                    setSex(e.target.value);
-                                }}
+                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                value={sex ? '남' : '여'}
+                                onChange={handleSexChange}
                                 required
-                            >
+                                >
                                 <option value="" disabled>성별</option>
                                 {SEX_LIST.map((sex, index) => (
                                     <option key={index}>{sex}</option>
@@ -183,7 +187,7 @@ const UserSignup = () => {
                                     type="year"
                                     value={year}
                                     onChange={(e) => {
-                                        setYear(e.target.value);
+                                        setYear(e.target.value.replace('년', ''));
                                     }}
                                     required
                                 >
@@ -197,7 +201,7 @@ const UserSignup = () => {
                                     type="month"
                                     value={month}
                                     onChange={(e) => {
-                                        setMonth(e.target.value);
+                                        setMonth(e.target.value.replace('월', ''));
                                     }}
                                     required
                                 >
@@ -211,7 +215,7 @@ const UserSignup = () => {
                                     type="day"
                                     value={day}
                                     onChange={(e) => {
-                                        setDay(e.target.value);
+                                        setDay(e.target.value.replace('일', ''));
                                     }}
                                     required
                                 >
