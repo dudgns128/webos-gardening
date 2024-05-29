@@ -5,7 +5,8 @@ import UserSignup from './pages/UserSignup';
 import UserPlantRegister from './pages/UserPlantRegister';
 
 import MainPage from './pages/MainPage';
-import PlantCondition from './pages/PlantCondition';
+import ControlLight from './pages/ControlLight';
+import ControlWater from './pages/ControlWater';
 
 const routes = [
     {
@@ -29,8 +30,12 @@ const routes = [
         component: MainPage
     },
     {
-        path: '/plant/condition',
-        component: PlantCondition
+        path: '/plant/light',
+        component: ControlLight
+    },
+    {
+        path: '/plant/water',
+        component: ControlWater
     },
 ]
 
