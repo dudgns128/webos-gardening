@@ -1,5 +1,5 @@
 {
-  "name": "com.team11.homegardening.service",
+  "name": "com.team17.homegardening.service",
   "version": "1.0.0",
   "description": "JS Services for home gardening kit project",
   "main": "homegardening_webos_service.js",

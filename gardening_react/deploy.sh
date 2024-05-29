@@ -37,8 +37,8 @@ echo ">> Changed to build directory."
 
 # appinfo.json 파일 생성
 echo ">> Creating appinfo.json..."
-printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team11.homegardening.service.group"]\n}' "com.team11.homegardening" "1.0.0" "my" "my" > appinfo.json
-# printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team11.homegardening.service.group"]\n}' "$APP_ID" "$APP_VERSION" "$VENDOR_NAME" "$APP_TITLE" > appinfo.json
+printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation"]\n}' "com.team17.homegardening" "1.0.0" "my" "my" > appinfo.json
+# printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation"]\n}' "$APP_ID" "$APP_VERSION" "$VENDOR_NAME" "$APP_TITLE" > appinfo.json
 
 # appinfo.json 파일 내용 확인
 echo ">> Displaying contents of appinfo.json:"
@@ -66,7 +66,7 @@ echo ">> Changed to IPK directory."
 echo ">> Removing existing installation of the app."
 
 # if ares-install -d $DEVICE_NAME -r $APP_ID; then
-if ares-install -d $DEVICE_NAME -r com.team11.homegardening; then
+if ares-install -d $DEVICE_NAME -r com.team17.homegardening; then
     echo ">> Existing app removed successfully."
 else
     echo ">> Error occurred while trying to remove existing app. The app may not be installed."
@@ -75,7 +75,7 @@ fi
 # 새 패키지 설치
 echo ">> Installing new package..."
 # if ares-install -d $DEVICE_NAME ${APP_ID}_${APP_VERSION}_all.ipk; then
-if ares-install -d $DEVICE_NAME com.team11.homegardening_1.0.0_all.ipk; then
+if ares-install -d $DEVICE_NAME com.team17.homegardening_1.0.0_all.ipk; then
     echo ">> Package installed successfully."
 else
     echo ">> Error installing package. No matched device found: $DEVICE_NAME"
@@ -85,7 +85,7 @@ fi
 # 앱 실행
 echo ">> Launching the app..."
 # if ares-launch -d $DEVICE_NAME $APP_ID; then
-if ares-launch -d $DEVICE_NAME com.team11.homegardening; then
+if ares-launch -d $DEVICE_NAME com.team17.homegardening; then
     echo ">> App launched successfully."
 else
     echo ">> Error launching app. The app may not be installed. Please check the list by running 'ares-install -l'."
@@ -106,12 +106,12 @@ rm -rf IPK
 # 인스펙터 열기
 echo ">> Returning to initial directory & Opening inspector..."
 # if ares-inspect -d $DEVICE_NAME --app $APP_ID; then
-if ares-inspect -d $DEVICE_NAME --app com.team11.homegardening; then
+if ares-inspect -d $DEVICE_NAME --app com.team17.homegardening; then
     echo ">> Inspector opened successfully."
 else
     # 오류 메시지를 표시하기 위해 오류 출력을 변수에 저장
     # INSPECT_ERROR=$(ares-inspect -d $DEVICE_NAME --app $APP_ID 2>&1)
-    INSPECT_ERROR=$(ares-inspect -d $DEVICE_NAME --app com.team11.homegardening 2>&1)
+    INSPECT_ERROR=$(ares-inspect -d $DEVICE_NAME --app com.team17.homegardening 2>&1)
 
     # 장치 일치 오류를 확인
     if [[ $INSPECT_ERROR == *"No matched device"* ]]; then

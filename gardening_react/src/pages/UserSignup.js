@@ -60,32 +60,8 @@ const UserSignup = () => {
             };
             
             ws.send(JSON.stringify(userData));  // 웹소켓을 통해 서버로 데이터 전송
-            //sendToLunaService(userData);        // WebOSServiceBridge를 사용하여 데이터 전송
         }
     };
-
-    // function sendToLunaService(userData) {
-    //     const serviceURL = "luna://com.your.service/createUser"; // 사용할 서비스의 URL
-    //     const bridge = new WebOSServiceBridge();
-        
-    //     bridge.onservicecallback = function (msg) {
-    //         const response = JSON.parse(msg);
-    //         console.log("Luna service response:", response);
-    //         if (response.returnValue) {
-    //             console.log("Data successfully sent to the service");
-    //         } else {
-    //             console.error("Failed to send data to the service");
-    //         }
-    //     };
-        
-    //     const payload = {
-    //         method: "createUser", // 사용할 메소드 이름
-    //         parameters: JSON.stringify(userData), // 전송할 데이터
-    //         subscribe: false // 구독 필요 여부
-    //     };
-        
-    //     bridge.call(serviceURL, JSON.stringify(payload));
-    // }
 
     const goBack = () => {
         navigate('/user/login');
