@@ -70,7 +70,11 @@ public class PlantImage {
   @Column(name = "over_humidity_image_url", nullable = false, length = 300)
   private String overHumidityImageUrl;
 
-  // Getters
+    public PlantImage() {
+
+    }
+
+    // Getters
   public Long getId() {
     return this.id;
   }

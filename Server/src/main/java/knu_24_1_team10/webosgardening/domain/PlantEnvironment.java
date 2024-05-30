@@ -10,6 +10,7 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "plant_environment")
 public class PlantEnvironment {
+
   // constructor for test
   public PlantEnvironment(float properWaterValue, float properWaterRange, float properLightValue,
                           float properLightRange, float properTemperatureValue, float properTemperatureRange,
@@ -53,7 +54,11 @@ public class PlantEnvironment {
   @Column(name = "proper_humidity_range", nullable = false)
   private float properHumidityRange;
 
-  // Getters
+    public PlantEnvironment() {
+
+    }
+
+    // Getters
   public Long getId() {
     return this.id;
   }

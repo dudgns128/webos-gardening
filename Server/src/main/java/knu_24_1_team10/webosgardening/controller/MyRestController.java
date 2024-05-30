@@ -37,18 +37,21 @@ public class MyRestController {
     }
     @PostMapping("/userplant")
     public ResponseEntity<String> registerUserPlant(
-            @RequestParam String email,
-            @RequestParam String password,
-            @RequestParam Long plantInfoId,
-            @RequestParam String name,
-            @RequestParam String birthDate,
-            @RequestParam boolean isAutoControl,
-            @RequestParam int level
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("plantInfoId") Long plantInfoId,
+            @RequestParam("name") String name,
+            @RequestParam("birthDate") String birthDate,
+            @RequestParam("isAutoControl") boolean isAutoControl,
+            @RequestParam("level") int level
     ) {
         User user = userRepository.findByEmail(email).orElse(null);
 
-        if (password.equals(user.getPassword())){
-            return new ResponseEntity<>("User or PlantInfo not found",HttpStatus.BAD_REQUEST);
+        System.out.println(user.getPassword());
+        System.out.println(password);
+        if (password.equals(user.getPassword())==false)
+        {
+            return new ResponseEntity<>("email and password not match",HttpStatus.BAD_REQUEST);
         }
 
 
@@ -56,11 +59,24 @@ public class MyRestController {
         PlantInfo plantInfo = plantInfoRepository.findById(plantInfoId).orElse(null);
 
         if (user == null || plantInfo == null) {
-            return new ResponseEntity<>("User or PlantInfo not found", HttpStatus.NOT_FOUND);
+            if (user==null && plantInfo ==null)
+            {
+                return new ResponseEntity<>("User and Plantinfo not found", HttpStatus.NOT_FOUND);
+
+            }
+            else if (user == null)
+            {
+                return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
+            }
+            else
+            {
+                return new ResponseEntity<>("Plantinfo not found", HttpStatus.NOT_FOUND);
+            }
         }
 
 
         UserPlant userPlant = new UserPlant(user, plantInfo, name, birthDate, isAutoControl, level);
+
         userPlantRepository.save(userPlant);
 
         return new ResponseEntity<>("UserPlant registered successfully", HttpStatus.CREATED);

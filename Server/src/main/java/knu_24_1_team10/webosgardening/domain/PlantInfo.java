@@ -43,6 +43,10 @@ public class PlantInfo {
   @Column(name = "max_level", nullable = false)
   private int maxLevel;
 
+  public PlantInfo() {
+
+  }
+
   // Getters
   public Long getId(){
     return this.id;
