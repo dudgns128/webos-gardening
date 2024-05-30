@@ -22,6 +22,8 @@ dependencies {
 	implementation "com.influxdb:influxdb-client-java:6.6.0"
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.projectlombok:lombok:1.18.32' // 최신 버전을 사용하고 싶다면 최신 버전으로 변경하세요
+
 }
 
 tasks.named('test') {

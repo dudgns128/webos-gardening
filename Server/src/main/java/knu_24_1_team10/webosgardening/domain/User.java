@@ -8,36 +8,77 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "user")
 public class User {
-  public User(String email, String password) {
+
+    public User() {
+    }
+
+    public User(String email, String password, String name, String nickname, boolean gender, String birth) {
     this.email = email;
     this.password = password;
-  }
+    this.name=name;
+    this.nickname=nickname;
+    this.gender=gender;
+    this.birth=birth;
+    }
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-  @Column(name = "email", nullable = true, length = 50)
-  private String email;
 
-  @Column(name = "password", nullable = true, length = 20)
-  private String password;
 
-  // Getters
-  public Long getId() {
-		return this.id;
-	}
+    @Column(name = "email", nullable = false, unique=true, length = 30)
+    private String email;
 
-  public String getEmail() {
-		return this.email;
-	}
+    @Column(name = "password", nullable = true, length = 20)
+    private String password;
 
-  public String getPassword() {
-		return this.password;
-	}
+    @Column(name = "name", nullable = true, length = 20)
+    private String name;
+
+
+    @Column(name = "nickname", nullable = true, length = 20)
+    private String nickname;
+
+
+    @Column(name = "gender", nullable = false)
+    private boolean gender;
+
+
+    @Column(name = "birth", nullable = true, length = 20)
+    private String birth;
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getBirth() {
+        return birth;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    public String getName() {
+        return name;
+    }
+
+
+
 }

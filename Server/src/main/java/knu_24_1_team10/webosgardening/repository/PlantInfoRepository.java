@@ -1,5 +1,6 @@
 package knu_24_1_team10.webosgardening.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,10 @@ public class PlantInfoRepository {
   public Optional<PlantInfo> findById(Long id) {
     return Optional.ofNullable(em.find(PlantInfo.class, id));
   }
+
+  public List<PlantInfo> findAll() {
+
+      return null;
+  }
+
 }
