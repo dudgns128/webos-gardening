@@ -66,6 +66,7 @@
     text-decoration: underline;
 }
 
+
 .control-light-container {
     text-align: center;
     font-family: Arial, sans-serif;
@@ -131,3 +132,4 @@ h1 {
 .water-button:hover {
     background-color: #45a049;
 }
+

@@ -224,7 +224,6 @@ service.register('controlWater', async function (message) {
 service.register('calendar', function (message) {
   const year = message.payload.year;
   const month = message.payload.month;
-
   const waterData = wateringRecord.getMonthData(year, month);
   const satisfactionData = avgSatisfactionRecord.getMonthData(year, month);
 

@@ -20,13 +20,15 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
     
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
-      setWater(response.water);
-      setLight(response.light);
-      setTemperature(response.temperature);
-      setHumidity(response.humidity);
+      if (response.success) {
+        setWater(response.water);
+        setLight(response.light);
+        setTemperature(response.temperature);
+        setHumidity(response.humidity);
+      }
     };
 
-    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 5000);
+    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
     return () => clearInterval(intervalId);
   }, []);

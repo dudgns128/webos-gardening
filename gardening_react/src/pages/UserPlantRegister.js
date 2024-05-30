@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { display } from '../constants';
+import axios from 'axios';
 
 const bridge = new WebOSServiceBridge();
 
@@ -10,105 +10,130 @@ function UserPlantRegister() {
   const currentMonth = today.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줍니다.
   const currentDay = today.getDate();
 
+  const [plantList, setPlantList] = useState([]);
+  const [selectedPlantId, setSelectedPlantId] = useState(null);
   const navigate = useNavigate();
   const [plantSpecies, setPlantSpecies] = useState('');
   const [plantName, setPlantName] = useState('');
-  const [year, setYear] = useState(`${currentYear}년`);
-  const [month, setMonth] = useState(`${currentMonth}월`);
-  const [day, setDay] = useState(`${currentDay}일`);
-  const [ws, setWs] = useState(null); // 웹소켓 인스턴스를 저장할 상태 생성
-
-  ///////////////////////////////////
-  useEffect(() => {
-    bridge.call("luna://com.team17.homegardening.service/register", '{}');
-  }, []);
-  //////////////////////////////////
+  const [plantBirthdate, setPlantBirthdate] = useState('');
+  const [year, setYear] = useState(currentYear);
+  const [month, setMonth] = useState(currentMonth);
+  const [day, setDay] = useState(currentDay);
+  const [isAutoControl, setIsAutoControl] = useState(true);
+  const [level, setLevel] = useState(1);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:3000'); // 웹소켓 연결
-    setWs(ws); // 상태에 웹소켓 인스턴스 저장
-    return () => {
-      ws.close(); // 컴포넌트 unmount 시 웹소켓 연결 종료
+    const fetchPlantInfo = async () => {
+      try {
+        const response = await axios.get('/api/plantinfo');
+        setPlantList(response.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
+
+    fetchPlantInfo();
   }, []);
 
-  const onSubmit = (e) => {
+  // plantList 상태가 변경될 때마다 실행되는 useEffect
+  useEffect(() => {
+    // 선택된 식물 종에 상응하는 id를 plantInfoId에 저장
+    const selectedPlant = plantList.find(plant => plant.scientificName === plantSpecies);
+    if (selectedPlant) {
+      setSelectedPlantId(selectedPlant.id);
+    }
+  }, [plantSpecies, plantList]);
+
+  // id 오름차순으로 식물 정보를 정렬하고, 식물 이름만 추출하여 PLANT_SPECIES_LIST를 생성
+  const PLANT_SPECIES_LIST = plantList
+    .sort((a, b) => a.id - b.id)
+    .map(plant => plant.name);
+
+  const onSubmit = async (e) => {
+    
     const email = localStorage.getItem('email');
     const password = localStorage.getItem('password');
 
-    const plantBirthdate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    const formatYear = year.replace('년', '');
+    const formatMonth = month.replace('월', '').padStart(2, '0');
+    const formatDay = day.replace('일', '').padStart(2, '0');
+    
+    const birthdate = `${formatYear}-${formatMonth}-${formatDay}`;
+    setPlantBirthdate(birthdate)
 
-    const plantInfo = {
-      species: plantSpecies,
+    const plantData = {
+      email: email,
+      password: password,
+      plantInfoId: selectedPlantId,
       name: plantName,
-      birthdate: plantBirthdate || new Date().toISOString().split('T')[0],
-      email,
-      password,
+      birthdate: birthdate,
+      isAutoControl: isAutoControl,
+      level: level
     };
 
-    // localStorage.setItem('plantSpecies', plantSpecies);
-    // // 사용자가 선택한 해당 식물 종 이미지 불러와서 localStorage에 저장하기
-    // fetchImageUrl(plantSpecies);
+    try {
+      const response = await axios.post('/api/userplant/register', plantData);
 
-    // 웹소켓이 연결되면 정보 전송
-    if(ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify(plantInfo));
-      console.log('정보가 서버로 전송되었습니다.');
-    } 
-    else {
-      console.log('웹소켓 연결이 되어 있지 않습니다.');
+      if (response.status === 201) {
+        console.log('UserPlant registered successfully');
+        // WebOSServiceBridge를 사용하여 데이터 전송
+        sendToLunaService();   
+        navigate('/main');
+      }
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        console.log('User or PlantInfo not found');
+      } else {
+        console.log('Something went wrong');
+      }
     }
+  };    
 
-    // WebOSServiceBridge를 사용하여 데이터 전송
-    //sendToLunaService(plantInfo);       
-  };
-
-  // const fetchImageUrl = (plantSpecies) => {
-  //   console.log(`${plantSpecies} 이미지 URL을 불러옵니다.`);
-  //   // 예시 URL, 실제 요청할 서버의 URL로 변경해야 함
-  //   const requestUrl = `https://example.com/api/images?species=${encodeURIComponent(plantSpecies)}`;
-  
-  //   fetch(requestUrl)
-  //     .then(response => {
-  //       if (!response.ok) {
-  //         throw new Error('식물 종 이미지 로드 시 네트워크 연결 이상');
-  //       }
-  //       return response.json();
-  //     })
-  //     .then(data => {
-  //       // 예시로 'imageUrl'을 사용했으나, 실제 응답의 이미지 URL 키에 맞춰 변경해야 함
-  //       const imageUrl = data.imageUrl;
-  //       console.log(`${plantSpecies} 이미지 URL을 저장합니다: ${imageUrl}`);
-  //       // localStorage에 이미지 URL 저장
-  //       localStorage.setItem(`${plantSpecies}-image`, imageUrl);
-  //       setPlantSpecies(plantSpecies);
-  //     })
-  //     .catch(error => {
-  //       console.error('이미지를 불러오는 데 실패했습니다:', error);
-  //     });
-  // };
-
-//   function sendToLunaService(plantInfo) {
-//     const serviceURL = "luna://com.your.service/createUser"; // 사용할 서비스의 URL
+  function sendToLunaService() {
+    const serviceURL = "luna://com.your.service/start";
     
-//     bridge.onservicecallback = function (msg) {
-//         const response = JSON.parse(msg);
-//         console.log("Luna service response:", response);
-//         if (response.returnValue) {
-//             console.log("Data successfully sent to the service");
-//         } else {
-//             console.error("Failed to send data to the service");
-//         }
-//     };
+    bridge.onservicecallback = function (msg) {
+        const response = JSON.parse(msg);
+        if (response.success) {
+          console.log("Luna service response success",);
+        }
+    };
     
-//     const payload = {
-//         method: "createUser", // 사용할 메소드 이름
-//         parameters: JSON.stringify(plantInfo), // 전송할 데이터
-//         subscribe: false // 구독 필요 여부
-//     };
+    const payload = {
+      "plantId": selectedPlantId,
+      "plantName": plantName,
+      "plantBirthDate": plantBirthdate,
+      "scientificName": plantList[selectedPlantId].scientificName,
+      "shortDescription": plantList[selectedPlantId].shortDescription,
+      "maxLevel": plantList[selectedPlantId].maxLevel,
+      "imageUrls": {
+        "normal": plantList[selectedPlantId].imageUrls.normal,
+        "happy": plantList[selectedPlantId].imageUrls.happy,
+        "sad": plantList[selectedPlantId].imageUrls.sad,
+        "angry": plantList[selectedPlantId].imageUrls.angry,
+        "underWater": plantList[selectedPlantId].imageUrls.underWater,
+        "overWater": plantList[selectedPlantId].imageUrls.overWater,
+        "underLight": plantList[selectedPlantId].imageUrls.underLight,
+        "overLight": plantList[selectedPlantId].imageUrls.overLight,
+        "underTemperature": plantList[selectedPlantId].imageUrls.underTemperature,
+        "overTemperature": plantList[selectedPlantId].imageUrls.overTemperature,
+        "underHumidity": plantList[selectedPlantId].imageUrls.underHumidity,
+        "overHumidity": plantList[selectedPlantId].imageUrls.overHumidity,
+      },
+      "properEnvironemnts": {
+        "waterValue": plantList[selectedPlantId].properEnvironemnts.waterValue,
+        "waterRange": plantList[selectedPlantId].properEnvironemnts.waterRange,
+        "lightValue": plantList[selectedPlantId].properEnvironemnts.lightValue,
+        "lightRange": plantList[selectedPlantId].properEnvironemnts.lightRange,
+        "temperatureValue": plantList[selectedPlantId].properEnvironemnts.temperatureValue,
+        "temperatureRange": plantList[selectedPlantId].properEnvironemnts.temperatureRange,
+        "humidityValue": plantList[selectedPlantId].properEnvironemnts.humidityValue,
+        "humidityRange": plantList[selectedPlantId].properEnvironemnts.humidityRange,
+      }
+    };
     
-//     bridge.call(serviceURL, JSON.stringify(payload));
-// }
+    bridge.call(serviceURL, JSON.stringify(payload));
+}
 
   const goBack = () => {
     navigate('/user/login');
@@ -125,7 +150,6 @@ function UserPlantRegister() {
   const BIRTHDAY_YEAR_LIST = Array.from({ length: 30 }, (_, i) => `${2024 - i}년`);
   const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
   const BIRTHDAY_DAY_LIST = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
-  const PLANT_SPECIES_LIST = ['선인장', '해바라기', '튤립'];
 
   return (
     <div style = {{padding: '140px'}}>
@@ -168,7 +192,7 @@ function UserPlantRegister() {
               type="year"
               value={year}
               onChange={(e) => {
-                  setYear(e.target.value);
+                setYear(e.target.value.replace('년', ''));
               }}
               required
             >
@@ -182,7 +206,7 @@ function UserPlantRegister() {
               type="month"
               value={month}
               onChange={(e) => {
-                  setMonth(e.target.value);
+                setMonth(e.target.value.replace('월', ''));
               }}
               required
             >
@@ -196,7 +220,7 @@ function UserPlantRegister() {
               type="day"
               value={day}
               onChange={(e) => {
-                  setDay(e.target.value);
+                setDay(e.target.value.replace('일', ''));
               }}
               required
             >

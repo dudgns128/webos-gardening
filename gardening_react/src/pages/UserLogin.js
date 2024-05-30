@@ -1,67 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { display } from '../constants';
 import UserLoginModal from '../components/UserLoginModal';
 
 const UserLogin = () => {
     const navigate = useNavigate();
     const [email,setEmail] = useState('');
     const [pwd,setPwd] = useState('');
-    const [ws, setWs] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
-
-    useEffect(() => {
-        // 웹소켓 연결 생성
-        const websocket = new WebSocket('ws://localhost:3000');
-        websocket.onopen = () => {
-            console.log('웹소켓 연결 성공');
-        };
-
-        websocket.onerror = (error) => {
-            console.error('웹소켓 오류', error);
-        };
-        setWs(websocket);     
-
-        // if (!window.websocket || window.websocket.readyState === WebSocket.CLOSED) {
-        //     // 웹소켓 인스턴스가 없거나 연결이 종료된 경우, 새로운 연결을 생성합니다.
-        //     window.websocket = new WebSocket('ws://localhost:3000');
-            
-        //     // 연결이 성공적으로 열린 경우의 이벤트 핸들러
-        //     window.websocket.onopen = () => {
-        //         console.log('웹소켓 연결 성공');
-        //     };
-    
-        //     // 에러 핸들링
-        //     window.websocket.onerror = (error) => {
-        //         console.error('웹소켓 연결 에러:', error);
-        //     };
-    
-        //     // 연결이 닫힌 경우의 이벤트 핸들러
-        //     window.websocket.onclose = () => {
-        //         console.log('웹소켓 연결 종료');
-        //     };
-        // } 
-        // else {
-        //     console.log('웹소켓이 이미 연결되어 있습니다.');
-        // }
-
-        websocket.onmessage = (event) => {
-            // 서버로부터 메시지 수신
-            const data = JSON.parse(event.data);
-            if (data.status === 'success') {
-                navigate('/user/initial');
-            } else {
-                setModalMessage("비밀번호가 틀렸습니다. 다시 시도해주세요.");
-                setShowModal(true);
-            }
-        };
-
-        // 컴포넌트 언마운트 시 웹소켓 연결 종료
-        return () => {
-            websocket.close();
-        };
-    }, [navigate]);
 
     const onSubmit = () => {
         const data = {
