@@ -1,4 +1,4 @@
-import './PlantCondition.css';
+import '../components/PlantCondition.css';
 
 const bridge = new WebOSServiceBridge();
 

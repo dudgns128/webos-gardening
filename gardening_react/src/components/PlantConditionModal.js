@@ -6,18 +6,18 @@ const bridge = new WebOSServiceBridge();
 
 const PlantConditionModal = ({ isOpen, onClose }) => {
 
-    const [water, setWater] = useState(0);
-    const [light, setLight] = useState(0);
-    const [temperature, setTemperature] = useState(0);
-    const [humidity, setHumidity] = useState(0);
-
+  const [water, setWater] = useState(0);
+  const [light, setLight] = useState(0);
+  const [temperature, setTemperature] = useState(0);
+  const [humidity, setHumidity] = useState(0);
+    
   useEffect(() => {
     if (!isOpen) {
-        return;
-      }
-      
-    const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
+      return;
+    }
     
+    const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
+  
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
       if (response.success) {
@@ -31,10 +31,11 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
     const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [isOpen]);
+
 
   if (!isOpen) {
-    return;
+    return null;
   }
 
   return (

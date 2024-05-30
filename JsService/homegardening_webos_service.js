@@ -17,20 +17,21 @@ service.register('getPlantInfos', async function (message) {
     const level = await plantCurrentInfo.getLevel();
     message.respond({
       success: true,
-      normalImageUrl,
+      imageUrl: normalImageUrl,
       name: plantName,
       satisfaction: satisfaction,
       level: level,
     });
   } catch (e) {
     message.respond({
+      customErrorMessage: e,
       success: false,
     });
   }
 });
 
 // 초기 데이터 등록 및 백그라운드 작업 시작
-service.register('start', function (message) {
+service.register('start', async function (message) {
   // 모든 DB kind 생성 및 권한 할당
   plantInfo.putKind();
   plantCurrentInfo.putKind();
@@ -49,7 +50,7 @@ service.register('start', function (message) {
 
   // 식물 기본 데이터 등록
   try {
-    plantInfo.replaceData({
+    await plantInfo.replaceData({
       plantId: message.payload.plantId,
       plantName: message.payload.plantName,
       plantBirthDate: message.payload.plantBirthDate,
@@ -57,33 +58,35 @@ service.register('start', function (message) {
       shortDescription: message.payload.shortDescription,
       maxLevel: message.payload.maxLevel,
     });
-    imageUrl.replaceData({
-      normalImageUrl: message.payload.imageUrls.normal,
-      happyImageUrl: message.payload.imageUrls.happy,
-      sadImageUrl: message.payload.imageUrls.sad,
-      angryImageUrl: message.payload.imageUrls.angry,
-      underWaterImageUrl: message.payload.imageUrls.underWater,
-      overWaterImageUrl: message.payload.imageUrls.overWater,
-      underLightImageUrl: message.payload.imageUrls.underLight,
-      overLightImageUrl: message.payload.imageUrls.overLight,
-      underTemperatureImageUrl: message.payload.imageUrls.underTemperature,
-      overTemperatureImageUrl: message.payload.imageUrls.overTemperature,
-      underHumidityImageUrl: message.payload.imageUrls.underHumidity,
-      overHumidityImageUrl: message.payload.imageUrls.overHumidity,
+    await imageUrl.replaceData({
+      normal: message.payload.imageUrls.normal,
+      happy: message.payload.imageUrls.happy,
+      sad: message.payload.imageUrls.sad,
+      angry: message.payload.imageUrls.angry,
+      underWater: message.payload.imageUrls.underWater,
+      overWater: message.payload.imageUrls.overWater,
+      underLight: message.payload.imageUrls.underLight,
+      overLight: message.payload.imageUrls.overLight,
+      underTemperature: message.payload.imageUrls.underTemperature,
+      overTemperature: message.payload.imageUrls.overTemperature,
+      underHumidity: message.payload.imageUrls.underHumidity,
+      overHumidity: message.payload.imageUrls.overHumidity,
     });
-    plantEnvInfo.replaceData({
-      waterValue: message.payload.waterValue,
-      waterRange: message.payload.waterRange,
-      lightValue: message.payload.lightValue,
-      lightRange: message.payload.lightRange,
-      temperatureValue: message.payload.temperatureValue,
-      temperatureRange: message.payload.temperatureRange,
-      humidityValue: message.payload.humidityValue,
-      humidityRange: message.payload.humidityRange,
+    await plantEnvInfo.replaceData({
+      waterValue: message.payload.properEnvironments.waterValue,
+      waterRange: message.payload.properEnvironments.waterRange,
+      lightValue: message.payload.properEnvironments.lightValue,
+      lightRange: message.payload.properEnvironments.lightRange,
+      temperatureValue: message.payload.properEnvironments.temperatureValue,
+      temperatureRange: message.payload.properEnvironments.temperatureRange,
+      humidityValue: message.payload.properEnvironments.humidityValue,
+      humidityRange: message.payload.properEnvironments.humidityRange,
     });
   } catch (e) {
     message.respond({
+      customErrorMessage: e,
       success: false,
+      message: "start failed"
     });
     return;
   }
@@ -128,39 +131,48 @@ service.register('start', function (message) {
   // 1. envSensingData 에 저장
   // 2. 분석해 만족도 결정(-> 자동제어 여부에 따라 제어는 이때 같이!), 만족도 평균값 갱신
   // 3. 이 최신 센싱 결과 및 만족도는 plantCurrentInfo 에도 따로 저장
-  const intervalId2 = setInterval(function () {
-    const data = getSensingDataJSON();
-    const satisfaction = calcSatisfaction(data);
-    envSensingData.putData({
-      time: 1,
-      water: data.water,
-      light: data.light,
-      humidity: data.humidity,
-      temperature: data.temperature,
-      satisfaction,
-    });
-    const now = new Date();
-    const yearNow = now.getFullYear();
-    const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
-    const dayNow = now.getDate();
-    if (avgSatisfactionRecord.isDataExist(yearNow, monthNow, dayNow))
-      avgSatisfactionRecord.updateAvgSatisfaction(
+  let satisfaction;
+  const intervalId2 = setInterval(async function () {
+    try {
+      const data = getSensingDataJSON();
+      satisfaction = await calcSatisfaction(data);
+      await envSensingData.putData({
+        time: 1,
+        water: data.water,
+        light: data.light,
+        humidity: data.humidity,
+        temperature: data.temperature,
+        satisfaction,
+      });
+      const now = new Date();
+      const yearNow = now.getFullYear();
+      const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
+      const dayNow = now.getDate();
+      if (await avgSatisfactionRecord.isDataExist(yearNow, monthNow, dayNow) != true)
+        await avgSatisfactionRecord.putData({
+          year: yearNow,
+          month: monthNow,
+          day: dayNow,
+          avgSatisfaction: satisfaction,
+          count: 1,
+        });
+      await avgSatisfactionRecord.updateAvgSatisfaction(
         yearNow,
         monthNow,
         dayNow,
         satisfaction
       );
-    else
-      avgSatisfactionRecord.putData({
-        year: yearNow,
-        month: monthNow,
-        day: dayNow,
-        avgSatisfaction: satisfaction,
-        count: 1,
+        
+      if (await plantCurrentInfo.isDataExist() != true)
+        await plantCurrentInfo.putData({isAutoControl:true, level:1, satisfaction:0, sensingData:null});
+      await plantCurrentInfo.updateSensingData(data);
+      await plantCurrentInfo.updateSatisfaction(satisfaction);
+    } catch(e) {
+      message.respond({
+        e
       });
-    plantCurrentInfo.updateSensingData(data);
-    plantCurrentInfo.updateSatisfaction(satisfaction);
-  }, 5000);
+    }
+  }, 3000);
 
   message.respond({
     success: true,
@@ -171,8 +183,19 @@ service.register('start', function (message) {
 service.register('getSensingData', async function (message) {
   try {
     const sensingData = await plantCurrentInfo.getSensingData();
-    message.respond(sensingData);
-  } catch (e) {}
+    message.respond({
+      success: true,
+      water: sensingData.water,
+      light: sensingData.light,
+      temperature: sensingData.temperature,
+      humidity: sensingData.humidity
+    });
+  } catch (e) {
+    message.respond({
+      success:false,
+      customErrorMessage: e
+    })
+  }
 });
 
 // (현재 사용 X) 식물 기본 정보 조회(캐릭터 이미지 url, 이름)
@@ -221,11 +244,11 @@ service.register('controlWater', async function (message) {
 });
 
 // 캘린더 데이터 조회
-service.register('calendar', function (message) {
+service.register('calendar', async function (message) {
   const year = message.payload.year;
   const month = message.payload.month;
-  const waterData = wateringRecord.getMonthData(year, month);
-  const satisfactionData = avgSatisfactionRecord.getMonthData(year, month);
+  const waterData = await wateringRecord.getMonthData(year, month);
+  const satisfactionData = await avgSatisfactionRecord.getMonthData(year, month);
 
   let result = { success: true, isWater: {}, satisfaction: {} };
   // 초기화
@@ -287,8 +310,14 @@ function getSensingDataJSON() {
 // 일단 단순하게 이상적인 범위 벗어나면 10점씩 깎음.
 async function calcSatisfaction(data) {
   let satisfaction = 100;
-  const waterValue = plantEnvInfo.getWaterValue();
-  const waterRange = plantEnvInfo.getWaterRange();
+  const waterValue = await plantEnvInfo.getWaterValue();
+  const waterRange = await plantEnvInfo.getWaterRange();
+  const lightValue = await plantEnvInfo.getLightValue();
+  const lightRange = await plantEnvInfo.getLightRange();
+  const temperatureValue = await plantEnvInfo.getTemperatureValue();
+  const temperatureRange = await plantEnvInfo.getTemperatureRange();
+  const humidityValue = await plantEnvInfo.getHumidityValue();
+  const humidityRange = await plantEnvInfo.getHumidityRange();
   if (data.water < waterValue - waterRange) {
     satisfaction -= 10;
     await controlWater();
@@ -308,8 +337,8 @@ async function calcSatisfaction(data) {
   )
     satisfaction -= 10;
   if (
-    data.humidity < humidityValue - humidityRange ||
-    humidityValue + humidityRange < data.humidity
+    data.temperature < temperatureValue - temperatureRange ||
+    temperatureValue + temperatureRange < data.temperature
   )
     satisfaction -= 10;
   return satisfaction;
@@ -326,9 +355,9 @@ async function controlWater() {
   const yearNow = now.getFullYear();
   const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
   const dayNow = now.getDate();
-  if (wateringRecord.isDataExist(yearNow, monthNow, dayNow))
-    wateringRecord.updateCount(yearNow, monthNow, dayNow);
-  else wateringRecord.putData({ yearNow, monthNow, dayNow, count: 0 });
+  if (await wateringRecord.isDataExist(yearNow, monthNow, dayNow))
+    await wateringRecord.updateCount(yearNow, monthNow, dayNow);
+  else await wateringRecord.putData({ yearNow, monthNow, dayNow, count: 0 });
   // [todo] water 제어 api 사용하기
   // [todo] 레벨업 로직 수정 : 지금은 일단 물 한번 주면 1 레벨업됨
   await plantCurrentInfo.updateLevel();
@@ -417,7 +446,7 @@ const plantInfo = {
           },
           object: kindID_plantInfo,
           type: 'db.kind',
-          caller: busID,
+          caller: '*',  // 원래는 busID 를 넣어야 함!
         },
       ],
     };
@@ -425,9 +454,9 @@ const plantInfo = {
   },
   replaceData: async function (newData) {
     try {
-      await emptyDB();
+      await plantInfo.emptyDB();
     } catch (e) {
-      return Promise.reject();
+      return Promise.reject("emptyDB failed");
     }
     const url = 'luna://com.webos.service.db/put';
     const params = {
@@ -446,7 +475,7 @@ const plantInfo = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
-        else reject();
+        else reject("put failed");
       });
     });
   },
@@ -459,10 +488,10 @@ const plantInfo = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject();
+        if (res.payload.returnValue != true) reject("getPlantName failed");
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].plantName);
-        else reject();
+        else reject("getPlantName failed");
       });
     });
   },
@@ -483,7 +512,7 @@ const plantInfo = {
 };
 
 ///////////////////////// DB: plantCurrentInfo
-const kindID_plantCurrentInfo = 'com.team11.homegardening.plantCurrentInfo:1';
+const kindID_plantCurrentInfo = 'com.team17.homegardening.plantCurrentInfo:1';
 const plantCurrentInfo = {
   putKind: function () {
     const url = 'luna://com.webos.service.db/putKind';
@@ -506,11 +535,31 @@ const plantCurrentInfo = {
           },
           object: kindID_plantCurrentInfo,
           type: 'db.kind',
-          caller: busID,
+          caller: '*',
         },
       ],
     };
     service.call(url, params, (res) => {});
+  },
+  putData: function (data) {
+    const url = 'luna://com.webos.service.db/put';
+    const params = {
+      objects: [
+        {
+          _kind: kindID_plantCurrentInfo,
+          level:data.level,
+          isAutoControl:data.isAutoControl,
+          satisfaction: data.satisfaction,
+          sensingData:data.sensingData
+        },
+      ],
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.returnValue == true) resolve();
+        else reject("plantCurrentInfo.putData failed");
+      });
+    });
   },
   updateLevel: function (level) {
     const url = 'luna://com.webos.service.db/merge';
@@ -559,7 +608,7 @@ const plantCurrentInfo = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
-        else reject();
+        else reject("plantCurrentInfo.updateSatisfaction failed");
       });
     });
   },
@@ -576,13 +625,13 @@ const plantCurrentInfo = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
-        else reject();
+        else reject("plantCurrentInfo.updateSensingData failed");
       });
     });
   },
   replaceData: async function (newData) {
     try {
-      await emptyDB();
+      await plantCurrentInfo.emptyDB();
     } catch (e) {
       return Promise.reject();
     }
@@ -614,10 +663,10 @@ const plantCurrentInfo = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject();
+        if (res.payload.returnValue != true) reject("getLevel failed");
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].level);
-        else reject();
+        else reject("getLevel failed");
       });
     });
   },
@@ -646,10 +695,10 @@ const plantCurrentInfo = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject();
+        if (res.payload.returnValue != true) reject("getSatisfaction failed");
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].satisfaction);
-        else reject();
+        else reject("getSatisfaction failed");
       });
     });
   },
@@ -666,6 +715,21 @@ const plantCurrentInfo = {
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].sensingData);
         else reject();
+      });
+    });
+  },
+  isDataExist: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantCurrentInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.returnValue != true) reject();
+        if (res.payload.results.length != 0) resolve(true);
+        else resolve(false);
       });
     });
   },
@@ -686,7 +750,7 @@ const plantCurrentInfo = {
 };
 
 ///////////////////////// DB: imageUrl
-const kindID_imageUrl = 'com.team11.homegardening.imageUrl:1';
+const kindID_imageUrl = 'com.team17.homegardening.imageUrl:1';
 const imageUrl = {
   putKind: function () {
     const url = 'luna://com.webos.service.db/putKind';
@@ -709,7 +773,7 @@ const imageUrl = {
           },
           object: kindID_imageUrl,
           type: 'db.kind',
-          caller: busID,
+          caller: '*',
         },
       ],
     };
@@ -717,9 +781,9 @@ const imageUrl = {
   },
   replaceData: async function (newData) {
     try {
-      await emptyDB();
+      await imageUrl.emptyDB();
     } catch (e) {
-      return Promise.reject();
+      return Promise.reject("emptyDB failed");
     }
     const url = 'luna://com.webos.service.db/put';
     const params = {
@@ -744,7 +808,7 @@ const imageUrl = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
-        else reject();
+        else reject("put failed");
       });
     });
   },
@@ -757,10 +821,10 @@ const imageUrl = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject();
+        if (res.payload.returnValue != true) reject("getNormalImageUrl failed");
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].normalImageUrl);
-        else reject();
+        else reject("getNormalImageUrl failed");
       });
     });
   },
@@ -781,7 +845,7 @@ const imageUrl = {
 };
 
 ///////////////////////// DB: plantEnvInfo
-const kindID_plantEnvInfo = 'com.team11.homegardening.plantEnvInfo:1';
+const kindID_plantEnvInfo = 'com.team17.homegardening.plantEnvInfo:1';
 const plantEnvInfo = {
   putKind: function () {
     const url = 'luna://com.webos.service.db/putKind';
@@ -804,7 +868,7 @@ const plantEnvInfo = {
           },
           object: kindID_plantEnvInfo,
           type: 'db.kind',
-          caller: busID,
+          caller: '*',
         },
       ],
     };
@@ -812,7 +876,7 @@ const plantEnvInfo = {
   },
   replaceData: async function (newData) {
     try {
-      await emptyDB();
+      await plantEnvInfo.emptyDB();
     } catch (e) {
       return Promise.reject();
     }
@@ -848,10 +912,10 @@ const plantEnvInfo = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject();
+        if (res.payload.returnValue != true) reject("getWaterValue failed");
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].waterValue);
-        else reject();
+        else reject("getWaterValue failed");
       });
     });
   },
@@ -864,10 +928,10 @@ const plantEnvInfo = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject();
+        if (res.payload.returnValue != true) reject("getWaterRange failed");
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].waterRange);
-        else reject();
+        else reject("getWaterRange failed");
       });
     });
   },
@@ -984,7 +1048,7 @@ const plantEnvInfo = {
 };
 
 ///////////////////////// DB: envSensingData
-const kindID_envSensingData = 'com.team11.homegardening.envSensingData:1';
+const kindID_envSensingData = 'com.team17.homegardening.envSensingData:1';
 const envSensingData = {
   putKind: function () {
     const url = 'luna://com.webos.service.db/putKind';
@@ -1013,7 +1077,7 @@ const envSensingData = {
           },
           object: kindID_envSensingData,
           type: 'db.kind',
-          caller: busID,
+          caller: '*',
         },
       ],
     };
@@ -1037,20 +1101,42 @@ const envSensingData = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
-        else reject();
+        else reject("envSensingData.putData failed");
       });
     });
   },
 };
 
 ///////////////////////// DB: (캘린더용) wateringRecord
-const kindID_wateringRecord = 'com.team11.homegardening.wateringRecord:1';
+const kindID_wateringRecord = 'com.team17.homegardening.wateringRecord:1';
 const wateringRecord = {
   putKind: function () {
     const url = 'luna://com.webos.service.db/putKind';
     const params = {
       id: kindID_wateringRecord,
       owner: busID,
+      indexes: [
+        {
+          name: 'index0',
+          props: [{ name: 'year' }],
+        },
+        {
+          name: 'index1',
+          props: [{ name: 'month' }],
+        },
+        {
+          name: 'index2',
+          props: [{ name: 'day' }],
+        },
+        {
+          name: 'index3',
+          props: [{ name: 'year' }, { name: 'month' }],
+        },
+        {
+          name: 'index4',
+          props: [{ name: 'year' }, { name: 'month' }, { name: 'day' }],
+        },
+      ],
     };
     service.call(url, params, (res) => {});
   },
@@ -1067,7 +1153,7 @@ const wateringRecord = {
           },
           object: kindID_wateringRecord,
           type: 'db.kind',
-          caller: busID,
+          caller: '*',
         },
       ],
     };
@@ -1129,8 +1215,7 @@ const wateringRecord = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue != true) reject();
-        if (res.payload.results.length != 0) resolve(res.payload.results);
-        else reject();
+        resolve(res.payload.results);
       });
     });
   },
@@ -1158,13 +1243,35 @@ const wateringRecord = {
 
 ///////////////////////// DB: (캘린더용) avgSatisfactionRecord
 const kindID_avgSatisfactionRecord =
-  'com.team11.homegardening.avgSatisfactionRecord:1';
+  'com.team17.homegardening.avgSatisfactionRecord:1';
 const avgSatisfactionRecord = {
   putKind: function () {
     const url = 'luna://com.webos.service.db/putKind';
     const params = {
       id: kindID_avgSatisfactionRecord,
       owner: busID,
+      indexes: [
+        {
+          name: 'index0',
+          props: [{ name: 'year' }],
+        },
+        {
+          name: 'index1',
+          props: [{ name: 'month' }],
+        },
+        {
+          name: 'index2',
+          props: [{ name: 'day' }],
+        },
+        {
+          name: 'index3',
+          props: [{ name: 'year' }, { name: 'month' }],
+        },
+        {
+          name: 'index4',
+          props: [{ name: 'year' }, { name: 'month' }, { name: 'day' }],
+        },
+      ],
     };
     service.call(url, params, (res) => {});
   },
@@ -1181,7 +1288,7 @@ const avgSatisfactionRecord = {
           },
           object: kindID_avgSatisfactionRecord,
           type: 'db.kind',
-          caller: busID,
+          caller: '*',
         },
       ],
     };
@@ -1204,7 +1311,7 @@ const avgSatisfactionRecord = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
-        else reject();
+        else reject("avgSatisfactionRecord.putData failed");
       });
     });
   },
@@ -1213,7 +1320,7 @@ const avgSatisfactionRecord = {
     try {
       curData = await avgSatisfactionRecord.getDayData(year, month, day);
     } catch (e) {
-      return Promise.reject();
+      return Promise.reject("avgSatisfactionRecord.getDayData failed");
     }
     const url = 'luna://com.webos.service.db/merge';
     const params = {
@@ -1227,14 +1334,14 @@ const avgSatisfactionRecord = {
       },
       props: {
         avgSatisfaction:
-          (curData.satisfaction + satisfactionNow) / (curData.count + 1),
-        count: count + 1,
+          (curData.avgSatisfaction + (satisfactionNow * curData.count)) / (curData.count + 1),
+        count: curData.count + 1,
       },
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
-        else reject();
+        else reject("avgSatisfactionRecord.updateAvgSatisfaction failed");
       });
     });
   },
@@ -1252,8 +1359,7 @@ const avgSatisfactionRecord = {
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
         if (res.payload.returnValue != true) reject();
-        if (res.payload.results.length != 0) resolve(res.payload.results);
-        else reject();
+        resolve(res.payload.results);
       });
     });
   },
@@ -1291,7 +1397,7 @@ const avgSatisfactionRecord = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject();
+        if (res.payload.returnValue != true) reject("avgSatisfactionRecord.isDataExist failed");
         if (res.payload.results.length != 0) resolve(true);
         else resolve(false);
       });
