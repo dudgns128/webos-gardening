@@ -15,6 +15,7 @@ function UserPlantRegister() {
   const navigate = useNavigate();
   const [plantSpecies, setPlantSpecies] = useState('');
   const [plantName, setPlantName] = useState('');
+  const [plantBirthdate, setPlantBirthdate] = useState('');
   const [year, setYear] = useState(currentYear);
   const [month, setMonth] = useState(currentMonth);
   const [day, setDay] = useState(currentDay);
@@ -37,9 +38,9 @@ function UserPlantRegister() {
   // plantList 상태가 변경될 때마다 실행되는 useEffect
   useEffect(() => {
     // 선택된 식물 종에 상응하는 id를 plantInfoId에 저장
-    const selectedPlant = plantList.find(plant => plant.name === plantSpecies);
+    const selectedPlant = plantList.find(plant => plant.scientificName === plantSpecies);
     if (selectedPlant) {
-      setPlantInfoId(selectedPlant.id);
+      setSelectedPlantId(selectedPlant.id);
     }
   }, [plantSpecies, plantList]);
 
@@ -57,14 +58,15 @@ function UserPlantRegister() {
     const formatMonth = month.replace('월', '').padStart(2, '0');
     const formatDay = day.replace('일', '').padStart(2, '0');
     
-    const plantBirthdate = `${formatYear}-${formatMonth}-${formatDay}`;
+    const birthdate = `${formatYear}-${formatMonth}-${formatDay}`;
+    setPlantBirthdate(birthdate)
 
     const plantData = {
       email: email,
       password: password,
       plantInfoId: selectedPlantId,
       name: plantName,
-      birthdate: plantBirthdate,
+      birthdate: birthdate,
       isAutoControl: isAutoControl,
       level: level
     };
@@ -88,7 +90,7 @@ function UserPlantRegister() {
   };    
 
   function sendToLunaService() {
-    const serviceURL = "luna://com.your.service/register";
+    const serviceURL = "luna://com.your.service/start";
     
     bridge.onservicecallback = function (msg) {
         const response = JSON.parse(msg);
@@ -98,7 +100,36 @@ function UserPlantRegister() {
     };
     
     const payload = {
-      
+      "plantId": selectedPlantId,
+      "plantName": plantName,
+      "plantBirthDate": plantBirthdate,
+      "scientificName": plantList[selectedPlantId].scientificName,
+      "shortDescription": plantList[selectedPlantId].shortDescription,
+      "maxLevel": plantList[selectedPlantId].maxLevel,
+      "imageUrls": {
+        "normal": plantList[selectedPlantId].imageUrls.normal,
+        "happy": plantList[selectedPlantId].imageUrls.happy,
+        "sad": plantList[selectedPlantId].imageUrls.sad,
+        "angry": plantList[selectedPlantId].imageUrls.angry,
+        "underWater": plantList[selectedPlantId].imageUrls.underWater,
+        "overWater": plantList[selectedPlantId].imageUrls.overWater,
+        "underLight": plantList[selectedPlantId].imageUrls.underLight,
+        "overLight": plantList[selectedPlantId].imageUrls.overLight,
+        "underTemperature": plantList[selectedPlantId].imageUrls.underTemperature,
+        "overTemperature": plantList[selectedPlantId].imageUrls.overTemperature,
+        "underHumidity": plantList[selectedPlantId].imageUrls.underHumidity,
+        "overHumidity": plantList[selectedPlantId].imageUrls.overHumidity,
+      },
+      "properEnvironemnts": {
+        "waterValue": plantList[selectedPlantId].properEnvironemnts.waterValue,
+        "waterRange": plantList[selectedPlantId].properEnvironemnts.waterRange,
+        "lightValue": plantList[selectedPlantId].properEnvironemnts.lightValue,
+        "lightRange": plantList[selectedPlantId].properEnvironemnts.lightRange,
+        "temperatureValue": plantList[selectedPlantId].properEnvironemnts.temperatureValue,
+        "temperatureRange": plantList[selectedPlantId].properEnvironemnts.temperatureRange,
+        "humidityValue": plantList[selectedPlantId].properEnvironemnts.humidityValue,
+        "humidityRange": plantList[selectedPlantId].properEnvironemnts.humidityRange,
+      }
     };
     
     bridge.call(serviceURL, JSON.stringify(payload));

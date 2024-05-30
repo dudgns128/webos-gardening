@@ -9,30 +9,6 @@ const UserLogin = () => {
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState("");
 
-    // useEffect(() => {
-    //     // 웹소켓 연결 생성
-    //     const websocket = new WebSocket('ws://localhost:3000');
-    //     websocket.onopen = () => {
-    //         console.log('웹소켓 연결 성공');
-    //     };
-
-    //     websocket.onerror = (error) => {
-    //         console.error('웹소켓 오류', error);
-    //     };
-    //     setWs(websocket);     
-
-    //     websocket.onmessage = (event) => {
-    //         // 서버로부터 메시지 수신
-    //         const data = JSON.parse(event.data);
-    //         if (data.status === 'success') {
-    //             navigate('/user/plant');
-    //         } else {
-    //             setModalMessage("비밀번호가 틀렸습니다. 다시 시도해주세요.");
-    //             setShowModal(true);
-    //         }
-    //     };
-    // }, [navigate]);
-
     const onSubmit = () => {
         const data = {
             email: email,

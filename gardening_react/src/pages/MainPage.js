@@ -31,13 +31,16 @@ const MainPage = () => {
 
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
-      setSensorValue(response.satisfaction);
-      setPlantImageUrl(response.normalImageUrl);
-      setPlantName(response.name);
-      setPlantLevel(response.level);
+      if (response.success) {
+        setSensorValue(response.satisfaction);
+        setPlantImageUrl(response.imageUrl);
+        setPlantName(response.name);
+        setPlantLevel(response.level);
+      }
+
     };
 
-    // 5초마다 센서 값을 가져오는 인터벌 설정
+    // 3초마다 센서 값을 가져오는 인터벌 설정
     const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
     // 컴포넌트가 언마운트될 때 인터벌 정리
