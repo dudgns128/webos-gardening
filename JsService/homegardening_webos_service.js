@@ -324,6 +324,7 @@ function getSensingDataJSON() {
 // 일단 단순하게 이상적인 범위 벗어나면 10점씩 깎음.
 async function calcSatisfaction(data) {
   let satisfaction = 100;
+  const isAutoControl = await plantCurrentInfo.getIsAutoControl();
   const waterValue = await plantEnvInfo.getWaterValue();
   const waterRange = await plantEnvInfo.getWaterRange();
   const lightValue = await plantEnvInfo.getLightValue();
@@ -334,16 +335,18 @@ async function calcSatisfaction(data) {
   const humidityRange = await plantEnvInfo.getHumidityRange();
   if (data.water < waterValue - waterRange) {
     satisfaction -= 10;
-    await controlWater();
+    if (isAutoControl) await controlWater();
   }
   if (waterValue + waterRange < data.water) satisfaction -= 10;
   if (data.light < lightValue - lightRange) {
     satisfaction -= 10;
     // [todo] 빛 세기 조절 api 사용
+    if (isAutoControl) pass;
   }
   if (lightValue + lightRange < data.light) {
     satisfaction -= 10;
     // [todo] 빛 세기 조절 api 사용
+    if (isAutoControl) pass;
   }
   if (
     data.humidity < humidityValue - humidityRange ||
