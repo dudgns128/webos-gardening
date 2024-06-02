@@ -4,6 +4,10 @@ import PlantConditionModal from '../components/PlantConditionModal';
 import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 const MainPage = () => {
   const navigate = useNavigate();
 
@@ -15,6 +19,9 @@ const MainPage = () => {
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
   const [isToggleModalOpen, toggleModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
+
+  const query = useQuery();
+  const plantId = query.get('plantId'); // 이전 페이지에서 선택한 plantId 로 웹소켓 연결 설정하면 됨.
 
   const satisfactionColors = {
     '매우 좋음': '#00A35E',

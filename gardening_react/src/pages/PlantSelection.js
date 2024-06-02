@@ -6,6 +6,7 @@ function PlantSelection() {
   const history = useHistory();
 
   useEffect(() => {
+    // 식물 선택 페이지에 필요한 정보 받아올 API 요청 (양식 수정 필요)
     fetch('https://example.com/api/plants')
       .then((response) => response.json())
       .then((data) => setPlants(data))
