@@ -1,0 +1,7 @@
+https://bongpjh.tistory.com/entry/5V%EB%A1%9C-12V-FAN-%EC%A0%9C%EC%96%B4%ED%95%98%EA%B8%B0
+https://stackoverflow.com/questions/9643311/pass-a-string-parameter-in-an-onclick-function
+https://blog.naver.com/roboholic84/220554481820
+https://arduinomaker.tistory.com/89
+https://m.blog.naver.com/ann_arbor/221359287956
+https://www.freecodecamp.org/korean/news/how-to-set-a-timer-in-javascript/
+https://developer.mozilla.org/en-US/docs/Web/API/setTimeout

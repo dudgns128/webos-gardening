@@ -86,7 +86,7 @@ SPDX-License-Identifier: Apache-2.0
             var resultElement = document.getElementById('control_neopixel_result');
             if (arg.returnValue) {
                 bridge.onservicecallback = writeI2CApi_callback2;
-                setTimeout(bridge.call(writeI2CApi, writeI2CParams2));
+                bridge.call(writeI2CApi, writeI2CParams2);
             } else {
                 resultElement.innerHTML = "Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
             }
@@ -103,7 +103,7 @@ SPDX-License-Identifier: Apache-2.0
         }
 
         bridge.onservicecallback = writeI2CApi_callback1;
-        setTimeout(bridge.call(writeI2CApi, writeI2CParams1));
+        bridge.call(writeI2CApi, writeI2CParams1);
     }
 
     function controlPump(on) {
@@ -116,7 +116,7 @@ SPDX-License-Identifier: Apache-2.0
             var resultElement = document.getElementById('control_pump_result');
             if (arg.returnValue) {
                 bridge.onservicecallback = writeI2CApi_callback2;
-                setTimeout(bridge.call(writeI2CApi, writeI2CParams2));
+                bridge.call(writeI2CApi, writeI2CParams2);
             } else {
                 resultElement.innerHTML = "Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
             }
@@ -126,14 +126,14 @@ SPDX-License-Identifier: Apache-2.0
             var arg = JSON.parse(msg);
             var resultElement = document.getElementById('control_pump_result');
             if (arg.returnValue) {
-                resultElement.innerHTML = "Pump Control Success, on: " + on;
+                resultElement.innerHTML = "Success, on: " + on;
             } else {
                 resultElement.innerHTML = "Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
             }
         }
 
         bridge.onservicecallback = writeI2CApi_callback1;
-        setTimeout(bridge.call(writeI2CApi, writeI2CParams1));
+        bridge.call(writeI2CApi, writeI2CParams1);
     }
 
     function readSensor() {
@@ -161,11 +161,11 @@ SPDX-License-Identifier: Apache-2.0
                 var soil_moisture = arg.data[8] * 256 + arg.data[9];
 
                 resultElement.innerHTML = 
-                "HMD: " + humid + "\n" +
-                "TMP: " + temp + "\n" +
-                "CDS: " + cds + "\n" +
-                "WL : " + water_level + "\n" +
-                "SM : " + soil_moisture;
+                "HMD: " + humid +
+                " TMP: " + temp +
+                " CDS: " + cds +
+                " WL : " + water_level +
+                " SM : " + soil_moisture;
             } else {
                 resultElement.innerHTML = "Read Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
             }
@@ -176,14 +176,16 @@ SPDX-License-Identifier: Apache-2.0
             var resultElement = document.getElementById('communicate_i2c_result');
             if (arg.returnValue) {
                 bridge.onservicecallback = readI2CApi_callback;
-                setTimeout(bridge.call(readI2CApi, readI2CParams), 24);
+                setTimeout(function() {
+                    bridge.call(readI2CApi, readI2CParams);
+                }, 23);
             } else {
                 resultElement.innerHTML = "Write Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
             }
         }
 
         bridge.onservicecallback = writeI2CApi_callback;
-        setTimeout(bridge.call(writeI2CApi, writeI2CParams));
+        bridge.call(writeI2CApi, writeI2CParams);
     }
 </script>
 </head>
