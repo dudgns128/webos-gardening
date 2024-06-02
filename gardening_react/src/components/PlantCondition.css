@@ -2,14 +2,15 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%; 
-    height: 100%; 
-    background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 반투명 검정 */
     display: flex;
-    justify-content: center; 
-    align-items: center; 
-    z-index: 1; 
-  }
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
 
 .plant-container {
     background: white;
@@ -17,7 +18,8 @@
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
-    z-index: 2; /* 백그라운드 위에 표시 */
+    z-index: 2;
+    /* 백그라운드 위에 표시 */
 }
 
 .PlantModal h1 {
@@ -66,7 +68,6 @@
     text-decoration: underline;
 }
 
-
 .control-light-container {
     text-align: center;
     font-family: Arial, sans-serif;
@@ -112,6 +113,18 @@
 
 h1 {
     color: #333;
+}
+
+.status-low {
+    color: red;
+}
+
+.status-high {
+    color: orange;
+}
+
+.status-normal {
+    color: green;
 }
 
 .water-button {

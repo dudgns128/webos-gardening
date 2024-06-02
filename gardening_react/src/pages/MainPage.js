@@ -3,8 +3,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import PlantConditionModal from '../components/PlantConditionModal';
 import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
+import backgroundImage from '../img/background1.png';
+import goalImage from '../img/present.png';
 import ControlLightModal from '../components/ControlLightModal';
 import ControlWaterModal from '../components/ControlWaterModal';
+
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -14,16 +17,18 @@ const MainPage = () => {
   const [plantImageUrl, setPlantImageUrl] = useState('');
   const [plantName, setPlantName] = useState('초기');
   const [plantLevel, setPlantLevel] = useState(0);
+  const [plantExp, setPlantExp] = useState(50);
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
-  const [isToggleModalOpen, toggleModalOpen] = useState(false);
+  const [isSelectModalOpen, selectModalOpen] = useState(false);
+  //const [isSelectModalOpen, selectModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
   const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
   const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
 
   const satisfactionColors = {
-    '매우 좋음': '#00A35E', 
-    '좋음': 'lightgreen', 
-    '보통': 'yellow', 
+    '매우 좋음': '#00A35E',
+    '좋음': 'lightgreen',
+    '보통': 'yellow',
     '나쁨': 'orange',
     '아주 나쁨': 'red'
   };
@@ -35,13 +40,14 @@ const MainPage = () => {
 
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
+
       if (response.success) {
         setSensorValue(response.satisfaction);
         setPlantImageUrl(response.imageUrl);
         setPlantName(response.name);
         setPlantLevel(response.level);
+         setPlantExp(response.exp);
       }
-
     };
 
     // 3초마다 센서 값을 가져오는 인터벌 설정
@@ -51,61 +57,9 @@ const MainPage = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  // useEffect(() => {
-  //   const bridge = new WebOSServiceBridge();
-  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantSatisfaction"; // 사용할 서비스의 URL
-
-  //   bridge.onservicecallback = function (msg) {
-  //     const response = JSON.parse(msg);
-  //     setSensorValue(response.satisfaction);
-  //   };
-
-  //   // 5초마다 센서 값을 가져오는 인터벌 설정
-  //   const intervalId = setInterval(bridge.call(serviceURL, '{}'), 5000);
-
-  //   // 컴포넌트가 언마운트될 때 인터벌 정리
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
-  // useEffect(() => {
-  //   const bridge2 = new WebOSServiceBridge();
-  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantInfo"; // 사용할 서비스의 URL
-
-
-  //   bridge2.onservicecallback = function (msg) {
-  //     const response = JSON.parse(msg);
-  //     setPlantImageUrl(response.normalImageUrl);
-  //     setPlantName(response.name);
-  //   };
-
-  //   bridge2.call(serviceURL, '{}');
-
-  //   const bridge3 = new WebOSServiceBridge();
-  //   const levelserviceURL = "luna://com.team11.homegardening.service/getPlantLevel"; // 사용할 서비스의 URL
-
-  //   bridge3.onservicecallback = function (msg) {
-  //     const response = JSON.parse(msg);
-  //     setPlantLevel(response.level);
-  //   };
-
-  //   bridge3.call(levelserviceURL, '{}');
-  //   // // localStorage에서 plantSpecies 이름을 가져옴
-  //   // const plantSpecies = localStorage.getItem('plantSpecies');
-  //   // // plantSpecies 이름을 기반으로 이미지 URL 키 생성
-  //   // const imageKey = `${plantSpecies}-image`;
-  //   // // 생성된 키로 localStorage에서 이미지 URL 가져오기
-  //   // const storedImageUrl = localStorage.getItem(imageKey);
-  
-  //   // if (storedImageUrl) {
-  //   //   setPlantImageUrl(storedImageUrl);
-  //   // }
-  // }, [])
-
-
-
   useEffect(() => {
     // 센서 값에 따른 식물 만족도 설정
-    if (80 < sensorValue && sensorValue <= 100 ) {
+    if (80 < sensorValue && sensorValue <= 100) {
       setPlantSatisfaction('매우 좋음');
     } else if (60 < sensorValue && sensorValue <= 80) {
       setPlantSatisfaction('좋음');
@@ -144,8 +98,44 @@ const MainPage = () => {
     return Math.round(window.innerHeight * ratio) || originalSize;
   };
 
+  const expBackgroundStyle = {
+    boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.75)',
+    height: '24px',
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // 반투명 백그라운드
+    borderRadius: '12px',
+    margin: '2px',
+    position: 'relative',
+  };
+  //골 이미지
+  const expGoalIconStyle = {
+    position: 'absolute', // 상대적인 위치 설정
+    right: '0px', // 오른쪽 끝에 위치
+    top: '50%', // 상단에서 50% 위치
+    transform: 'translateY(-50%)', // Y축 중앙 정렬
+    width: '20px', // 이미지 너비
+    height: '20px', // 이미지 높이
+    backgroundImage: `url(${goalImage})`, // 배경 이미지 설정
+    backgroundSize: 'cover' // 이미지 크기 자동 조절
+  };
+
+  // 실제 경험치 바 스타일 (동적 길이)
+  const expFillStyle = {
+    height: '24px',
+    width: `${plantExp}%`,
+    backgroundColor: 'red',
+    borderRadius: '12px',
+    transition: 'width 0.3s ease-in-out'
+  };
   return (
-    <div style = {{padding: '140px'}}>
+    <div style={{
+      padding: '140px',
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
+      backgroundPosition: 'center', // 이미지를 중앙에 배치
+      backgroundRepeat: 'no-repeat', // 이미지를 반복하지 않음
+      height: '100vh' // 배경이 전체 뷰포트를 덮도록 설정
+    }}>
       <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
         <div className="d-flex flex-column align-items-center">
         <PlantConditionModal
@@ -172,7 +162,7 @@ const MainPage = () => {
           <div>
             <div
               style={{
-                backgroundColor: satisfactionColors[plantSatisfaction] || 'grey' ,
+                backgroundColor: satisfactionColors[plantSatisfaction] || 'grey',
                 width: `${sensorValue}%`,
                 height: '40px',
                 borderRadius: '10px'
@@ -190,8 +180,19 @@ const MainPage = () => {
           </div> 
 
           {/* 식물 이름이 들어 갈 자리 */}
-          <div className="plant_info" style={{ marginTop: '40px'}}>
+          <div className="plant_info" style={{ marginTop: '40px' }}>
             <text style={boxStyle}>{plantName}{plantLevel}</text>
+          </div>
+
+          {/* 경험치 바와 레벨업 정보 */}
+          <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
+            <div style={expBackgroundStyle}>
+              <div style={expFillStyle}></div>
+              <div style={expGoalIconStyle}></div> {/* 목표 이미지 추가 */}
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p>레벨업까지 <span style={{ color: '#FF3333' }}>{100 - plantExp}%</span> 남음</p>
+            </div>
           </div>
 
           <div className="menu-bar">
