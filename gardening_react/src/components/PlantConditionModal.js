@@ -40,7 +40,7 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
 
   return (
     <div class="PlantModal">
-      <div className="modal-backdrop">
+      <div className="modal-backdrop" onClick={onClose}>
         <div className="plant-container">
           <h1>환경 상태</h1>
           <div className="plant-status">
@@ -60,9 +60,6 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
               <span>온도:</span>
               <span>{temperature}</span>
             </div>
-          </div>
-          <div>
-            <button onClick={onClose}>닫기</button>
           </div>
         </div>
       </div>

@@ -115,21 +115,23 @@ h1 {
 }
 
 .water-button {
-    background-color: #4caf50;
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 2px solid #4CAF50;
     border-radius: 8px;
-    transition: background-color 0.3s ease;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .water-button:hover {
-    background-color: #45a049;
+    background-color: #f1f1f1;
 }
 
+.water-button img.btn-image {
+    width: 80px;
+    height: 80px;
+}

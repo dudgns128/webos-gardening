@@ -6,34 +6,26 @@ const bridge = new WebOSServiceBridge();
 
 const ToggleContainer = styled.div`
   position: relative;
-  // left: 47%;
   cursor: pointer;
+`;
 
-  > .toggle-container {
-    width: 50px;
-    height: 24px;
-    border-radius: 30px;
-    background-color: rgb(233,233,234);
-  }
-  > .toggle--checked {
-    background-color: rgb(0,200,102);
-    transition: 0.5s;
-  }
+const ToggleBackground = styled.div`
+  width: 50px;
+  height: 24px;
+  border-radius: 30px;
+  background-color: ${({ isOn }) => (isOn ? 'rgb(0,200,102)' : 'rgb(233,233,234)')};
+  transition: 0.5s;
+`;
 
-  > .toggle-circle {
-    position: absolute;
-    top: 1px;
-    left: 1px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background-color: rgb(255,254,255);
-    transition: 0.5s;
-  }
-  > .toggle--checked {
-    left: 27px;
-    transition: 0.5s;
-  }
+const ToggleCircle = styled.div`
+  position: absolute;
+  top: 1px;
+  left: ${({ isOn }) => (isOn ? '27px' : '1px')};
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgb(255,254,255);
+  transition: 0.5s;
 `;
 
 const Span = styled.span`
@@ -42,14 +34,16 @@ const Span = styled.span`
 
 const Toggle = ({ isOn, toggleHandler }) => {
   return (
-    <>
-      <ToggleContainer onClick={toggleHandler}>
-        <div className={`toggle-container ${isOn ? "toggle--checked" : ""}`} />
-        <div className={`toggle-circle ${isOn ? "toggle--checked" : ""}`} />
-      </ToggleContainer>
-    </>
+    <ToggleContainer onClick={(e) => {
+      e.stopPropagation();
+      toggleHandler();
+    }}>
+      <ToggleBackground isOn={isOn} />
+      <ToggleCircle isOn={isOn} />
+    </ToggleContainer>
   );
 };
+
 
 const PlantAutocontrolModal = ({ isOpen, onClose }) => {
   const [currentState, setCurrentState] = useState(true);
@@ -80,7 +74,7 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
   }
 
   return (
-    <div className="PlantModal">
+    <div className="PlantModal" onClick={onClose}>
       <div className="modal-backdrop">
         <div className="plant-container">
           <h1>식물 관리</h1>
@@ -89,9 +83,10 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
               <Span>자동 제어 유무</Span>
               <Toggle isOn={currentState} toggleHandler={toggleHandler} style={{ marginLeft: '20px' }}/>
             </div>
-          </div>
-          <div>
-            <button onClick={onClose}>닫기</button>
+            <div className="status-item">
+              <span>선인장 키울 때 유의사항:</span>
+              <span>1. 분갈이를 1년에 한번씩 해준다</span>
+            </div>
           </div>
         </div>
       </div>

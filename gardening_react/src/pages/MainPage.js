@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import PlantConditionModal from '../components/PlantConditionModal';
 import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
+import ControlLightModal from '../components/ControlLightModal';
+import ControlWaterModal from '../components/ControlWaterModal';
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -15,6 +17,8 @@ const MainPage = () => {
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
   const [isToggleModalOpen, toggleModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
+  const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
+  const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
 
   const satisfactionColors = {
     '매우 좋음': '#00A35E', 
@@ -156,6 +160,14 @@ const MainPage = () => {
           isOpen={isCalendarModalOpen}
           onClose={() => calendarModalOpen(false)}
         />
+        <ControlLightModal
+          isOpen={isControlLightModalOpen}
+          onClose={() => controlLightModalOpen(false)}
+        />
+        <ControlWaterModal
+          isOpen={isControlWaterModalOpen}
+          onClose={() => controlWaterModalOpen(false)}
+        />
           {/* 센서값에 따른 바 표시 */}
           <div>
             <div
@@ -174,6 +186,7 @@ const MainPage = () => {
           {/* 식물 이미지가 들어 갈 자리 */}
           <div className="plant_image" style={{ marginTop: '40px' }}>
             <img src={plantImageUrl} alt="식물 이미지" />
+            {/* <img src={require('../img/cactus.gif')} alt="Description" /> */}
           </div> 
 
           {/* 식물 이름이 들어 갈 자리 */}
@@ -184,11 +197,11 @@ const MainPage = () => {
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
               <map name="image-map">
-                <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} />
+                <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} /> 
                 <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
                 <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
-                <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => navigate('/main/sun')} />
-                <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => navigate('/main/water')} />
+                <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
+                <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => controlWaterModalOpen(true)} />
               </map>
           </div>
         </div>
