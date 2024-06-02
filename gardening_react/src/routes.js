@@ -5,9 +5,7 @@ import UserSignup from './pages/UserSignup';
 import UserPlantRegister from './pages/UserPlantRegister';
 
 import MainPage from './pages/MainPage';
-import ControlWater from './pages/ControlWater';
-import ControlLight from './pages/ControlLight';
-import PlantConditionModal from './components/PlantConditionModal';
+
 
 const routes = [
     {
@@ -29,18 +27,6 @@ const routes = [
     {
         path: '/main',
         component: MainPage
-    },
-    {
-        path: '/control/water',
-        component: ControlWater
-    },
-    {
-        path: '/control/light',
-        component: ControlLight
-    },
-    {
-        path: '/plant/condition',
-        component: PlantConditionModal
     },
 ]
 

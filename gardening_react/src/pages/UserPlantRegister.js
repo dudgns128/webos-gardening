@@ -165,7 +165,7 @@ function UserPlantRegister() {
         "underHumidity":"." ,
         "overHumidity":"." ,
       },
-      "properEnvironemnts": {
+      "properEnvironments": {
         "waterValue": 50,
         "waterRange": 10,
         "lightValue": 100,
