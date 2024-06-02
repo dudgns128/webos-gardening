@@ -1,0 +1,28 @@
+total 10 byte
+
+dht: 4byte
+cds: 2byte
+wl: 2byte
+sm: 2byte
+
+dht - humidity: data[0] + data[1] * 0.1; humidity in percent
+
+dht - temperature:
+f = data[2];
+if (data[3] & 0x80) {
+  f = -1 - f;
+}
+f += (data[3] & 0x0f) * 0.1;
+celcius
+
+cds: data[4] * 128 + data[5]; 0 ~ 1023, higher when it is dark, no specific unit
+
+wl: data[6] * 128 + data[7]; 0 ~ 1023, higher when water level is high, no specific unit
+
+sm: data[8] * 128 + data[9]; 0 ~ 1023, higher when soil is moisturous, no specific unit
+
+FF FF FF
+0~100 => 0~255
+
+water pump
+seconds

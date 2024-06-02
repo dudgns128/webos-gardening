@@ -1,0 +1,14 @@
+{
+  "id": "com.team10.i2ctest",
+  "version": "1.0.0",
+  "vendor": "My Company",
+  "type": "web",
+  "main": "index.html",
+  "title": "i2cTest",
+  "icon": "icon.png",
+  "requiredPermissions": [
+    "time.query",
+    "activity.operation",
+    "peripheralmanager.i2c.operation"
+  ]
+}

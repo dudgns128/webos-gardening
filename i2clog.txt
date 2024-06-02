@@ -1,0 +1,74 @@
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/open '{"name":"I2C1", "address":1}'
+{
+    "returnValue": true
+}
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/write '{"name":"I2C1", "address":1,"data":[0, 2]}'
+{
+    "returnValue": true,
+    "size": 2
+}
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/read '{"name":"I2C1", "address":1, "size":10}'
+{
+    "data": [
+        0,
+        0,
+        0,
+        0,
+        1,
+        83,
+        2,
+        56,
+        0,
+        0
+    ],
+    "returnValue": true,
+    "size": 10
+}
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/write '{"name":"I2C1", "address":1, "data":[0,2]}'
+{
+    "returnValue": true,
+    "size": 2
+}
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/read '{"name":"I2C1", "address":1, "size":10}'
+{
+    "data": [
+        161,
+        128,
+        12,
+        0,
+        1,
+        86,
+        2,
+        55,
+        0,
+        0
+    ],
+    "returnValue": true,
+    "size": 10
+}
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/write '{"name":"I2C1", "address":1, "data":[0,2]}'
+{
+    "returnValue": true,
+    "size": 2
+}
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/read '{"name":"I2C1", "address":1, "size":10}'
+{
+    "data": [
+        161,
+        128,
+        12,
+        0,
+        1,
+        81,
+        2,
+        55,
+        0,
+        0
+    ],
+    "returnValue": true,
+    "size": 10
+}
+root@raspberrypi4-64:~# luna-send -n 1 -f luna://com.webos.service.peripheralmanager/i2c/close '{"name":"I2C1", "address":1}'
+{
+    "returnValue": true
+}

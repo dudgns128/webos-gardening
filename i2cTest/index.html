@@ -1,0 +1,223 @@
+<!--
+Copyright (c) 2020-2024 LG Electronics Inc.
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Example Web App</title>
+<style type="text/css">
+    body {
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        background-color:#202020;
+    }
+    div {
+        position:relative;
+        height:100%;
+        width:100%;
+        display: table;
+    }
+    h1 {
+        display: table-cell;
+        vertical-align: middle;
+        text-align:center;
+        color:#FFFFFF;
+    }
+</style>
+<script type="text/javascript">
+    var bridge = new WebOSServiceBridge();
+    var isI2COpened = false;
+
+    function openI2C() {
+        var openI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/open';
+        var openI2CParams = '{"name":"I2C1", "address":1}';
+
+        function openI2CApi_callback(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('open_i2c_result');
+            var i2cStatusElement = document.getElementById('i2c_status');
+        
+            if (arg.returnValue) {
+                resultElement.innerHTML = "I2C open success";
+                i2cStatusElement.innerHTML = "Opened";
+                isI2COpened = true;
+            } else {
+                resultElement.innerHTML = "I2C open fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        bridge.onservicecallback = openI2CApi_callback;
+        bridge.call(openI2CApi, openI2CParams);
+    }
+
+    function closeI2C() {
+        var closeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/close';
+        var closeI2CParams = '{"name":"I2C1", "address":1}';
+
+        function closeI2CApi_callback(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('close_i2c_result');
+            var i2cStatusElement = document.getElementById('i2c_status');
+
+            if (arg.returnValue) {
+                resultElement.innerHTML = "I2C close success";
+                i2cStatusElement.innerHTML = "Closed";
+                isI2COpened = false;
+            } else {
+                resultElement.innerHTML = "I2C close fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        bridge.onservicecallback = closeI2CApi_callback;
+        bridge.call(closeI2CApi, closeI2CParams);
+    }
+
+    function controlNeopixel(br) {
+        var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+        var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 0]}';
+        var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ br +']}';
+
+        function writeI2CApi_callback1(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('control_neopixel_result');
+            if (arg.returnValue) {
+                bridge.onservicecallback = writeI2CApi_callback2;
+                setTimeout(bridge.call(writeI2CApi, writeI2CParams2));
+            } else {
+                resultElement.innerHTML = "Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        function writeI2CApi_callback2(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('control_neopixel_result');
+            if (arg.returnValue) {
+                resultElement.innerHTML = "Success, br: " + br;
+            } else {
+                resultElement.innerHTML = "Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        bridge.onservicecallback = writeI2CApi_callback1;
+        setTimeout(bridge.call(writeI2CApi, writeI2CParams1));
+    }
+
+    function controlPump(on) {
+        var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+        var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 1]}';
+        var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ on +']}';
+
+        function writeI2CApi_callback1(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('control_pump_result');
+            if (arg.returnValue) {
+                bridge.onservicecallback = writeI2CApi_callback2;
+                setTimeout(bridge.call(writeI2CApi, writeI2CParams2));
+            } else {
+                resultElement.innerHTML = "Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        function writeI2CApi_callback2(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('control_pump_result');
+            if (arg.returnValue) {
+                resultElement.innerHTML = "Pump Control Success, on: " + on;
+            } else {
+                resultElement.innerHTML = "Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        bridge.onservicecallback = writeI2CApi_callback1;
+        setTimeout(bridge.call(writeI2CApi, writeI2CParams1));
+    }
+
+    function readSensor() {
+        var readI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/read';
+        var readI2CParams = '{"name":"I2C1", "address":1, "size":10}';
+        var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+        var writeI2CParams = '{"name":"I2C1", "address":1, "data":[0, 2]}';
+
+        function readI2CApi_callback(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('read_sensor_result');
+            if (arg.returnValue) {
+                var humid = arg.data[0] + arg.data[1] * 0.1;
+
+                var temp = arg.data[2];
+                if (arg.data[3] & 0x80) {
+                    temp = - 1 - temp;
+                }
+                temp += (arg.data[3] & 0x0f) * 0.1;
+
+                var cds = arg.data[4] * 256 + arg.data[5];
+
+                var water_level = arg.data[6] * 256 + arg.data[7];
+
+                var soil_moisture = arg.data[8] * 256 + arg.data[9];
+
+                resultElement.innerHTML = 
+                "HMD: " + humid + "\n" +
+                "TMP: " + temp + "\n" +
+                "CDS: " + cds + "\n" +
+                "WL : " + water_level + "\n" +
+                "SM : " + soil_moisture;
+            } else {
+                resultElement.innerHTML = "Read Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        function writeI2CApi_callback(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById('communicate_i2c_result');
+            if (arg.returnValue) {
+                bridge.onservicecallback = readI2CApi_callback;
+                setTimeout(bridge.call(readI2CApi, readI2CParams), 24);
+            } else {
+                resultElement.innerHTML = "Write Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+            }
+        }
+
+        bridge.onservicecallback = writeI2CApi_callback;
+        setTimeout(bridge.call(writeI2CApi, writeI2CParams));
+    }
+</script>
+</head>
+<body>
+    <div>
+        <h1 id="i2c_status_label">I2C Status</h1>
+        <h1 id="i2c_status">Closed</h1>
+    </div>
+    <div>
+        <h1 id="open_i2c" onclick="openI2C()">Open I2C</h1>
+        <h1 id="open_i2c_result">Open I2C Result</h1>
+    </div>
+    <div>
+        <h1 id="close_i2c" onclick="closeI2C()">Close I2C</h1>
+        <h1 id="close_i2c_result">Close I2C Result</h1>
+    </div>
+    <div>
+        <h1 id="control_neopixel1" onclick="controlNeopixel(0)">Control Neopixel1</h1>
+        <h1 id="control_neopixel2" onclick="controlNeopixel(25)">Control Neopixel2</h1>
+        <h1 id="control_neopixel3" onclick="controlNeopixel(50)">Control Neopixel3</h1>
+    </div>
+    <div>
+        <h1 id="control_neopixel4" onclick="controlNeopixel(75)">Control Neopixel4</h1>
+        <h1 id="control_neopixel5" onclick="controlNeopixel(100)">Control Neopixel5</h1>
+        <h1 id="control_neopixel_result">Control Neopixel Result</h1>
+    </div>
+    <div>
+        <h1 id="control_pump1" onclick="controlPump(0)">Control Pump1</h1>
+        <h1 id="control_pump2" onclick="controlPump(1)">Control Pump2</h1>
+        <h1 id="control_pump_result">Control Pump Result</h1>
+    </div>
+    <div>
+        <h1 id="read_sensor" onclick="readSensor()">Read Sensor</h1>
+        <h1 id="read_sensor_result">Read Sensor Result</h1>
+    </div>
+</body>
+</html>
