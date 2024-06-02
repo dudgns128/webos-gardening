@@ -190,6 +190,24 @@ service.register('start', async function (message) {
   });
 });
 
+service.register('hitest', async function (message) {
+  try {
+    if ((await plantCurrentInfo.isDataExist()) != true)
+      await plantCurrentInfo.putData({
+        isAutoControl: true,
+        level: 1,
+        waterCount: 0,
+        satisfaction: 0,
+        sensingData: null,
+      });
+    message.respond({suc:true});
+    return;
+  } catch(e) {
+    message.respond(e);
+    return;
+  }
+});
+
 // 최근 센싱 데이터 가져오기
 service.register('getSensingData', async function (message) {
   try {
@@ -335,18 +353,19 @@ async function calcSatisfaction(data) {
   const humidityRange = await plantEnvInfo.getHumidityRange();
   if (data.water < waterValue - waterRange) {
     satisfaction -= 10;
-    if (isAutoControl) await controlWater();
+    if (isAutoControl)
+      await controlWater();
   }
   if (waterValue + waterRange < data.water) satisfaction -= 10;
   if (data.light < lightValue - lightRange) {
     satisfaction -= 10;
     // [todo] 빛 세기 조절 api 사용
-    if (isAutoControl) pass;
+    if (isAutoControl) {}
   }
   if (lightValue + lightRange < data.light) {
     satisfaction -= 10;
     // [todo] 빛 세기 조절 api 사용
-    if (isAutoControl) pass;
+    if (isAutoControl) {}
   }
   if (
     data.humidity < humidityValue - humidityRange ||
@@ -378,10 +397,10 @@ async function controlWater() {
   // [todo] 레벨업 로직 관련 : 일단은 단순하게 level*2 횟수만큼 물을 주면 레벨업이 됨.
   const curWaterCount = await plantCurrentInfo.getWaterCount();
   const curLevel = await plantCurrentInfo.getLevel();
-  if (curWaterCount + 1 == curLevel) {
+  if (curWaterCount + 1 >= curLevel * 2) {
     await plantCurrentInfo.updateWaterCount(0);
     await plantCurrentInfo.updateLevel(curLevel + 1);
-  } else await plantCurrentInfo.updateWaterCount(curWater + 1);
+  } else await plantCurrentInfo.updateWaterCount(curWaterCount + 1);
   // [todo] water 제어 api 사용하기
   console.log(`adjust water value!!`);
 }
@@ -751,10 +770,10 @@ const plantCurrentInfo = {
     };
     return new Promise((resolve, reject) => {
       service.call(url, params, (res) => {
-        if (res.payload.returnValue != true) reject('getSatisfaction failed');
+        if (res.payload.returnValue != true) reject();
         if (res.payload.results.length != 0)
           resolve(res.payload.results[0].satisfaction);
-        else reject('getSatisfaction failed');
+        else reject();
       });
     });
   },
