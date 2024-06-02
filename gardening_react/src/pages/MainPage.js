@@ -5,6 +5,9 @@ import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
 import backgroundImage from '../img/background1.png';
 import goalImage from '../img/present.png';
+import ControlLightModal from '../components/ControlLightModal';
+import ControlWaterModal from '../components/ControlWaterModal';
+
 
 const MainPage = () => {
   const navigate = useNavigate();
@@ -19,6 +22,8 @@ const MainPage = () => {
   const [isSelectModalOpen, selectModalOpen] = useState(false);
   //const [isSelectModalOpen, selectModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
+  const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
+  const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
 
   const satisfactionColors = {
     '매우 좋음': '#00A35E',
@@ -35,14 +40,17 @@ const MainPage = () => {
 
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
-      setSensorValue(response.satisfaction);
-      setPlantImageUrl(response.normalImageUrl);
-      setPlantName(response.name);
-      setPlantLevel(response.level);
-      setPlantExp(response.exp);
+
+      if (response.success) {
+        setSensorValue(response.satisfaction);
+        setPlantImageUrl(response.imageUrl);
+        setPlantName(response.name);
+        setPlantLevel(response.level);
+         setPlantExp(response.exp);
+      }
     };
 
-    // 5초마다 센서 값을 가져오는 인터벌 설정
+    // 3초마다 센서 값을 가져오는 인터벌 설정
     const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
     // 컴포넌트가 언마운트될 때 인터벌 정리
@@ -130,18 +138,26 @@ const MainPage = () => {
     }}>
       <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
         <div className="d-flex flex-column align-items-center">
-          <PlantConditionModal
-            isOpen={isConditionModalOpen}
-            onClose={() => conditionModalOpen(false)}
-          />
-          <PlantAutocontrolModal
-            isOpen={isSelectModalOpen}
-            onClose={() => selectModalOpen(false)}
-          />
-          <CalendarModal
-            isOpen={isCalendarModalOpen}
-            onClose={() => calendarModalOpen(false)}
-          />
+        <PlantConditionModal
+          isOpen={isConditionModalOpen}
+          onClose={() => conditionModalOpen(false)}
+        />
+        <PlantAutocontrolModal
+          isOpen={isToggleModalOpen}
+          onClose={() => toggleModalOpen(false)}
+        />
+        <CalendarModal
+          isOpen={isCalendarModalOpen}
+          onClose={() => calendarModalOpen(false)}
+        />
+        <ControlLightModal
+          isOpen={isControlLightModalOpen}
+          onClose={() => controlLightModalOpen(false)}
+        />
+        <ControlWaterModal
+          isOpen={isControlWaterModalOpen}
+          onClose={() => controlWaterModalOpen(false)}
+        />
           {/* 센서값에 따른 바 표시 */}
           <div>
             <div
@@ -160,7 +176,8 @@ const MainPage = () => {
           {/* 식물 이미지가 들어 갈 자리 */}
           <div className="plant_image" style={{ marginTop: '40px' }}>
             <img src={plantImageUrl} alt="식물 이미지" />
-          </div>
+            {/* <img src={require('../img/cactus.gif')} alt="Description" /> */}
+          </div> 
 
           {/* 식물 이름이 들어 갈 자리 */}
           <div className="plant_info" style={{ marginTop: '40px' }}>
@@ -180,13 +197,13 @@ const MainPage = () => {
 
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
-            <map name="image-map">
-              <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => conditionModalOpen(true)} />
-              <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
-              <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => selectModalOpen(true)} />
-              <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => navigate('/control/light')} />
-              <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => navigate('/control/water')} />
-            </map>
+              <map name="image-map">
+                <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} /> 
+                <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
+                <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
+                <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
+                <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => controlWaterModalOpen(true)} />
+              </map>
           </div>
         </div>
       </div>

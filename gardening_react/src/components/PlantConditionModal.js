@@ -35,22 +35,29 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
     }
   };
 
+  const [water, setWater] = useState(0);
+  const [light, setLight] = useState(0);
+  const [temperature, setTemperature] = useState(0);
+  const [humidity, setHumidity] = useState(0);
+    
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-
+    
     const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
-
+  
     bridge.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
-      setWater(response.water);
-      setLight(response.light);
-      setTemperature(response.temperature);
-      setHumidity(response.humidity);
+      if (response.success) {
+        setWater(response.water);
+        setLight(response.light);
+        setTemperature(response.temperature);
+        setHumidity(response.humidity);
+      }
     };
 
-    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 5000);
+    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
     return () => clearInterval(intervalId);
   }, [isOpen]);
@@ -66,8 +73,8 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
   const humidityStatus = getStatus(humidity, 40, 60);
 
   return (
-    <div className="PlantModal">
-      <div className="modal-backdrop">
+    <div class="PlantModal">
+      <div className="modal-backdrop" onClick={onClose}>
         <div className="plant-container">
           <h1>환경 상태</h1>
           <div className="plant-status">
@@ -87,9 +94,6 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
               <span>온도:</span>
               <span className={getStatusClass(temperatureStatus)}>{temperature} ({temperatureStatus})</span>
             </div>
-          </div>
-          <div>
-            <button onClick={onClose}>닫기</button>
           </div>
         </div>
       </div>

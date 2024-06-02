@@ -204,7 +204,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
                 // satisfaction 데이터를 사용하여 satisfactionDay 업데이트
                 const newSatisfactionDays = {};
                 for (let day = 1; day <= 31; day++) {
-                    if (response.satisfaction[`day${day}`] !== undefined) {
+                    if (response.satisfaction[`day${day}`] !== null) {
                         newSatisfactionDays[day] = response.satisfaction[`day${day}`];
                     }
                 }
