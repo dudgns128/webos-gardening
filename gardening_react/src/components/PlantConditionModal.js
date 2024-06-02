@@ -35,11 +35,6 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const [water, setWater] = useState(0);
-  const [light, setLight] = useState(0);
-  const [temperature, setTemperature] = useState(0);
-  const [humidity, setHumidity] = useState(0);
-    
   useEffect(() => {
     if (!isOpen) {
       return;

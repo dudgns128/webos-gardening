@@ -19,8 +19,6 @@ const MainPage = () => {
   const [plantLevel, setPlantLevel] = useState(0);
   const [plantExp, setPlantExp] = useState(50);
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
-  const [isSelectModalOpen, selectModalOpen] = useState(false);
-  //const [isSelectModalOpen, selectModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
   const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
   const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
@@ -46,7 +44,7 @@ const MainPage = () => {
         setPlantImageUrl(response.imageUrl);
         setPlantName(response.name);
         setPlantLevel(response.level);
-         setPlantExp(response.exp);
+        setPlantExp(response.exp);
       }
     };
 
