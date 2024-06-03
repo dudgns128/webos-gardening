@@ -25,7 +25,7 @@ const UserPlantRegister = () => {
   useEffect(() => {
     const fetchPlantInfo = async () => {
       try {
-        const response = await axios.get('/api/plantinfo');
+        const response = await axios.get('http://52.79.201.44:8080/api/plantinfo');
         setPlantList(response.data);
       } catch (error) {
         console.log(error);
@@ -72,7 +72,7 @@ const UserPlantRegister = () => {
     };
   
     try {
-      const response = await axios.post('/api/userplant/register', plantData);
+      const response = await axios.post('http://52.79.201.44:8080/api/userplant/register', plantData);
 
       if (response.status === 201) {
         console.log('UserPlant registered successfully');
@@ -92,50 +92,94 @@ const UserPlantRegister = () => {
     }
   };    
 
-  useEffect(() => {
-    if (selectedPlantId !== null && plantList.length > 0) {
-      const serviceURL = "luna://com.team17.homegardening.service/start";
+  // useEffect(() => {
+  //   if (selectedPlantId !== null && plantList.length > 0) {
+  //     const serviceURL = "luna://com.team17.homegardening.service/start";
       
-      bridge.onservicecallback = function (msg) {
-          const response = JSON.parse(msg);
-          if (response.success) {
-            console.log("Luna service response success",);
-          }
-      };
-      const payload = {
-        "plantId": selectedPlantId,
-        "plantName": plantName,
-        "plantBirthDate": plantBirthdate,
-        "scientificName": plantList[selectedPlantId].scientificName,
-        "shortDescription": plantList[selectedPlantId].shortDescription,
-        "maxLevel": plantList[selectedPlantId].maxLevel,
-        "imageUrls": {
-          "normal": plantList[selectedPlantId].imageUrls.normal,
-          "happy": plantList[selectedPlantId].imageUrls.happy,
-          "sad": plantList[selectedPlantId].imageUrls.sad,
-          "angry": plantList[selectedPlantId].imageUrls.angry,
-          "underWater": plantList[selectedPlantId].imageUrls.underWater,
-          "overWater": plantList[selectedPlantId].imageUrls.overWater,
-          "underLight": plantList[selectedPlantId].imageUrls.underLight,
-          "overLight": plantList[selectedPlantId].imageUrls.overLight,
-          "underTemperature": plantList[selectedPlantId].imageUrls.underTemperature,
-          "overTemperature": plantList[selectedPlantId].imageUrls.overTemperature,
-          "underHumidity": plantList[selectedPlantId].imageUrls.underHumidity,
-          "overHumidity": plantList[selectedPlantId].imageUrls.overHumidity,
-        },
-        "properEnvironments": {
-          "waterValue": plantList[selectedPlantId].properEnvironemnts.waterValue,
-          "waterRange": plantList[selectedPlantId].properEnvironemnts.waterRange,
-          "lightValue": plantList[selectedPlantId].properEnvironemnts.lightValue,
-          "lightRange": plantList[selectedPlantId].properEnvironemnts.lightRange,
-          "temperatureValue": plantList[selectedPlantId].properEnvironemnts.temperatureValue,
-          "temperatureRange": plantList[selectedPlantId].properEnvironemnts.temperatureRange,
-          "humidityValue": plantList[selectedPlantId].properEnvironemnts.humidityValue,
-          "humidityRange": plantList[selectedPlantId].properEnvironemnts.humidityRange,
+  //     bridge.onservicecallback = function (msg) {
+  //         const response = JSON.parse(msg);
+  //         if (response.success) {
+  //           console.log("Luna service response success",);
+  //         }
+  //     };
+  //     const payload = {
+  //       "plantId": selectedPlantId,
+  //       "plantName": plantName,
+  //       "plantBirthDate": plantBirthdate,
+  //       "scientificName": plantList[selectedPlantId - 1].scientificName,
+  //       "shortDescription": plantList[selectedPlantId - 1].shortDescription,
+  //       "maxLevel": plantList[selectedPlantId - 1].maxLevel,
+  //       "imageUrls": {
+  //         "normal": plantList[selectedPlantId - 1].plantImage.normalImageUrl,
+  //         "happy": plantList[selectedPlantId - 1].plantImage.happyImageUrl,
+  //         "sad": plantList[selectedPlantId - 1].plantImage.sadImageUrl,
+  //         "angry": plantList[selectedPlantId - 1].plantImage.angryImageUrl,
+  //         "underWater": plantList[selectedPlantId - 1].plantImage.underWaterImageUrl,
+  //         "overWater": plantList[selectedPlantId - 1].plantImage.overWaterImageUrl,
+  //         "underLight": plantList[selectedPlantId - 1].plantImage.underLightImageUrl,
+  //         "overLight": plantList[selectedPlantId - 1].plantImage.overLightImageUrl,
+  //         "underTemperature": plantList[selectedPlantId - 1].plantImage.underTemperatureImageUrl,
+  //         "overTemperature": plantList[selectedPlantId - 1].plantImage.overTemperatureImageUrl,
+  //         "underHumidity": plantList[selectedPlantId - 1].plantImage.underHumidityImageUrl,
+  //         "overHumidity": plantList[selectedPlantId - 1].plantImage.overHumidityImageUrl,
+  //       },
+  //       "properEnvironments": {
+  //         "waterValue": plantList[selectedPlantId - 1].plantEnvironment.properWaterValue,
+  //         "waterRange": plantList[selectedPlantId - 1].plantEnvironment.properWaterRange,
+  //         "lightValue": plantList[selectedPlantId - 1].plantEnvironment.properLightValue,
+  //         "lightRange": plantList[selectedPlantId - 1].plantEnvironment.properLightRange,
+  //         "temperatureValue": plantList[selectedPlantId - 1].plantEnvironment.properTemperatureValue,
+  //         "temperatureRange": plantList[selectedPlantId - 1].plantEnvironment.properTemperatureRange,
+  //         "humidityValue": plantList[selectedPlantId - 1].plantEnvironment.properHumidityValue,
+  //         "humidityRange": plantList[selectedPlantId - 1].plantEnvironment.properHumidityRange,
+  //       }
+  //     }
+  //     bridge.call(serviceURL, JSON.stringify(payload));
+  //   }
+  // }, []);
+  
+  useEffect(() => {
+    const serviceURL = "luna://com.team17.homegardening.service/start";
+
+    bridge.onservicecallback = function (msg) {
+        const response = JSON.parse(msg);
+        if (response.success) {
+          console.log("Luna service response success",);
         }
+    };
+    const payload = {
+      "plantId": 1,
+      "plantName": "ya",
+      "plantBirthDate": "1999-01-28",
+      "scientificName": "cat",
+      "shortDescription": "hi",
+      "maxLevel": 10,
+      "imageUrls": {
+        "normal": "https://i.sstatic.net/Bzcs0.png",
+        "happy":"." ,
+        "sad":"." ,
+        "angry":"." ,
+        "underWater":"." ,
+        "overWater":"." ,
+        "underLight":"." ,
+        "overLight":"." ,
+        "underTemperature":"." ,
+        "overTemperature":"." ,
+        "underHumidity":"." ,
+        "overHumidity":"." ,
+      },
+      "properEnvironments": {
+        "waterValue": 50,
+        "waterRange": 10,
+        "lightValue": 100,
+        "lightRange": 50,
+        "temperatureValue": 30,
+        "temperatureRange": 3,
+        "humidityValue": 20,
+        "humidityRange": 5,
       }
-      bridge.call(serviceURL, JSON.stringify(payload));
     }
+    bridge.call(serviceURL, JSON.stringify(payload));
   }, []);
 
 

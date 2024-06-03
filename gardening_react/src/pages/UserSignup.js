@@ -39,7 +39,7 @@ const UserSignup = () => {
         const birthdate = `${formatYear}-${formatMonth}-${formatDay}`;
         
         const userData = {
-            username: name,
+            name: name,
             gender: sex,
             nickname: nickname,
             birth: birthdate,
@@ -48,7 +48,7 @@ const UserSignup = () => {
         };
             
         try {
-            const response = await axios.post('/api/user', userData, {
+            const response = await axios.post('http://52.79.201.44:8080/api/user', userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

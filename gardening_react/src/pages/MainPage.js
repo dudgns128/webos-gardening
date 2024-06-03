@@ -5,7 +5,7 @@ import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
 import ControlLightModal from '../components/ControlLightModal';
 import ControlWaterModal from '../components/ControlWaterModal';
-import backgroundImage from '../img/background1.png';
+import backgroundImage from '../img/background.png';
 import goalImage from '../img/present.png';
 
 const MainPage = () => {
@@ -140,14 +140,6 @@ const MainPage = () => {
     gap: '4px'
   };
 
-  const calculateWidthSize = (originalSize, ratio) => {
-    return Math.round(window.innerWidth * ratio) || originalSize;
-  };
-
-  const calculateHeightSize = (originalSize, ratio) => {
-    return Math.round(window.innerHeight * ratio) || originalSize;
-  };
-
   const expBackgroundStyle = {
     boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.75)',
     height: '24px',
@@ -178,15 +170,23 @@ const MainPage = () => {
     transition: 'width 0.3s ease-in-out'
   };
 
+  const calculateWidthSize = (originalSize, ratio) => {
+    return Math.round(window.innerWidth * ratio) || originalSize;
+  };
+
+  const calculateHeightSize = (originalSize, ratio) => {
+    return Math.round(window.innerHeight * ratio) || originalSize;
+  };
+
   return (
     <div style = {{
-        padding: '140px',
-        backgroundImage: `url(${backgroundImage})`,
-        backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
-        backgroundPosition: 'center', // 이미지를 중앙에 배치
-        backgroundRepeat: 'no-repeat', // 이미지를 반복하지 않음
-        height: '100vh' // 배경이 전체 뷰포트를 덮도록 설정
-      }}>
+      padding: '140px',
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
+      backgroundPosition: 'center', // 이미지를 중앙에 배치
+      backgroundRepeat: 'no-repeat', // 이미지를 반복하지 않음
+      height: '100vh' // 배경이 전체 뷰포트를 덮도록 설정
+    }}>
       <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
         <div className="d-flex flex-column align-items-center">
         <PlantConditionModal
