@@ -5,7 +5,6 @@ const bridge = new WebOSServiceBridge();
 const ControlWaterModal = ({ isOpen, onClose }) => {
           
     const handleWaterButtonClick = () => {
-        e.stopPropagation();
         const serviceURL = "luna://com.team17.homegardening.service/controlWater";
 
         bridge.onservicecallback = function (msg) {
