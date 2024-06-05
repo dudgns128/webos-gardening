@@ -83,9 +83,10 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
               <Span>자동 제어 유무</Span>
               <Toggle isOn={currentState} toggleHandler={toggleHandler} style={{ marginLeft: '20px' }}/>
             </div>
-            <div className="status-item">
-              <span>선인장 키울 때 유의사항:</span>
-              <span>1. 분갈이를 1년에 한번씩 해준다</span>
+            <div className="autocontrol-text">
+              <span className="block-span">선인장 키울 때 유의사항:</span>
+              <span className="block-span">1. 분갈이를 1년에 한번씩 해준다</span>
+              <span className="block-span">2. 분갈이를 할 때, 뿌리를 잘 정리해준다</span>
             </div>
           </div>
         </div>

@@ -113,7 +113,8 @@ const theme = {
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus,
   .react-calendar__tile--active {
-    background-color: ${(props) => props.theme.gray_5};
+    background-color: white;
+    // background-color: ${(props) => props.theme.gray_5};
     // border-radius: 0.3rem;
   }
 
@@ -221,6 +222,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
     }
 
     const getSatisfactionImage = (value) => {
+      if (value === undefined) return require('../img/blank.png');
       if (value >= 0 && value <= 20) return require('../img/verybad.png');
       if (value >= 21 && value <= 40) return require('../img/bad.png');
       if (value >= 41 && value <= 60) return require('../img/soso.png');
@@ -249,7 +251,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
                             prev2Label={null}
                             minDetail="year"
                             tileClassName={({ date, view }) => {
-                              if (view === "month" && date.getMonth() !== 0 &&  waterDay.find((x) => x === moment(date).format("YYYY-MM-DD"))) {
+                              if (view === "month" &&  waterDay.find((x) => x === moment(date).format("YYYY-MM-DD"))) {
                                 return "react-calendar__tile--waterDay";
                               }
                             }}
@@ -267,7 +269,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
                                 // }
 
                                 const satisfactionValue = satisfactionDay[date.getDate()];
-                                if (view === "month" && date.getMonth() !== 0  && satisfactionValue !== undefined) {
+                                if (view === "month") {
                                     const imgSrc = getSatisfactionImage(satisfactionValue);
                                     if (imgSrc) { //html.push(<img key={`satisfaction-${date.getDate()}`} src={imgSrc} alt="satisfaction" />);
                                       html.push(
