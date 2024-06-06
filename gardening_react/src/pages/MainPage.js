@@ -231,7 +231,7 @@ const MainPage = () => {
 
           {/* 식물 이름이 들어 갈 자리 */}
           <div className="plant_info" style={{ marginTop: '40px'}}>
-            <text style={boxStyle}>{plantName}{plantLevel}</text>
+            <text style={boxStyle}>{plantName}</text>
           </div>
 
           {/* 경험치 바와 레벨업 정보 */}
@@ -241,7 +241,10 @@ const MainPage = () => {
               <div style={expGoalIconStyle}></div> {/* 목표 이미지 추가 */}
             </div>
             <div style={{ textAlign: 'center' }}>
-              <p>레벨업까지 <span style={{ color: '#FF3333' }}>{100 - plantExp}%</span> 남음</p>
+              <p>
+                <span style={{ marginRight: '10px' }}>Lv{plantLevel}</span>
+                레벨업까지 <span style={{ color: '#FF3333' }}>{(100 - plantExp).toFixed(2)}%</span> 남음
+              </p>
             </div>
           </div>
 
