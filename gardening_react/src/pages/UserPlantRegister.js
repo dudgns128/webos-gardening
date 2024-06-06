@@ -8,7 +8,7 @@ const UserPlantRegister = () => {
   const today = new Date();
   const currentYear = today.getFullYear();
   const currentMonth = today.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줍니다.
-  const currentDay = today.getDate();
+  const currentDay = today.getDate() + 1;
 
   const [plantList, setPlantList] = useState([]);
   const [selectedPlantId, setSelectedPlantId] = useState(null);
@@ -137,7 +137,7 @@ const UserPlantRegister = () => {
   //     bridge.call(serviceURL, JSON.stringify(payload));
   //   }
   // }, []);
-  
+
   useEffect(() => {
     const serviceURL = "luna://com.team17.homegardening.service/start";
 
@@ -238,7 +238,7 @@ const UserPlantRegister = () => {
               className="birthdateBox yearBox"
               style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
               type="year"
-              value={year}
+              value={`${year}년`}
               onChange={(e) => {
                 setYear(e.target.value.replace('년', ''));
               }}
@@ -252,7 +252,7 @@ const UserPlantRegister = () => {
               className="birthdateBox monthBox"
               style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
               type="month"
-              value={month}
+              value={`${month}월`}
               onChange={(e) => {
                 setMonth(e.target.value.replace('월', ''));
               }}
@@ -266,7 +266,7 @@ const UserPlantRegister = () => {
               className="birthdateBox dayBox"
               style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
               type="day"
-              value={day}
+              value={`${day}일`}
               onChange={(e) => {
                 setDay(e.target.value.replace('일', ''));
               }}

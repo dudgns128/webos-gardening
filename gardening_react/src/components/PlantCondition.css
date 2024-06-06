@@ -44,6 +44,24 @@
     font-weight: bold;
 }
 
+.autocontrol-text {
+    text-align: left;
+    display: block;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.autocontrol-text span:last-child {
+    font-weight: bold;
+}
+
+.block-span {
+    display: block;
+  }
+
 .PlantModal button {
     padding: 10px 20px;
     background-color: #4CAF50;
@@ -67,6 +85,7 @@
 .PlantModal a:hover {
     text-decoration: underline;
 }
+
 
 .control-light-container {
     text-align: center;
