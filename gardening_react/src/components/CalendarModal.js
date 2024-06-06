@@ -158,7 +158,7 @@ const ModalBackdrop = styled.div`
   z-index: 1;
 `;
 
-const bridge = new WebOSServiceBridge();
+// const bridge = new WebOSServiceBridge();
 
 const CalendarModal = ({ isOpen, onClose }) => {
     
@@ -186,33 +186,33 @@ const CalendarModal = ({ isOpen, onClose }) => {
             "month": updatedMonth
         });
 
-        const serviceURL = "luna://com.team17.homegardening.service/calendar";
+        // const serviceURL = "luna://com.team17.homegardening.service/calendar";
 
-        bridge.onservicecallback = function (msg) {
-            const response = JSON.parse(msg);
-            if (response.success) {
-                // isWater 데이터를 사용하여 waterDay 업데이트
-                const newWaterDays = [];
-                for (let day = 1; day <= 31; day++) {
-                    if (response.isWater[`day${day}`]) {
-                        const dateStr = `${updatedYear}-${String(updatedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-                        newWaterDays.push(dateStr);
-                    }
-                }
-                setWaterDay(newWaterDays);
+        // bridge.onservicecallback = function (msg) {
+        //     const response = JSON.parse(msg);
+        //     if (response.success) {
+        //         // isWater 데이터를 사용하여 waterDay 업데이트
+        //         const newWaterDays = [];
+        //         for (let day = 1; day <= 31; day++) {
+        //             if (response.isWater[`day${day}`]) {
+        //                 const dateStr = `${updatedYear}-${String(updatedMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+        //                 newWaterDays.push(dateStr);
+        //             }
+        //         }
+        //         setWaterDay(newWaterDays);
 
-                // satisfaction 데이터를 사용하여 satisfactionDay 업데이트
-                const newSatisfactionDays = {};
-                for (let day = 1; day <= 31; day++) {
-                    if (response.satisfaction[`day${day}`] !== null) {
-                        newSatisfactionDays[day] = response.satisfaction[`day${day}`];
-                    }
-                }
-                setSatisfactionDay(newSatisfactionDays);
-            }
-        };
+        //         // satisfaction 데이터를 사용하여 satisfactionDay 업데이트
+        //         const newSatisfactionDays = {};
+        //         for (let day = 1; day <= 31; day++) {
+        //             if (response.satisfaction[`day${day}`] !== null) {
+        //                 newSatisfactionDays[day] = response.satisfaction[`day${day}`];
+        //             }
+        //         }
+        //         setSatisfactionDay(newSatisfactionDays);
+        //     }
+        // };
 
-        bridge.call(serviceURL, params);
+        // bridge.call(serviceURL, params);
     }, [isOpen, date]);
 
 

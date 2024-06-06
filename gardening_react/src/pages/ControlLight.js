@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../components/PlantCondition.css';
 
-const bridge = new WebOSServiceBridge();
+// const bridge = new WebOSServiceBridge();
 
 const ControlLight = () => {
   const [light, setLight] = useState(0); // 설정 될 광량 값

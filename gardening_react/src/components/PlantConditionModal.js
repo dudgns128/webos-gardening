@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PlantCondition.css';
 
-const bridge = new WebOSServiceBridge();
+// const bridge = new WebOSServiceBridge();
 
 
 const PlantConditionModal = ({ isOpen, onClose }) => {
@@ -16,19 +16,19 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
       return;
     }
     
-    const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
+    // const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
   
-    bridge.onservicecallback = function (msg) {
-      const response = JSON.parse(msg);
-      if (response.success) {
-        setWater(response.water);
-        setLight(response.light);
-        setTemperature(response.temperature);
-        setHumidity(response.humidity);
-      }
-    };
+    // bridge.onservicecallback = function (msg) {
+    //   const response = JSON.parse(msg);
+    //   if (response.success) {
+    //     setWater(response.water);
+    //     setLight(response.light);
+    //     setTemperature(response.temperature);
+    //     setHumidity(response.humidity);
+    //   }
+    // };
 
-    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
+    // const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
     return () => clearInterval(intervalId);
   }, [isOpen]);

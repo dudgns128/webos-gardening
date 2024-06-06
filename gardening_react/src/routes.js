@@ -2,7 +2,7 @@ import HomePage from './pages/HomePage';
 
 import UserLogin from './pages/UserLogin';
 import UserSignup from './pages/UserSignup';
-import UserPlantRegister from './pages/UserPlantRegister';
+import PlantSelection from './pages/PlantSelection';
 
 import MainPage from './pages/MainPage';
 import ControlLight from './pages/ControlLight';
@@ -23,7 +23,7 @@ const routes = [
     },
     {
         path: '/user/plant',
-        component: UserPlantRegister
+        component: PlantSelection
     },
     {
         path: '/main',

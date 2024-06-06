@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function PlantSelection() {
   const [plants, setPlants] = useState([]);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 식물 선택 페이지에 필요한 정보 받아올 API 요청 (양식 수정 필요)
@@ -14,7 +14,7 @@ function PlantSelection() {
   }, []);
 
   const handleSelectPlant = (plant) => {
-    history.push(`/main?plantId=${plant.id}`);
+    navigate.push(`/main?plantId=${plant.id}`);
   };
 
   return (
