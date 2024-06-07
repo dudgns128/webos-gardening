@@ -10,11 +10,7 @@ const ControlLightModal = ({ isOpen, onClose }) => {
         setLight(event.target.value);
     };
 
-    useEffect(() => {
-        if (!isOpen) {
-            return;
-          }
-
+    const onSubmit = () => {
         const serviceURL = "luna://com.team17.homegardening.service/controlLight";
 
         bridge.onservicecallback = function (msg) {
@@ -31,7 +27,7 @@ const ControlLightModal = ({ isOpen, onClose }) => {
         });
 
         bridge.call(serviceURL, params);
-    }, [light, isOpen]);
+    };
 
     if (!isOpen) {
         return null;
@@ -52,6 +48,9 @@ const ControlLightModal = ({ isOpen, onClose }) => {
                         className="slider"
                     />
                     <p>빛 세기 조절: {light}</p>
+                    </div>
+                    <div>
+                        <button onClick={onSubmit}>확인</button>
                     </div>
                 </div>
             </div>
