@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/dudgns128/webos-gardening">
-    <img src="![logo](https://github.com/dudgns128/webos-gardening/assets/62577519/8ad9aae0-489b-4471-86eb-aaa248cdc297)" alt="Logo" style="width: 60%;">
+    <img src="https://private-user-images.githubusercontent.com/62577519/337870246-8ad9aae0-489b-4471-86eb-aaa248cdc297.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MTc4NDU4MTMsIm5iZiI6MTcxNzg0NTUxMywicGF0aCI6Ii82MjU3NzUxOS8zMzc4NzAyNDYtOGFkOWFhZTAtNDg5Yi00NDcxLTg2ZWItYWFhMjQ4Y2RjMjk3LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA2MDglMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwNjA4VDExMTgzM1omWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWI1ZGE1OTQ4ZTgxYTMyOWEzZTIzZDJhZjk0YjM3ZjZhYjU1NTUyM2Q3YmI4Nzc4M2I1MTk4MjAzY2Q2OGM3ZmYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.dccAlQpXuVj59iN3SJScPawSuqYolFyjhB2q50Nk_y4" alt="Logo" style="width: 60%;">
   </a>
   <h3 align="center">Smart Home Gardening Project with WebOS</h3>
   <p align="center">
