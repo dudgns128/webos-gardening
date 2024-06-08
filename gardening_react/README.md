@@ -55,20 +55,24 @@ To ensure proper communication between the client and servers, modify the server
    When running the project locally, you must change some of the code.
    
    `src/pages/UserSignup.js`
+   
    - Annotate the inside of **onSubmit()** and leave only **navigate('/user/login')**
+
 
    ```javascript
    // const onSubmit = async () => {} 
    ```
 
    `src/pages/UserPlantRegister.js`
+   
    - Annotate the inside of **onSubmit()** and leave only **navigate('main')**
    - Annotate the code line:30~56 and Store a list of plant species in **PLANT_SPECIES_LIST**
    - Annotate the code line:107~112 and Store the information inside the **payload** as arbitrary content
 
+
    ```javascript
    // const onSubmit = async () => {} 
-   
+
    const PLANT_SPECIES_LIST = ['Cactus', 'Sunflower', 'Tulip']
 
    // const selectedPlant = plantList.find(plant => plant.scientificName === plantSpecies);
@@ -147,11 +151,13 @@ We know that the display that supports Raspberry Pi 4 only has 1024x600 resoluti
    ```sh
    ares
    ```
+   
 3. To set up a new device for development, use the ares-setup-device command. This will guide you through the process of registering and configuring a new device for your development environment:
    ```sh
    ares-setup-device
    ```
-   <img style="width: 70%;" alt="ares-setup-device" src="[ares-install-device](https://github.com/dudgns128/webos-gardening/assets/62577519/b8f1ac66-d0b0-4280-b4bf-839e84d9372b)">
+   <img style="width: 70%;" alt="ares-setup-device" src="https://github-production-user-asset-6210df.s3.amazonaws.com/62577519/337868055-b8f1ac66-d0b0-4280-b4bf-839e84d9372b.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20240608%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20240608T110044Z&X-Amz-Expires=300&X-Amz-Signature=eac29423eb6c338687fd0fa33cc34a88cb1142c243a5308e0b379d1f86476d86&X-Amz-SignedHeaders=host&actor_id=62577519&key_id=0&repo_id=777616193">
+
    
    - Adding a target device with interactive mode (target device name: target, host address: 10.123.45.67, port number: 22, user: root)
 
@@ -179,11 +185,13 @@ We know that the display that supports Raspberry Pi 4 only has 1024x600 resoluti
    target (default)   root@10.123.45.67:22     ssh        ose
    emulator           developer@127.0.0.1:6622 ssh        ose
    ```
+
    
 4. To verify the devices that are already set up, use the following command:
    ```sh
    ares-install --device-list
    ```
+
 
 <br/>This will list all the devices that have been set up and are ready for development.<br/>
 
@@ -228,14 +236,17 @@ The script takes five arguments:
    ```sh
    npm install
    ```
+   
 6. Change its execution permission with the following command:
    ```sh
    chmod +x deploy.sh
    ```
+   
 7. To deploy your project, execute the deploy.sh script from the root directory of your React project:
    ```sh
    ./deploy.sh {DEVICE_NAME} #{APP_ID} {APP_VERSION} {VENDOR_NAME} {APP_TITLE}
    ```
+   
    example usage:
    ```sh
    ./deploy.sh #display com.team17.homegardening 1.0.0 "my team" "new app"
