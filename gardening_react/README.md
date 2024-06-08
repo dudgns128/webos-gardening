@@ -1,5 +1,6 @@
 # Getting Started - webOS WebApp with React
 
+
 ## Developing webOS apps/services by webOS Studio
 
 webOS Studio is an Microsoft Visual Studio Code (VS Code) extension for webOS. Using this extension, developers easily start to make webOS apps/services (web app, Enact app, JS service).
@@ -9,6 +10,7 @@ So, we recommend that developing apps/services through webOS Studio rather than 
 [[Reference] webOS OSE](https://www.webosose.org/docs/tools/sdk/vs-code-extension/)
 
 [[Reference] Visual Studio](https://marketplace.visualstudio.com/items?itemName=webOSSDK.webosstudio)
+
 
 ## System Requirements
 
@@ -27,6 +29,7 @@ Emulator-related features are not supported in Apple Silicon Mac.
 |Python|3.6 or higher|
 |VirtualBox|6.1|
 
+
 ## Setting Up Node.js on Your Local PC
 
 If you haven't installed Node.js on your local PC, please complete the installation of Node.js.
@@ -38,6 +41,7 @@ Move to React project's root directory
 ```sh
 cd webos-gardening/gardening_react
 ```
+
 
 ## Configuring Server Addresses in `src/const.js`
 
@@ -186,14 +190,15 @@ We know that the display that supports Raspberry Pi 4 only has 1024x600 resoluti
    emulator           developer@127.0.0.1:6622 ssh        ose
    ```
 
-   
+**Note:** The ssh user of the installed emulator is root and the password is empty (just type 'Enter')
+
 4. To verify the devices that are already set up, use the following command:
    ```sh
    ares-install --device-list
    ```
 
-
 <br/>This will list all the devices that have been set up and are ready for development.<br/>
+
 
 ## Deployment Script: deploy.sh
 
