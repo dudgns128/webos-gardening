@@ -27,6 +27,95 @@
   </p>
 </div>
 
+<!-- TABLE OF CONTENTS -->
+<details>
+  <summary>🗂️ Table of Contents 🗂️</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+    </li>
+    <li><a href="#specifications">Specifications</a>
+     <ul>
+        <li><a href="#built-with">Built With</a></li>
+       <li><a href="#diagram">Built With</a></li>
+      </ul>
+    </li>
+    <li><a href="#getting-started">Getting Started</a></li>
+    <li><a href="#usage-screenshot">Usage Screenshot</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
+
+
+<!-- ABOUT THE PROJECT -->
+## About The Project
+
+<p align="center" style="display: flex; justify-content: space-between;">
+    <img src="c" 
+         alt="User Facial Registration" 
+         style="width: 49%;">
+    <img src="" 
+         alt="User Menu Recommendation Algorithm" 
+         style="width: 49%;">
+</p>
+
+
+### Development Background
+As the cost of raising pet has risen recently, many people have started to take an interest in companion plants, which are comparatively less expensive to maintain. This growing interest is boosting the companion plant market, and simultaneously, there is an increasing demand for innovative ways to efficiently manage these plants. Especially in busy lifestyles, situations may arise where sudden business trips or vacations make it difficult to properly care for plants.
+
+Based on this background, the Smart Home Gardening project aims to provide a sustainable and user-friendly gardening solution suitable for modern living. Furthermore, This project seeks to reduce the hassle of plant care and to invigorate daily life through interaction with plants, aiming to make gardening an integral, lively part of daily living.
+
+### Development Direction
+
+**1. Automation of Maintaining Optimal Environmental Conditions Based on Plant Species**
+
+  - Real-time data collection is achieved through sensors connected to an Arduino, including temperature and humidity sensors, light sensors, and moisture sensors.
+    
+  - Based on the collected sensor data, an automatic watering system and light control system create suitable environments for different plants automatically.
+
+  - The appropriate environmental conditions for each plant species are stored in a database using domain knowledge in botany. For instance, cacti require temperatures of 30-40°C during the day and 10°C at night, with high light levels and 40-60% humidity, while peonies require temperatures of 18-25°C and 50-70% humidity.
+
+**2. Meeting Various User Needs**
+
+  - The system supports both an automation mode for convenient management and a customization mode for users who wish to interact directly with their plants. Users can switch between modes without restrictions. For example, someone who enjoys watering their plants manually can use the customization mode but switch to automation mode when they need to be away for an extended period.
+  
+  - Through a mobile web interface, users can monitor plant conditions and environmental factors, such as light and moisture levels, and make adjustments as needed.
+
+<!-- specifications -->
+## specifications
+
+### Built With
+#### WebApp
+
+[![React][React.js]][React-url][![npm][npm]][npm-url][![Bootstrap][Bootstrap.com]][Bootstrap-url][![Socket.io][Socket.io]][Socket.io-url][![JavaScript][JavaScript.js]][JavaScript-url][![Figma][Figma]][Figma-url]
+
+#### JS-service
+
+[![Flask][Flask]][Flask-url][![OpenCV][OpenCV]][OpenCV-url][![Socket.io][Socket.io]][Socket.io-url][![Python][Python.org]][Python-url]
+
+
+#### External Server
+
+[![Nodejs][Nodejs]][Nodejs-url][![npm][npm]][npm-url][![Prisma][Prisma]][Prisma-url][![JavaScript][JavaScript.js]][JavaScript-url]
+
+  
+#### Database
+
+[![MySQL][MySQL]][MySQL-url][![Prisma][Prisma]][Prisma-url]
+
+
+Development Environment
+
+[![macOS][macOS]][macOS-url]
+
+
+#### HardWare
+
+[![LG][LG]][LG-url][![Raspberry][Raspberry]][Raspberry-url]
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
   
 
 <!-- MARKDOWN LINKS & IMAGES -->
@@ -56,6 +145,33 @@
 
 [Flask]: https://img.shields.io/badge/Flask-000?style=for-the-badge&logo=flask&logoColor=fff
 [Flask-url]: https://flask.palletsprojects.com/en/3.0.x/
+
+[HTTP]: https://img.shields.io/badge/HTTP-%23ED2761?style=for-the-badge&logo=HTTP&logoColor=fff
+[HTTP-url]:https://www.cloudflare.com/ko-kr/learning/ddos/glossary/hypertext-transfer-protocol-http/
+
+[HTML5]: https://img.shields.io/badge/HTML5-%23FF4000?style=for-the-badge&logo=HTML5&logoColor=fff
+[HTML5-url]: https://html.com/html5/
+
+[LS2API]: https://img.shields.io/badge/LS2API-%234608560?style=for-the-badge&logo=LS2API&logoColor=fff
+[LS2API-url]: https://www.webosose.org/docs/reference/ls2-api/ls2-api-index/
+
+[AWS]: https://img.shields.io/badge/AWS-%23232F3E?style=for-the-badge&logo=amazonwebservices&logoColor=fff
+[ASW-url]: https://aws.amazon.com/ko/?nc2=h_lg
+
+[WEBSOCKET]: https://img.shields.io/badge/webSocket-%23BC52EE?style=for-the-badge&logo=webSocket&logoColor=fff
+[WEBSOCKET-url]: https://websocket.org/
+
+[InfluxDB]: https://img.shields.io/badge/InfluxDB-%2322ADF6?style=for-the-badge&logo=influxdb&logoColor=fff
+[InfluxDB-url]: https://www.influxdata.com/
+
+[Arduino]: https://img.shields.io/badge/Arduino-%2300878F?style=for-the-badge&logo=arduino&logoColor=fff
+[Arduino-url]: https://www.influxdata.com/
+
+[window]: https://img.shields.io/badge/Window-%230078D4?style=for-the-badge&logo=windows&logoColor=fff
+[window-url]: https://www.microsoft.com/software-download/windows11
+
+[spring]: https://img.shields.io/badge/Spring-%236DB33F?style=for-the-badge&logo=spring&logoColor=fff
+[spring-url]: https://spring.io/
 
 [Socket.io]: https://img.shields.io/badge/Socket.io-010101?style=for-the-badge&logo=socketdotio&logoColor=fff
 [Socket.io-url]: https://socket.io/
