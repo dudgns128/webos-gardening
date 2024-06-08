@@ -128,7 +128,7 @@ Before starting the setup process, ensure the following requirements are met:
 |For webOS OSE 2.0.0 or Higher|Raspberry Pi 4 Model B|
 |For webOS OSE 1.x|Raspberry Pi 3 Model B|
 
-If you cannot afford to build the image on your own, try with pre-built images.
+**Note:** If you cannot afford to build the image on your own, try with pre-built images.
 
 [[Reference] webOS OSE](https://www.webosose.org/docs/guides/setup/flashing-webos-ose/)
 
