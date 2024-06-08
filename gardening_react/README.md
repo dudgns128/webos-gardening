@@ -187,7 +187,7 @@ We know that the display that supports Raspberry Pi 4 only has 1024x600 resoluti
 
 <br/>This will list all the devices that have been set up and are ready for development.<br/>
 
-### Deployment Script: deploy.sh
+## Deployment Script: deploy.sh
 
 Before running the `deploy.sh` script, ensure you are in the root directory of the React project, which is the parent directory where the `build` will be created. The `deploy.sh` script automates the building and deploying process of the project.
 
