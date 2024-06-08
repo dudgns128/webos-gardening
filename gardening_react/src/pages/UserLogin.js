@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import UserLoginModal from '../components/UserLoginModal';
+import MessageModal from '../components/MessageModal';
 
 const UserLogin = () => {
     const navigate = useNavigate();
@@ -17,6 +17,8 @@ const UserLogin = () => {
         // 스토리지 저장해서 다음 식물정보등록할 때, 같이 서버로 전송
         localStorage.setItem('email', email);
         localStorage.setItem('password', pwd);
+
+        navigate('/user/plant')
     };
 
     const calculateWidthSize = (originalSize, ratio) => {
@@ -29,7 +31,7 @@ const UserLogin = () => {
 
     return (
         <div style = {{padding: '140px'}}>
-            <UserLoginModal 
+            <MessageModal 
             content={modalMessage} 
             isOpen={showModal} 
             setIsOpen={setShowModal} 
@@ -69,17 +71,15 @@ const UserLogin = () => {
 
                     <div>
                         <div className="btn" style={{ marginTop: '40px' }}>
-                            <Link to="/user/plant" style={{ textDecoration: 'none' }}>
-                                <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
-                                    <img src={require('../img/CheckBtn.png')} alt="" className="btn-image"/>
-                                </button>
-                            </Link>
+                            <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
+                                <img src={require('../img/CheckBtn.png')} alt="" className="btn-image"/>
+                            </button>
                         </div>
                     </div>
                     <div>
                         <div className="btn" style={{ marginTop: '20px' }}>
                             <Link to="/user/signup" style={{ textDecoration: 'none' }}>
-                                <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
+                                <button type="button" style={{ background: 'transparent', border: 'none' }}>
                                     <img src={require('../img/SignupLink.png')} alt="" className="btn-image"/>
                                 </button>
                             </Link>

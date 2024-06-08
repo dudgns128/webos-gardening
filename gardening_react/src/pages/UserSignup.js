@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import UserLoginModal from '../components/UserLoginModal';
+import MessageModal from '../components/MessageModal';
+import axios from 'axios';
 
 const UserSignup = () => {
     const navigate = useNavigate();
     const [name,setName] = useState('');
     const [sex,setSex] = useState(true);
     const [nickname,setNickname] = useState('');
-    const [year,setYear] = useState('');
-    const [month,setMonth] = useState('');
-    const [day,setDay] = useState('');
+    const [year,setYear] = useState('1990년');
+    const [month,setMonth] = useState('1월');
+    const [day,setDay] = useState('1일');
     const [email,setEmail] = useState('');
     const [pwd,setPwd] = useState('');
     const [pwdconfirm,setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
@@ -48,14 +49,13 @@ const UserSignup = () => {
         };
             
         try {
-            const response = await axios.post('http://52.79.201.44:8080/api/user', userData, {
+            const response = await axios.post('http://52.79.60.122:8080/api/user', userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
             
             if (response.status === 201) {
-                console.log("User registered successfully");
                 navigate('/user/login');
             }
         } catch (error) {
@@ -90,12 +90,12 @@ const UserSignup = () => {
 
     return (
         <div style = {{padding: '140px'}}>
-             <UserLoginModal 
-            content={modalMessage} 
-            isOpen={showModal} 
-            setIsOpen={setShowModal} 
-            closeMethod={() => setShowModal(false)}  
-        />
+            <MessageModal 
+                content={modalMessage} 
+                isOpen={showModal} 
+                setIsOpen={setShowModal} 
+                closeMethod={() => setShowModal(false)}  
+            />
             <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
                 <div className="d-flex flex-column align-items-center">
                     <h1 style = {{fontFamily: 'SansM', fontSize:'35px'}}>회원가입</h1>
@@ -153,15 +153,15 @@ const UserSignup = () => {
                                 required
                             />
                                 <select
-                                className="sexBox"
-                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
-                                value={sex ? '남' : '여'}
-                                onChange={handleSexChange}
-                                required
+                                    className="sexBox"
+                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    value={sex ? '남' : '여'}
+                                    onChange={handleSexChange}
+                                    required
                                 >
-                                <option value="" disabled>성별</option>
-                                {SEX_LIST.map((sex, index) => (
-                                    <option key={index}>{sex}</option>
+                                    <option value="" disabled>성별</option>
+                                    {SEX_LIST.map((sex, index) => (
+                                        <option key={index}>{sex}</option>
                                 ))}
                             </select>
                         </div>
@@ -187,7 +187,7 @@ const UserSignup = () => {
                                     type="year"
                                     value={year}
                                     onChange={(e) => {
-                                        setYear(e.target.value.replace('년', ''));
+                                        setYear(e.target.value);
                                     }}
                                     required
                                 >
@@ -201,7 +201,7 @@ const UserSignup = () => {
                                     type="month"
                                     value={month}
                                     onChange={(e) => {
-                                        setMonth(e.target.value.replace('월', ''));
+                                        setMonth(e.target.value);
                                     }}
                                     required
                                 >
@@ -215,7 +215,7 @@ const UserSignup = () => {
                                     type="day"
                                     value={day}
                                     onChange={(e) => {
-                                        setDay(e.target.value.replace('일', ''));
+                                        setDay(e.target.value);
                                     }}
                                     required
                                 >
@@ -231,20 +231,16 @@ const UserSignup = () => {
 
                     <div>
                         <div className="btn" style={{ marginTop: '40px' }}>
-                            <Link to="/user/login" style={{ textDecoration: 'none' }}>
-                                <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
-                                    <img src={require('../img/CheckBtn.png')} alt="" className="btn-image"/>
-                                </button>
-                            </Link>
+                            <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
+                                <img src={require('../img/CheckBtn.png')} alt="" className="btn-image"/>
+                            </button>
                         </div>
                     </div>
                     <div>
                         <div className="btn" style={{ marginTop: '20px' }}>
-                            <Link to="/user/login" style={{ textDecoration: 'none' }}>
-                                <button type="button" onClick ={goBack} style={{ background: 'transparent', border: 'none' }}>
-                                    <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image"/>
-                                </button>
-                            </Link>
+                            <button type="button" onClick ={goBack} style={{ background: 'transparent', border: 'none' }}>
+                                <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image"/>
+                            </button>
                         </div>
                     </div>
 

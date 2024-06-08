@@ -60,6 +60,15 @@ service.register('start', async function (message) {
       shortDescription: message.payload.shortDescription,
       maxLevel: message.payload.maxLevel,
     });
+  } catch(e) {
+    message.respond({
+      customErrorMessage: e,
+      success: false,
+      message: 'plantInfo.replaceData() failed',
+    });
+    return;
+  }
+  try {
     await imageUrl.replaceData({
       normal: message.payload.imageUrls.normal,
       happy: message.payload.imageUrls.happy,
@@ -74,6 +83,15 @@ service.register('start', async function (message) {
       underHumidity: message.payload.imageUrls.underHumidity,
       overHumidity: message.payload.imageUrls.overHumidity,
     });
+  } catch (e) {
+    message.respond({
+      customErrorMessage: e,
+      success: false,
+      message: 'imageUrl.replaceData() failed',
+    });
+    return;
+  }
+  try {
     await plantEnvInfo.replaceData({
       waterValue: message.payload.properEnvironments.waterValue,
       waterRange: message.payload.properEnvironments.waterRange,
@@ -88,7 +106,7 @@ service.register('start', async function (message) {
     message.respond({
       customErrorMessage: e,
       success: false,
-      message: 'start failed',
+      message: 'plantEnvInfo.replaceData() failed',
     });
     return;
   }
@@ -136,7 +154,27 @@ service.register('start', async function (message) {
   let satisfaction;
   const intervalId2 = setInterval(async function () {
     try {
+      const now = new Date();
+      const yearNow = now.getFullYear();
+      const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
+      const dayNow = now.getDate();
       const data = getSensingDataJSON();
+      if ((await plantCurrentInfo.isDataExist()) != true)
+        await plantCurrentInfo.putData({
+          isAutoControl: true,
+          level: 1,
+          waterCount: 0,
+          satisfaction: 0,
+          sensingData: null,
+        });
+      if ((await avgSatisfactionRecord.isDataExist(yearNow, monthNow, dayNow)) != true)
+        await avgSatisfactionRecord.putData({
+          year: yearNow,
+          month: monthNow,
+          day: dayNow,
+          avgSatisfaction: satisfaction,
+          count: 1,
+        });
       satisfaction = await calcSatisfaction(data);
       await envSensingData.putData({
         time: 1,
@@ -146,36 +184,12 @@ service.register('start', async function (message) {
         temperature: data.temperature,
         satisfaction,
       });
-      const now = new Date();
-      const yearNow = now.getFullYear();
-      const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
-      const dayNow = now.getDate();
-      if (
-        (await avgSatisfactionRecord.isDataExist(yearNow, monthNow, dayNow)) !=
-        true
-      )
-        await avgSatisfactionRecord.putData({
-          year: yearNow,
-          month: monthNow,
-          day: dayNow,
-          avgSatisfaction: satisfaction,
-          count: 1,
-        });
       await avgSatisfactionRecord.updateAvgSatisfaction(
         yearNow,
         monthNow,
         dayNow,
         satisfaction
       );
-
-      if ((await plantCurrentInfo.isDataExist()) != true)
-        await plantCurrentInfo.putData({
-          isAutoControl: true,
-          level: 1,
-          waterCount: 0,
-          satisfaction: 0,
-          sensingData: null,
-        });
       await plantCurrentInfo.updateSensingData(data);
       await plantCurrentInfo.updateSatisfaction(satisfaction);
     } catch (e) {
@@ -192,15 +206,19 @@ service.register('start', async function (message) {
 
 service.register('hitest', async function (message) {
   try {
-    if ((await plantCurrentInfo.isDataExist()) != true)
-      await plantCurrentInfo.putData({
-        isAutoControl: true,
-        level: 1,
-        waterCount: 0,
-        satisfaction: 0,
-        sensingData: null,
-      });
-    message.respond({suc:true});
+    const a = await calcSatisfaction(getSensingDataJSON());
+    message.respond({suc:a});
+    return;
+  } catch(e) {
+    message.respond(e);
+    return;
+  }
+});
+
+service.register('hitest2', async function (message) {
+  try {
+    await controlWater();
+    message.respond({suc:"suc"});
     return;
   } catch(e) {
     message.respond(e);
