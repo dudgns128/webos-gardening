@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import UserLoginModal from '../components/UserLoginModal';
+import WebSocketUtil from '../WebSocketUtil';
 
 const UserLogin = () => {
   const [email, setEmail] = useState('');
@@ -13,7 +14,17 @@ const UserLogin = () => {
       email: email,
       password: pwd,
     };
-    // [todo : email, pw 서버에 전송하여 로그인]
+
+    const msg = {
+      "method": 10,
+      "userPlant": null,
+      "data": {
+        "email": email,
+        "password": pwd
+      }
+    }
+
+    WebSocketUtil.socket.send(JSON.stringify(msg));
   };
 
   const calculateWidthSize = (originalSize, ratio) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import WebSocketUtil from '../WebSocketUtil';
 
 function PlantSelection() {
   const [plants, setPlants] = useState([]);
@@ -7,14 +8,22 @@ function PlantSelection() {
 
   useEffect(() => {
     // 식물 선택 페이지에 필요한 정보 받아올 API 요청 (양식 수정 필요)
-    fetch('https://example.com/api/plants')
-      .then((response) => response.json())
-      .then((data) => setPlants(data))
-      .catch((error) => console.error('Error fetching plant data:', error));
+    plants = WebSocketUtil.plants;
   }, []);
 
   const handleSelectPlant = (plant) => {
-    navigate.push(`/main?plantId=${plant.id}`);
+    navigate.push(`/main?plantId=${plant.plantId}`);
+
+    const msg = {
+      "method": 12,
+      "userPlant": null,
+      "data": {
+        "selectedPlantId": plant.plantId
+      }
+    }
+    
+    WebSocketUtil.socket.send(JSON.stringify(msg));
+    WebSocketUtil.selection = plant.plantId;
   };
 
   return (
@@ -23,7 +32,7 @@ function PlantSelection() {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {plants.map((plant) => (
           <div
-            key={plant.id}
+            key={plant.plantId}
             style={{
               display: 'flex',
               alignItems: 'center',

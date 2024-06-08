@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './PlantCondition.css';
-
-// const bridge = new WebOSServiceBridge();
-
+import WebSocketUtil from '../WebSocketUtil';
 
 const PlantConditionModal = ({ isOpen, onClose }) => {
 
@@ -16,19 +14,14 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
       return;
     }
     
-    // const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
-  
-    // bridge.onservicecallback = function (msg) {
-    //   const response = JSON.parse(msg);
-    //   if (response.success) {
-    //     setWater(response.water);
-    //     setLight(response.light);
-    //     setTemperature(response.temperature);
-    //     setHumidity(response.humidity);
-    //   }
-    // };
+    const updateValues = function () {
+      setWater(WebSocketUtil.plantData.water);
+      setLight(WebSocketUtil.plantData.light);
+      setTemperature(WebSocketUtil.plantData.temperature);
+      setHumidity(WebSocketUtil.plantData.humidity);
+    }
 
-    // const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
+    const intervalId = setInterval(() => updateValues(), 3000);
 
     return () => clearInterval(intervalId);
   }, [isOpen]);

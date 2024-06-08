@@ -1,8 +1,16 @@
 import '../components/PlantCondition.css';
+import WebSocketUtil from '../WebSocketUtil';
 
 const ControlWater = () => {
   const handleWaterButtonClick = () => {
-    // [todo] 물 제어할 수 있는 api 사용하기
+    const msg = {
+      "method": 14,
+      "userPlant": WebSocketUtil.selection,
+      "data": {
+      }
+    }
+
+    WebSocketUtil.socket.send(JSON.stringify(msg));
   };
 
   return (

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import PlantConditionModal from '../components/PlantConditionModal';
 import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
+import WebSocketUtil from '../WebSocketUtil';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -32,41 +33,21 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    const bridge = new WebOSServiceBridge();
 
-    const serviceURL = 'luna://com.team17.homegardening.service/getPlantInfos'; // 사용할 서비스의 URL
-
-    bridge.onservicecallback = function (msg) {
-      const response = JSON.parse(msg);
-      if (response.success) {
-        setSensorValue(response.satisfaction);
-        setPlantImageUrl(response.imageUrl);
-        setPlantName(response.name);
-        setPlantLevel(response.level);
-      }
-    };
+    const updateValues = function () {
+        setSensorValue((WebSocketUtil.plantData.water + WebSocketUtil.plantData.light + WebSocketUtil.plantData.temperature + WebSocketUtil.plantData.humidity) / 4);
+        setPlantSatisfaction(WebSocketUtil.plantData.satisfaction);
+        setPlantImageUrl(WebSocketUtil.plantData.imageUrl);
+        setPlantName(WebSocketUtil.plantData.plantName);
+        setPlantLevel(WebSocketUtil.plantData.level);
+    }
 
     // 3초마다 센서 값을 가져오는 인터벌 설정
-    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
+    const intervalId = setInterval(() => updateValues(), 3000);
 
     // 컴포넌트가 언마운트될 때 인터벌 정리
     return () => clearInterval(intervalId);
   }, []);
-
-  useEffect(() => {
-    // 센서 값에 따른 식물 만족도 설정
-    if (80 < sensorValue && sensorValue <= 100) {
-      setPlantSatisfaction('매우 좋음');
-    } else if (60 < sensorValue && sensorValue <= 80) {
-      setPlantSatisfaction('좋음');
-    } else if (40 < sensorValue && sensorValue <= 60) {
-      setPlantSatisfaction('보통');
-    } else if (20 < sensorValue && sensorValue <= 40) {
-      setPlantSatisfaction('나쁨');
-    } else if (0 <= sensorValue && sensorValue <= 20) {
-      setPlantSatisfaction('아주 나쁨');
-    }
-  }, [sensorValue]);
 
   const handleBarClick = () => {
     conditionModalOpen(true);

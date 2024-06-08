@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import '../components/PlantCondition.css';
-
-// const bridge = new WebOSServiceBridge();
+import WebSocketUtil from '../WebSocketUtil';
 
 const ControlLight = () => {
   const [light, setLight] = useState(0); // 설정 될 광량 값
 
   const handleSliderChange = (event) => {
     setLight(event.target.value);
-  };
 
-  useEffect(() => {
-    // [todo] light 제어할 수 있는 api 사용하기
-  }, [light]);
+    const msg = {
+      "method": 15,
+      "userPlant": WebSocketUtil.selection,
+      "data": {
+        "light": `"${light}"`
+      }
+    }
+
+    WebSocketUtil.socket.send(JSON.stringify(msg));
+  };
 
   return (
     <div className="control-light-container">
@@ -22,7 +27,9 @@ const ControlLight = () => {
         min="0"
         max="100"
         value={light}
-        onChange={handleSliderChange}
+        onmouseup={handleSliderChange}
+        ontouchend={handleSliderChange}
+        onkeyup={handleSliderChange}
         className="slider"
       />
       <p>Current light value: {light}</p>
