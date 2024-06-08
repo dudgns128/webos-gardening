@@ -12,7 +12,7 @@ const ControlLight = () => {
       "method": 15,
       "userPlant": WebSocketUtil.selection,
       "data": {
-        "light": `"${light}"`
+        "light": light
       }
     }
 

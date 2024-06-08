@@ -16,7 +16,7 @@ function PlantSelection() {
 
     const msg = {
       "method": 12,
-      "userPlant": null,
+      "userPlant": 0,
       "data": {
         "selectedPlantId": plant.plantId
       }

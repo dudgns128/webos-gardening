@@ -17,7 +17,7 @@ const UserLogin = () => {
 
     const msg = {
       "method": 10,
-      "userPlant": null,
+      "userPlant": 0,
       "data": {
         "email": email,
         "password": pwd

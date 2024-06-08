@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import './PlantCondition.css';
+import WebSocketUtil from '../WebSocketUtil';
 
 // const bridge = new WebOSServiceBridge();
 
@@ -58,21 +59,20 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
     if (!isOpen) {
       return;
     }
-
-    // const serviceURL = "luna://com.team17.homegardening.service/toggleAutocontrol";
-
-    // bridge.onservicecallback = function (msg) {
-    //   const response = JSON.parse(msg);
-    //   if (response.success) {
-    //     setCurrentState(response.currentState);
-    //   }
-    // };
-
-    // bridge.call(serviceURL, '{}');
   }, [isOpen]);
 
   const toggleHandler = () => {
     setCurrentState(!currentState);
+
+    const msg = {
+      "method": 16,
+      "userPlant": WebSocketUtil.selection,
+      "data": {
+        "isAutoControl": currentState
+      }
+    };
+
+    WebSocketUtil.socket.send(JSON.stringify(msg));
   };
 
   if (!isOpen) {
