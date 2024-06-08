@@ -47,6 +47,11 @@ const Toggle = ({ isOn, toggleHandler }) => {
 
 const PlantAutocontrolModal = ({ isOpen, onClose }) => {
   const [currentState, setCurrentState] = useState(true);
+  const description = localStorage.getItem('description');
+
+  const descriptionLines = description ? description.split('\n').map((line, index) => (
+    <span key={index} className="block-span">{line}</span>
+  )) : null;
 
   useEffect(() => {
     if (!isOpen) {
@@ -74,9 +79,9 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
   }
 
   return (
-    <div className="PlantModal" onClick={onClose}>
-      <div className="modal-backdrop">
-        <div className="plant-container">
+    <div className="PlantModal">
+      <div className="modal-backdrop"  onClick={onClose}>
+        <div className="plant-container" onClick={(e) => e.stopPropagation()}>
           <h1>식물 관리</h1>
           <div className="plant-status">
             <div className="status-item">
@@ -84,9 +89,7 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
               <Toggle isOn={currentState} toggleHandler={toggleHandler} style={{ marginLeft: '20px' }}/>
             </div>
             <div className="autocontrol-text">
-              <span className="block-span">선인장 키울 때 유의사항:</span>
-              <span className="block-span">1. 분갈이를 1년에 한번씩 해준다</span>
-              <span className="block-span">2. 분갈이를 할 때, 뿌리를 잘 정리해준다</span>
+              {descriptionLines}
             </div>
           </div>
         </div>
