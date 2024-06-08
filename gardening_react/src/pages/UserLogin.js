@@ -4,10 +4,10 @@ import UserLoginModal from '../components/UserLoginModal';
 import WebSocketUtil from '../WebSocketUtil';
 
 const UserLogin = () => {
-  const [email, setEmail] = useState('');
-  const [pwd, setPwd] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  let [email, setEmail] = useState('');
+  let [pwd, setPwd] = useState('');
+  let [showModal, setShowModal] = useState(false);
+  let [modalMessage, setModalMessage] = useState('');
 
   const onSubmit = () => {
     const data = {

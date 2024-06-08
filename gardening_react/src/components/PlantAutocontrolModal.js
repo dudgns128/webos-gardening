@@ -53,7 +53,7 @@ const Toggle = ({ isOn, toggleHandler }) => {
 };
 
 const PlantAutocontrolModal = ({ isOpen, onClose }) => {
-  const [currentState, setCurrentState] = useState(true);
+  let [currentState, setCurrentState] = useState(true);
 
   useEffect(() => {
     if (!isOpen) {

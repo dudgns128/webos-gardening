@@ -4,6 +4,7 @@ import PlantConditionModal from '../components/PlantConditionModal';
 import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
 import WebSocketUtil from '../WebSocketUtil';
+import { useLocation } from 'react-router-dom';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -12,14 +13,14 @@ function useQuery() {
 const MainPage = () => {
   const navigate = useNavigate();
 
-  const [sensorValue, setSensorValue] = useState(0);
-  const [plantSatisfaction, setPlantSatisfaction] = useState('초기');
-  const [plantImageUrl, setPlantImageUrl] = useState('');
-  const [plantName, setPlantName] = useState('초기');
-  const [plantLevel, setPlantLevel] = useState(0);
-  const [isConditionModalOpen, conditionModalOpen] = useState(false);
-  const [isToggleModalOpen, toggleModalOpen] = useState(false);
-  const [isCalendarModalOpen, calendarModalOpen] = useState(false);
+  let [sensorValue, setSensorValue] = useState(0);
+  let [plantSatisfaction, setPlantSatisfaction] = useState('초기');
+  let [plantImageUrl, setPlantImageUrl] = useState('');
+  let [plantName, setPlantName] = useState('초기');
+  let [plantLevel, setPlantLevel] = useState(0);
+  let [isConditionModalOpen, conditionModalOpen] = useState(false);
+  let [isToggleModalOpen, toggleModalOpen] = useState(false);
+  let [isCalendarModalOpen, calendarModalOpen] = useState(false);
 
   const query = useQuery();
   const plantId = query.get('plantId'); // 이전 페이지에서 선택한 plantId 로 웹소켓 연결 설정하면 됨.
@@ -33,13 +34,12 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-
     const updateValues = function () {
-        setSensorValue((WebSocketUtil.plantData.water + WebSocketUtil.plantData.light + WebSocketUtil.plantData.temperature + WebSocketUtil.plantData.humidity) / 4);
-        setPlantSatisfaction(WebSocketUtil.plantData.satisfaction);
-        setPlantImageUrl(WebSocketUtil.plantData.imageUrl);
-        setPlantName(WebSocketUtil.plantData.plantName);
-        setPlantLevel(WebSocketUtil.plantData.level);
+      setSensorValue((WebSocketUtil.plantData.water + WebSocketUtil.plantData.light + WebSocketUtil.plantData.temperature + WebSocketUtil.plantData.humidity) / 4);
+      setPlantSatisfaction(WebSocketUtil.plantData.satisfaction);
+      setPlantImageUrl(WebSocketUtil.plantData.imageUrl);
+      setPlantName(WebSocketUtil.plantData.plantName);
+      setPlantLevel(WebSocketUtil.plantData.level);
     }
 
     // 3초마다 센서 값을 가져오는 인터벌 설정
@@ -47,7 +47,7 @@ const MainPage = () => {
 
     // 컴포넌트가 언마운트될 때 인터벌 정리
     return () => clearInterval(intervalId);
-  }, []);
+  }, [plantSatisfaction, plantImageUrl, plantLevel, sensorValue]);
 
   const handleBarClick = () => {
     conditionModalOpen(true);

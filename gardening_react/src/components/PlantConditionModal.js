@@ -4,10 +4,10 @@ import WebSocketUtil from '../WebSocketUtil';
 
 const PlantConditionModal = ({ isOpen, onClose }) => {
 
-  const [water, setWater] = useState(0);
-  const [light, setLight] = useState(0);
-  const [temperature, setTemperature] = useState(0);
-  const [humidity, setHumidity] = useState(0);
+  let [water, setWater] = useState(0);
+  let [light, setLight] = useState(0);
+  let [temperature, setTemperature] = useState(0);
+  let [humidity, setHumidity] = useState(0);
     
   useEffect(() => {
     if (!isOpen) {

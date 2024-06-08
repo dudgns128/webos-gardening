@@ -3,7 +3,7 @@ import '../components/PlantCondition.css';
 import WebSocketUtil from '../WebSocketUtil';
 
 const ControlLight = () => {
-  const [light, setLight] = useState(0); // 설정 될 광량 값
+  let [light, setLight] = useState(0); // 설정 될 광량 값
 
   const handleSliderChange = (event) => {
     setLight(event.target.value);

@@ -6,24 +6,25 @@ function PlantSelection() {
   const [plants, setPlants] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useEffect((plantData) => {
     // 식물 선택 페이지에 필요한 정보 받아올 API 요청 (양식 수정 필요)
-    plants = WebSocketUtil.plants;
-  }, []);
+    setTimeout(()=>
+    setPlants(WebSocketUtil.plants), 1500);
+  }, [plants]);
 
   const handleSelectPlant = (plant) => {
-    navigate.push(`/main?plantId=${plant.plantId}`);
+    navigate(`/main?plantId=${plant.id}`);
 
     const msg = {
       "method": 12,
       "userPlant": 0,
       "data": {
-        "selectedPlantId": plant.plantId
+        "selectedPlantId": plant.id
       }
     }
     
     WebSocketUtil.socket.send(JSON.stringify(msg));
-    WebSocketUtil.selection = plant.plantId;
+    WebSocketUtil.selection = plant.id;
   };
 
   return (
@@ -32,7 +33,7 @@ function PlantSelection() {
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         {plants.map((plant) => (
           <div
-            key={plant.plantId}
+            key={plant.id}
             style={{
               display: 'flex',
               alignItems: 'center',

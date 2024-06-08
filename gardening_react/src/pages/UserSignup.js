@@ -4,18 +4,18 @@ import UserLoginModal from '../components/UserLoginModal';
 
 const UserSignup = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [sex, setSex] = useState(true);
-  const [nickname, setNickname] = useState('');
-  const [year, setYear] = useState('');
-  const [month, setMonth] = useState('');
-  const [day, setDay] = useState('');
-  const [email, setEmail] = useState('');
-  const [pwd, setPwd] = useState('');
-  const [pwdconfirm, setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
-  const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  let [name, setName] = useState('');
+  let [sex, setSex] = useState(true);
+  let [nickname, setNickname] = useState('');
+  let [year, setYear] = useState('');
+  let [month, setMonth] = useState('');
+  let [day, setDay] = useState('');
+  let [email, setEmail] = useState('');
+  let [pwd, setPwd] = useState('');
+  let [pwdconfirm, setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
+  let [showModal, setShowModal] = useState(false);
+  let [modalMessage, setModalMessage] = useState('');
+  let [errorMessage, setErrorMessage] = useState('');
 
   const checkPassword = () => {
     if (pwd !== pwdconfirm) {
