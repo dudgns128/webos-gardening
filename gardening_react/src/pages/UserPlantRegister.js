@@ -152,7 +152,7 @@ const UserPlantRegister = () => {
       }
       bridge.call(serviceURL, JSON.stringify(payload));
     }
-  }, [selectedPlantId, plantSpecies]);
+  }, [userplantId, plantSpecies, plantName, plantBirthdate]);
 
 
   const goBack = () => {
