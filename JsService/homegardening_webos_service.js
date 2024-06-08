@@ -1,11 +1,11 @@
 // eslint-disable-next-line import/no-unresolved
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
-// const WebSocket = require('ws');
+const WebSocket = require('ws');
 
 const service = new Service(pkgInfo.name);
 const logHeader = '[' + pkgInfo.name + ']';
-const wsurl = 'ws://example.com';
+const wsurl = 'ws://52.79.60.122:8080/ws';
 
 // *************************************** APIs ***************************************
 // (일단 임시) 메인페이지 데이터 조회 API
