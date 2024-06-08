@@ -11,9 +11,9 @@ const UserPlantRegister = () => {
   const currentMonth = today.getMonth() + 1; // getMonth()는 0부터 시작하므로 1을 더해줍니다.
   const currentDay = today.getDate();
 
-  const [userplantId, setUserplantId] = useState(0);                // 서버에서 저장 <-> 웹앱에서 사용하는 id
+  const [userplantId, setUserplantId] = useState(0);                // 서버에서 저장 <-> 웹앱에서 해당 식물 구별 위해 사용하는 id
   const [plantList, setPlantList] = useState([]);
-  const [selectedPlantId, setSelectedPlantId] = useState(null);     // plantSpecies에 상응하는 id
+  const [selectedPlantId, setSelectedPlantId] = useState(null);     // plantSpecies에 상응하는 id (서버 DB에 저장된 식물 종 id)
   const navigate = useNavigate();
   const [plantSpecies, setPlantSpecies] = useState('');
   const [plantName, setPlantName] = useState('');
@@ -25,7 +25,6 @@ const UserPlantRegister = () => {
   const [level, setLevel] = useState(1);
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const fetchPlantInfo = async () => {
@@ -42,7 +41,6 @@ const UserPlantRegister = () => {
     fetchPlantInfo();
   }, []);
 
-  // plantList 상태가 변경될 때마다 실행되는 useEffect
   useEffect(() => {
     // 선택된 식물 종에 상응하는 id를 plantInfoId에 저장
     const selectedPlant = plantList.find(plant => plant.scientificName === plantSpecies);
@@ -105,9 +103,13 @@ const UserPlantRegister = () => {
   };    
 
   useEffect(() => {
-    const index = plantList.findIndex(plant => plant.scientificName === plantSpecies);
+    const selectedPlant = plantList.find(plant => plant.scientificName === plantSpecies);
 
     if (selectedPlantId !== null && plantList.length > 0) {
+
+      // 선택된 식물 종에 상응하는 description을 저장 후 AutoToggle 내 식물 키울 때 유의사항 내용
+      localStorage.setItem('description', selectedPlant.shortDescription);     // API 개발 이전 임시용
+
       const serviceURL = "luna://com.team17.homegardening.service/start";
       
       bridge.onservicecallback = function (msg) {
@@ -120,37 +122,37 @@ const UserPlantRegister = () => {
         "plantId": userplantId,
         "plantName": plantName,
         "plantBirthDate": plantBirthdate,
-        "scientificName": plantList[index].scientificName,
-        "shortDescription": plantList[index].shortDescription,
-        "maxLevel": plantList[index].maxLevel,
+        "scientificName": selectedPlant.scientificName,
+        "shortDescription": selectedPlant.shortDescription,
+        "maxLevel": selectedPlant.maxLevel,
         "imageUrls": {
-          "normal": plantList[index].plantImage.normalImageUrl,
-          "happy": plantList[index].plantImage.happyImageUrl,
-          "sad": plantList[index].plantImage.sadImageUrl,
-          "angry": plantList[index].plantImage.angryImageUrl,
-          "underWater": plantList[index].plantImage.underWaterImageUrl,
-          "overWater": plantList[index].plantImage.overWaterImageUrl,
-          "underLight": plantList[index].plantImage.underLightImageUrl,
-          "overLight": plantList[index].plantImage.overLightImageUrl,
-          "underTemperature": plantList[index].plantImage.underTemperatureImageUrl,
-          "overTemperature": plantList[index].plantImage.overTemperatureImageUrl,
-          "underHumidity": plantList[index].plantImage.underHumidityImageUrl,
-          "overHumidity": plantList[index].plantImage.overHumidityImageUrl,
+          "normal": selectedPlant.plantImage.normalImageUrl,
+          "happy": selectedPlant.plantImage.happyImageUrl,
+          "sad": selectedPlant.plantImage.sadImageUrl,
+          "angry": selectedPlant.plantImage.angryImageUrl,
+          "underWater": selectedPlant.plantImage.underWaterImageUrl,
+          "overWater": selectedPlant.plantImage.overWaterImageUrl,
+          "underLight": selectedPlant.plantImage.underLightImageUrl,
+          "overLight": selectedPlant.plantImage.overLightImageUrl,
+          "underTemperature": selectedPlant.plantImage.underTemperatureImageUrl,
+          "overTemperature": selectedPlant.plantImage.overTemperatureImageUrl,
+          "underHumidity": selectedPlant.plantImage.underHumidityImageUrl,
+          "overHumidity": selectedPlant.plantImage.overHumidityImageUrl,
         },
         "properEnvironments": {
-          "waterValue": plantList[index].plantEnvironment.properWaterValue,
-          "waterRange": plantList[index].plantEnvironment.properWaterRange,
-          "lightValue": plantList[index].plantEnvironment.properLightValue,
-          "lightRange": plantList[index].plantEnvironment.properLightRange,
-          "temperatureValue": plantList[index].plantEnvironment.properTemperatureValue,
-          "temperatureRange": plantList[index].plantEnvironment.properTemperatureRange,
-          "humidityValue": plantList[index].plantEnvironment.properHumidityValue,
-          "humidityRange": plantList[index].plantEnvironment.properHumidityRange,
+          "waterValue": selectedPlant.plantEnvironment.properWaterValue,
+          "waterRange": selectedPlant.plantEnvironment.properWaterRange,
+          "lightValue": selectedPlant.plantEnvironment.properLightValue,
+          "lightRange": selectedPlant.plantEnvironment.properLightRange,
+          "temperatureValue": selectedPlant.plantEnvironment.properTemperatureValue,
+          "temperatureRange": selectedPlant.plantEnvironment.properTemperatureRange,
+          "humidityValue": selectedPlant.plantEnvironment.properHumidityValue,
+          "humidityRange": selectedPlant.plantEnvironment.properHumidityRange,
         }
       }
       bridge.call(serviceURL, JSON.stringify(payload));
     }
-  }, []);
+  }, [selectedPlantId, plantSpecies]);
 
 
   const goBack = () => {
