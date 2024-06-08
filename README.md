@@ -12,7 +12,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/dudgns128/webos-gardening">
-    <img src="https://raw.githubusercontent.com/dudgns128/webos-gardening/Webos/dev/gardening_react/src/img/AppLogo.png" alt="Logo" style="width: 60%;">
+    <img src="![logo](https://github.com/dudgns128/webos-gardening/assets/62577519/8ad9aae0-489b-4471-86eb-aaa248cdc297)" alt="Logo" style="width: 60%;">
   </a>
   <h3 align="center">Smart Home Gardening Project with WebOS</h3>
   <p align="center">
