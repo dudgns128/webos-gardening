@@ -24,9 +24,9 @@ const MainPage = () => {
   const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
 
   const satisfactionColors = {
-    '매우 좋음': '#00A35E', 
-    '좋음': 'lightgreen', 
-    '보통': 'yellow', 
+    '매우 좋음': '#00A35E',
+    '좋음': 'lightgreen',
+    '보통': 'yellow',
     '나쁨': 'orange',
     '아주 나쁨': 'red'
   };
@@ -99,7 +99,7 @@ const MainPage = () => {
   //   // const imageKey = `${plantSpecies}-image`;
   //   // // 생성된 키로 localStorage에서 이미지 URL 가져오기
   //   // const storedImageUrl = localStorage.getItem(imageKey);
-  
+
   //   // if (storedImageUrl) {
   //   //   setPlantImageUrl(storedImageUrl);
   //   // }
@@ -109,7 +109,7 @@ const MainPage = () => {
 
   useEffect(() => {
     // 센서 값에 따른 식물 만족도 설정
-    if (80 < sensorValue && sensorValue <= 100 ) {
+    if (80 < sensorValue && sensorValue <= 100) {
       setPlantSatisfaction('매우 좋음');
     } else if (60 < sensorValue && sensorValue <= 80) {
       setPlantSatisfaction('좋음');
@@ -179,7 +179,7 @@ const MainPage = () => {
   };
 
   return (
-    <div style = {{
+    <div style={{
       padding: '140px',
       backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
@@ -189,31 +189,31 @@ const MainPage = () => {
     }}>
       <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
         <div className="d-flex flex-column align-items-center">
-        <PlantConditionModal
-          isOpen={isConditionModalOpen}
-          onClose={() => conditionModalOpen(false)}
-        />
-        <PlantAutocontrolModal
-          isOpen={isToggleModalOpen}
-          onClose={() => toggleModalOpen(false)}
-        />
-        <CalendarModal
-          isOpen={isCalendarModalOpen}
-          onClose={() => calendarModalOpen(false)}
-        />
-        <ControlLightModal
-          isOpen={isControlLightModalOpen}
-          onClose={() => controlLightModalOpen(false)}
-        />
-        <ControlWaterModal
-          isOpen={isControlWaterModalOpen}
-          onClose={() => controlWaterModalOpen(false)}
-        />
+          <PlantConditionModal
+            isOpen={isConditionModalOpen}
+            onClose={() => conditionModalOpen(false)}
+          />
+          <PlantAutocontrolModal
+            isOpen={isToggleModalOpen}
+            onClose={() => toggleModalOpen(false)}
+          />
+          <CalendarModal
+            isOpen={isCalendarModalOpen}
+            onClose={() => calendarModalOpen(false)}
+          />
+          <ControlLightModal
+            isOpen={isControlLightModalOpen}
+            onClose={() => controlLightModalOpen(false)}
+          />
+          <ControlWaterModal
+            isOpen={isControlWaterModalOpen}
+            onClose={() => controlWaterModalOpen(false)}
+          />
           {/* 센서값에 따른 바 표시 */}
           <div>
             <div
               style={{
-                backgroundColor: satisfactionColors[plantSatisfaction] || 'grey' ,
+                backgroundColor: satisfactionColors[plantSatisfaction] || 'grey',
                 width: `${sensorValue}%`,
                 height: '40px',
                 borderRadius: '10px'
@@ -227,7 +227,7 @@ const MainPage = () => {
           {/* 식물 이미지가 들어 갈 자리 */}
           <div className="plant_image" style={{ marginTop: '40px' }}>
             <img src={plantImageUrl} alt="식물 이미지" />
-          </div> 
+          </div>
 
           {/* 식물 이름이 들어 갈 자리 */}
           <div className="plant_info" style={{ marginTop: '40px'}}>
@@ -247,6 +247,7 @@ const MainPage = () => {
               </p>
             </div>
           </div>
+
 
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
