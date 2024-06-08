@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MessageModal from '../components/MessageModal';
 import axios from 'axios';
+import { server } from '../const';
 
 const UserSignup = () => {
     const navigate = useNavigate();
@@ -49,7 +50,7 @@ const UserSignup = () => {
         };
             
         try {
-            const response = await axios.post('http://52.79.60.122:8080/api/user', userData, {
+            const response = await axios.post(`${server}/api/user`, userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }

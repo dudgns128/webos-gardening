@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MessageModal from '../components/MessageModal';
 import axios from 'axios';
+import { server } from '../const';
 
 const bridge = new WebOSServiceBridge();
 
@@ -29,7 +30,7 @@ const UserPlantRegister = () => {
   useEffect(() => {
     const fetchPlantInfo = async () => {
       try {
-        const response = await axios.get('http://52.79.60.122:8080/api/plantinfo');
+        const response = await axios.get(`${server}/api/plantinfo`);
         setPlantList(response.data);
       } catch (error) {
         const message = error.response?.data?.message || '식물 리스트를 가져올 수 없습니다';
@@ -67,7 +68,7 @@ const UserPlantRegister = () => {
     setPlantBirthdate(birthDate) // just for JS service API
     
     try {
-      const response = await axios.post('http://52.79.60.122:8080/api/userplant', null, {
+      const response = await axios.post(`${server}/api/userplant`, null, {
         params:{
           email: email,
           password: password,
