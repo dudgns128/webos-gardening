@@ -1,5 +1,30 @@
-# Getting Started - React App
+# Getting Started - webOS WebApp with React
 
+### Developing webOS apps/services by webOS Studio
+
+webOS Studio is an Microsoft Visual Studio Code (VS Code) extension for webOS. Using this extension, developers easily start to make webOS apps/services (web app, Enact app, JS service).
+
+So, we recommend that developing apps/services through webOS Studio rather than using only the Command-Line Interface (CLI).
+
+[Reference - webOS OSE](https://www.webosose.org/docs/tools/sdk/vs-code-extension/)
+
+[Reference - Visual Studio](https://marketplace.visualstudio.com/items?itemName=webOSSDK.webosstudio)
+### System Requirements
+
+#### Hardware
+
+Emulator-related features are not supported in Apple Silicon Mac.
+
+[Reference - webOS OSE](https://www.webosose.org/docs/tools/sdk/emulator/virtualbox-emulator/emulator-user-guide/)
+
+#### Software
+
+|**Software**|**Required version**|
+|------|------|
+|Microsoft Visual Studio Code|1.58.0 or higher|
+|Node.js|v14.15.1 or higher (verified on v14.15.1 and v16.20.2)|
+|Python|3.6 or higher|
+|VirtualBox|6.1|
 
 ### Setting Up Node.js on Your Local PC
 
