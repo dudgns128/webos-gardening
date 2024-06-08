@@ -37,7 +37,8 @@
     <li><a href="#specifications">Specifications</a>
      <ul>
         <li><a href="#built-with">Built With</a></li>
-      </ul>
+        <li><a href="#system-architecture">System Architecture</a></li>
+     </ul>
     </li>
     <li><a href="#getting-started">Getting Started</a></li>
     <li><a href="#usage-screenshot">Usage Screenshot</a></li>
@@ -50,11 +51,11 @@
 ## About The Project
 
 <p align="center" style="display: flex; justify-content: space-between;">
-    <img src="c" 
-         alt="User Facial Registration" 
+    <img src="" 
+         alt="projectImage1" 
          style="width: 49%;">
     <img src="" 
-         alt="User Menu Recommendation Algorithm" 
+         alt="projectImage2" 
          style="width: 49%;">
 </p>
 
@@ -133,6 +134,23 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 #### Development Environment
 
 [![window][window]][window-url]
+
+### Architecture
+
+<details>
+  <summary>🖼️ System Architecture 🖼️</summary>
+  <p align="center" style="display: flex; justify-content: space-between;">
+    <img src="" alt="System Architecture" style="width: 99%;">
+  </p>
+</details>
+
+<details>
+  <summary>🖼️ Database ERD 🖼️</summary>
+  <p align="center" style="display: flex; justify-content: space-between;">
+    <img src="" alt="Database ERD" style="width: 99%;">
+  </p>
+</details>
+
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
