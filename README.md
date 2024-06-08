@@ -37,7 +37,6 @@
     <li><a href="#specifications">Specifications</a>
      <ul>
         <li><a href="#built-with">Built With</a></li>
-       <li><a href="#diagram">Built With</a></li>
       </ul>
     </li>
     <li><a href="#getting-started">Getting Started</a></li>
@@ -87,31 +86,53 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 ### Built With
 #### WebApp
 
-[![React][React.js]][React-url][![npm][npm]][npm-url][![Bootstrap][Bootstrap.com]][Bootstrap-url][![Socket.io][Socket.io]][Socket.io-url][![JavaScript][JavaScript.js]][JavaScript-url][![Figma][Figma]][Figma-url]
+[![React][React.js]][React-url][![npm][npm]][npm-url][![HTML5][HTML5]][HTML5-url][![JavaScript][JavaScript.js]][JavaScript-url][![Figma][Figma]][Figma-url][![Nodejs][Nodejs]][Nodejs-url][![HTTP][HTTP]][HTTP-url]
+
+- **webOS Emulator**: Pre-built image applied in a local environment using VS Code extension webOS Studio for React app development.
+- **Luna-bus API**: Used to interact with the JS service.
+- **HTTP Communication**: Used for server interaction.
 
 #### JS-service
 
-[![Flask][Flask]][Flask-url][![OpenCV][OpenCV]][OpenCV-url][![Socket.io][Socket.io]][Socket.io-url][![Python][Python.org]][Python-url]
+[![JavaScript][JavaScript.js]][JavaScript-url][![Nodejs][Nodejs]][Nodejs-url][![npm][npm]][npm-url][![WEBSOCKET][WEBSOCKET]][WEBSOCKET-url][![LS2API][LS2API]][LS2API-url]
+
+- **Main Logic**: Implemented within the JS service in webOS.
+- **DB8**: Used as the internal database in webOS.
+- **Functionality**: Handles tasks like plant automation control, leveling up, satisfaction metrics, and HW sensor data collection.
+- **Remote Control**: Communicates with an external server via WebSocket.
 
 
 #### External Server
 
-[![Nodejs][Nodejs]][Nodejs-url][![npm][npm]][npm-url][![Prisma][Prisma]][Prisma-url][![JavaScript][JavaScript.js]][JavaScript-url]
+[![AWS][AWS]][AWS-url][![WEBSOCKET][WEBSOCKET]][WEBSOCKET-url][![HTTP][HTTP]][HTTP-url][![Spring][Spring]][Spring-url]
+
+- **Spring Boot**: Utilized for server construction.
+- **REST Controllers**: Designed using HTTP for functionalities like login and registration.
+- **WebSocket Controllers**: Designed for real-time data transmission.
+- **Spring JPA**: Used for database configuration and setup.
+- **AWS EC2 Ubuntu**: Environment for server deployment.
 
   
 #### Database
 
-[![MySQL][MySQL]][MySQL-url][![Prisma][Prisma]][Prisma-url]
+[![MySQL][MySQL]][MySQL-url][![InfluxDB][InfluxDB]][InfluxDB-url]
 
-
-Development Environment
-
-[![macOS][macOS]][macOS-url]
+- **MySQL**: Stores basic data such as user and plant information.
+- **InfluxDB**: Used for storing time-series data, appropriate for environmental sensing information collected every 5 seconds, deemed unsuitable for RDBMS.
 
 
 #### HardWare
 
-[![LG][LG]][LG-url][![Raspberry][Raspberry]][Raspberry-url]
+[![LG][LG]][LG-url][![Arduino][Arduino]][Arduino-url][![Raspberry][Raspberry]][Raspberry-url]
+
+- **Devices**: Raspberry Pi 4 flashed with webOS pre-built image, Arduino, display resolution set to 1920x1080.
+- **Sensors**: DHT11, CDS light sensor, water level sensor, NeoPixel connected via I2C communication.
+- **Data Handling**: Sensor data read through Arduino IDE and transmitted to Raspberry Pi 4.
+- **Control**: Arduino controls motor and NeoPixel settings based on commands from Raspberry Pi.
+
+#### Development Environment
+
+[![window][window]][window-url]
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -137,8 +158,6 @@ Development Environment
 [React.js]: https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=000
 [React-url]: https://reactjs.org/
 
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
 
 [Figma]: https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=fff
 [Figma-url]: https://www.figma.com/
@@ -146,7 +165,7 @@ Development Environment
 [Flask]: https://img.shields.io/badge/Flask-000?style=for-the-badge&logo=flask&logoColor=fff
 [Flask-url]: https://flask.palletsprojects.com/en/3.0.x/
 
-[HTTP]: https://img.shields.io/badge/HTTP-%23ED2761?style=for-the-badge&logo=HTTP&logoColor=fff
+[HTTP]: https://img.shields.io/badge/HTTP-%23ED2761?style=for-the-badge&logo=&logoColor=fff
 [HTTP-url]:https://www.cloudflare.com/ko-kr/learning/ddos/glossary/hypertext-transfer-protocol-http/
 
 [HTML5]: https://img.shields.io/badge/HTML5-%23FF4000?style=for-the-badge&logo=HTML5&logoColor=fff
@@ -156,7 +175,7 @@ Development Environment
 [LS2API-url]: https://www.webosose.org/docs/reference/ls2-api/ls2-api-index/
 
 [AWS]: https://img.shields.io/badge/AWS-%23232F3E?style=for-the-badge&logo=amazonwebservices&logoColor=fff
-[ASW-url]: https://aws.amazon.com/ko/?nc2=h_lg
+[AWS-url]: https://aws.amazon.com/ko/?nc2=h_lg
 
 [WEBSOCKET]: https://img.shields.io/badge/webSocket-%23BC52EE?style=for-the-badge&logo=webSocket&logoColor=fff
 [WEBSOCKET-url]: https://websocket.org/
@@ -196,6 +215,9 @@ Development Environment
 
 [JavaScript.js]: https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black
 [JavaScript-url]: https://developer.mozilla.org/ko/docs/Learn/JavaScript
+
+[Raspberry]: https://img.shields.io/badge/Raspberry%20Pi-A22846?style=for-the-badge&logo=raspberrypi&logoColor=fff
+[Raspberry-url]: https://www.raspberrypi.com/
 
 [LG]: https://img.shields.io/badge/webOS-A50034?style=for-the-badge&logo=lg&logoColor=fff
 [LG-url]: https://www.webosose.org/
