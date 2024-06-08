@@ -220,8 +220,6 @@ const MainPage = () => {
               }}
               onClick={handleBarClick} // onClick 이벤트 핸들러 추가
             ></div>
-            <p>Sensor Value: {sensorValue}</p>
-            <p>Plant Satisfaction: {plantSatisfaction}</p>
           </div>
 
           {/* 식물 이미지가 들어 갈 자리 */}
