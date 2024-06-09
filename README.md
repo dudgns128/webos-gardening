@@ -38,6 +38,7 @@
      <ul>
         <li><a href="#built-with">Built With</a></li>
         <li><a href="#system-architecture">System Architecture</a></li>
+       <li><a href="#environment-setting">Environment setting</a></li>
      </ul>
     </li>
     <li><a href="#getting-started">Getting Started</a></li>
@@ -151,11 +152,89 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
   </p>
 </details>
 
+### Environment Setting
 
+#### Raspberry Pi
+* HardWare : [Raspberry Pi 4 Model B 8GB](https://smartstore.naver.com/eleparts/products/4799825062?n_media=11068&n_query=%EB%9D%BC%EC%A6%88%EB%B2%A0%EB%A6%AC%ED%8C%8C%EC%9D%B44&n_rank=4&n_ad_group=grp-a001-02-000000007238914&n_ad=nad-a001-02-000000229608972&n_campaign_type=2&n_mall_id=ncp_1nlzbo_01&n_mall_pid=4799825062&n_ad_group_type=2&n_match=3&NaPm=ct%3Dlpihmmrs%7Cci%3D0Au0003H1knzI6qsyfp7%7Ctr%3Dpla%7Chk%3D9ad14e585bbe9eea74201d2e1f1481527ed653e7)
+
+* OS : [webos ose](https://github.com/webosose/build-webos/releases)
+
+1. Download webos image from [webos ose](https://github.com/webosose/build-webos/releases)
+ 
+     <img width="899" alt="pre build image file" src="pre build image file">
+
+
+2. Extracting image files
+    * Uncompressed using the [7-zip](https://www.7-zip.org/) program
+
+    * You can decompress it and a folder called webos-ose-2-24-0-raspberrypi4-64.tar is created.
+
+    * If you enter the folder, there is a .tar file, and you can proceed with decompressing it.
+
+    * Uncompressed creates a folder called webos-ose-2-24-0-raspberrypi4-64.
+ 
+    * When you enter the folder, you'll find a .mic file, which means the Image file is ready.
+
+
+3. Formatting SD Cards
+    * You can refer to it and format the SD card. - [Flashing webOS Open Source Edition](https://www.webosose.org/docs/guides/setup/flashing-webos-ose/) 
+    * Windows 10 default format doesn't matter!
+
+
+4. Image flushing to sd card
+    * Image flushing to sd card using program : [Win 32 Disk Imager](https://sourceforge.net/projects/win32diskimager/) 
+    * Please select the .mic file obtained above, select the SD card you formatted, and press the Write button.
+    * It's taking some time.
+    * Done! Now when you insert the SD card into the bottom of the Raspberry Pi and boot it up, WebOs will boot normally!
+   
+* If Writing Successful appears, you have successfully flushing the image on the sd card.
+
+> [webOS Offitial Docs](https://www.webosose.org/docs/guides/setup/system-requirements/)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-  
+#### TouchDisplay & Sensor
+
+* TouchDisplay : [Raspberry Pi Display 10.1-Inch Touch Screen LCD](https://smartstore.naver.com/mcuboard/products/5006590307?NaPm=ct%3Dlpihmuhk%7Cci%3D2d0b272112d74fa2c41384d2a3b0e4a94ff945f5%7Ctr%3Dsls%7Csn%3D186400%7Chk%3D991293f6377b661f14470419dc8bc00fa26ea908)
+* DHT11 : A sensor used to measure temperature and humidity
+* NeoPixel : A brand of addressable LEDs developed by Adafruit for control Light 
+
+  <img width="899" alt="HW + SENSOR " src="pre build image file">
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+# Getting Started
+
+This guide will help you set up and run the project in your local environment. Follow these steps to get started.
+
+> **Note:** This guide is tailored for a setup on **a single local PC**, And your device, whether it is an emulator or a Raspberry Pi, must be **running continuously**.
+
+
+1. Clone the repository.
+   ```sh
+   git clone https://github.com/dudgns128/webos-gardening.git
+   ```
+2. Move into the cloned directory.
+   ```sh
+   cd webos-gardening\gardening_react
+   ```
+3. Install npm
+   ```sh
+   npm install
+   ```
+   
+4. Open Git Bash
+   ```sh
+   ./deploy.sh <name of device>
+   ```   
+
+step is detailed in the `README.md` file of the respective folder, allowing you to sequentially progress and gather the necessary information.
+
+[Guide for Starting App]()
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
