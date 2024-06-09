@@ -256,7 +256,7 @@ The script takes five arguments:
    
    example usage:
    ```sh
-   ./deploy.sh #display com.team17.homegardening 1.0.0 "my team" "new app"
+   ./deploy.sh display #com.team17.homegardening 1.0.0 "my team" "new app"
    ```
 
 <br/>
