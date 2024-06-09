@@ -248,8 +248,8 @@ step is detailed in the `README.md` file of the respective folder, allowing you 
 [stars-url]: https://github.com/dudgns128/webos-gardening/stargazers
 [issues-shield]: https://img.shields.io/github/issues/dudgns128/webos-gardening.svg?style=for-the-badge
 [issues-url]: https://github.com/dudgns128/webos-gardening/issues
-[license-shield]: https://img.shields.io/github/license/dudgns128/webos-gardening.svg?style=for-the-badge
-[license-url]: https://github.com/dudgns128/webos-gardening/blob/master/LICENSE.txt
+[license-shield]: https://img.shields.io/github/license/noFlowWater/signage_solution.svg?style=for-the-badge
+[license-url]: https://github.com/noFlowWater/signage_solution/blob/master/LICENSE.txt
 [webos-shield]: https://img.shields.io/badge/webos%20official%20example-A50034?style=for-the-badge&logo=lg
 [webos-url]: https://www.webosose.org/samples/2023/12/21/facial-recognition-kiosk-using-webos
 [product-screenshot]: images/screenshot.png
@@ -257,6 +257,8 @@ step is detailed in the `README.md` file of the respective folder, allowing you 
 [React.js]: https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=000
 [React-url]: https://reactjs.org/
 
+[license-shield]: https://img.shields.io/github/license/noFlowWater/signage_solution.svg?style=for-the-badge
+[license-url]: https://github.com/noFlowWater/signage_solution/blob/master/LICENSE.txt
 
 [Figma]: https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=fff
 [Figma-url]: https://www.figma.com/
