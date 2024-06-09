@@ -138,19 +138,21 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 
 ### Architecture
 
-<details>
-  <summary>🖼️ System Architecture 🖼️</summary>
-  <p align="center" style="display: flex; justify-content: space-between;">
-    <img src="" alt="System Architecture" style="width: 99%;">
-  </p>
-</details>
 
-<details>
-  <summary>🖼️ Database ERD 🖼️</summary>
+  <summary>🖼️ System Architecture 🖼️</summary>
+  
   <p align="center" style="display: flex; justify-content: space-between;">
-    <img src="" alt="Database ERD" style="width: 99%;">
+    <img src="https://github.com/dudgns128/webos-gardening/assets/62871662/d195e54b-0019-48d7-a6bd-de325828ab61" alt="System Architecture" style="width: 66%;">
   </p>
-</details>
+
+
+
+  <summary>🖼️ Database ERD 🖼️</summary>
+  
+  <p align="center" style="display: flex; justify-content: space-between;">
+    <img src="https://github.com/dudgns128/webos-gardening/assets/62871662/95a01590-4a6f-4642-b032-fc596e9324af" alt="Database ERD" style="width: 66%;">
+  </p>
+
 
 ### Environment Setting
 
@@ -161,7 +163,7 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 
 1. Download webos image from [webos ose](https://github.com/webosose/build-webos/releases)
  
-     <img width="899" alt="pre build image file" src="pre build image file">
+     <img width="899" alt="pre build image file" src="https://github.com/dudgns128/webos-gardening/assets/62871662/16e99917-2954-41f6-8a28-02c64be7f586">
 
 
 2. Extracting image files
