@@ -27,6 +27,10 @@ const UserPlantRegister = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
+  async function delay() {
+    return new Promise(resolve => setTimeout(resolve, 1));
+  }
+  
   useEffect(() => {
     const fetchPlantInfo = async () => {
       try {
@@ -81,32 +85,33 @@ const UserPlantRegister = () => {
       });
 
       if (response.status === 201) {
-        // setUserplantId(response.data.id); 
+        setUserplantId(response.data.id); 
+        await delay()
         navigate('/main');
+      } else{
+        const message = error.response?.data?.message || '서버에서 id를 못 받아오고 있습니다';
+        setModalMessage(message);
+        setShowModal(true);
       }
     } catch (error) {
+      let message;
       if (error.response && error.response.status === 404) {
-        const message = error.response?.data?.message || '사용자 정보나 식물 정보가 없습니다';
-        setModalMessage(message);
-        setShowModal(true);
+        message = error.response?.data?.message || '사용자 정보나 식물 정보가 없습니다';
       } 
       else if (error.response && error.response.status === 400) {
-        const message = error.response?.data?.message || '사용자 이메일과 비멀번호가 일치하지 않습니다';
-        setModalMessage(message);
-        setShowModal(true);
+        message = error.response?.data?.message || '사용자 이메일과 비멀번호가 일치하지 않습니다';
       }
       else {
-        const message = error.response?.data?.message || '오류 발생';
-        setModalMessage(message);
-        setShowModal(true);
+        message = error.response?.data?.message || '오류 발생';
       }
+      setModalMessage(message);
+      setShowModal(true);
     }
   };    
 
   useEffect(() => {
     const selectedPlant = plantList.find(plant => plant.scientificName === plantSpecies);
-
-    if (selectedPlantId !== null && plantList.length > 0) {
+    if (selectedPlantId !== null && plantList.length > 0 && userplantId !== 0) {
 
       // 선택된 식물 종에 상응하는 description을 저장 후 AutoToggle 내 식물 키울 때 유의사항 내용
       localStorage.setItem('description', selectedPlant.shortDescription);     // API 개발 이전 임시용
@@ -153,7 +158,7 @@ const UserPlantRegister = () => {
       }
       bridge.call(serviceURL, JSON.stringify(payload));
     }
-  }, [userplantId, plantSpecies, plantName, plantBirthdate]);
+  }, [userplantId]);
 
 
   const goBack = () => {
