@@ -5,6 +5,8 @@ import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
 import WebSocketUtil from '../WebSocketUtil';
 import { useLocation } from 'react-router-dom';
+import ControlLightModal from '../components/ControlLightModal';
+import ControlWaterModal from '../components/ControlWaterModal';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -13,14 +15,16 @@ function useQuery() {
 const MainPage = () => {
   const navigate = useNavigate();
 
-  let [sensorValue, setSensorValue] = useState(0);
-  let [plantSatisfaction, setPlantSatisfaction] = useState('초기');
-  let [plantImageUrl, setPlantImageUrl] = useState('');
-  let [plantName, setPlantName] = useState('초기');
-  let [plantLevel, setPlantLevel] = useState(0);
-  let [isConditionModalOpen, conditionModalOpen] = useState(false);
-  let [isToggleModalOpen, toggleModalOpen] = useState(false);
-  let [isCalendarModalOpen, calendarModalOpen] = useState(false);
+  const [plantSatisfactionValue, setPlantSatisfactionValue] = useState(0);
+  const [plantSatisfaction, setPlantSatisfaction] = useState(0);
+  const [plantImageUrl, setPlantImageUrl] = useState('');
+  const [plantName, setPlantName] = useState('초기');
+  const [plantLevel, setPlantLevel] = useState(0);
+  const [isConditionModalOpen, conditionModalOpen] = useState(false);
+  const [isToggleModalOpen, toggleModalOpen] = useState(false);
+  const [isCalendarModalOpen, calendarModalOpen] = useState(false);
+  const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
+  const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
 
   const query = useQuery();
   const plantId = query.get('plantId'); // 이전 페이지에서 선택한 plantId 로 웹소켓 연결 설정하면 됨.
@@ -63,7 +67,25 @@ const MainPage = () => {
     padding: '0px 16px',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: '4px',
+    gap: '4px'
+  };
+
+  const satisfactionBackgroundStyle = {
+    boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.75)',
+    height: '40px',
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // 반투명 백그라운드
+    borderRadius: '12px',
+    margin: '2px',
+    position: 'relative',
+  };
+
+  const satisfactionFillStyle = {
+    height: '40px',
+    width: `${plantSatisfactionValue}%`,
+    backgroundColor: satisfactionColors[plantSatisfaction],
+    borderRadius: '12px',
+    transition: 'width 0.3s ease-in-out'
   };
 
   const calculateWidthSize = (originalSize, ratio) => {
@@ -84,7 +106,7 @@ const MainPage = () => {
         }}
       >
         <div className="d-flex flex-column align-items-center">
-          <PlantConditionModal
+        <PlantConditionModal
             isOpen={isConditionModalOpen}
             onClose={() => conditionModalOpen(false)}
           />
@@ -96,20 +118,23 @@ const MainPage = () => {
             isOpen={isCalendarModalOpen}
             onClose={() => calendarModalOpen(false)}
           />
+          <ControlLightModal
+            isOpen={isControlLightModalOpen}
+            onClose={() => controlLightModalOpen(false)}
+          />
+          <ControlWaterModal
+            isOpen={isControlWaterModalOpen}
+            onClose={() => controlWaterModalOpen(false)}
+          />
+          
           {/* 센서값에 따른 바 표시 */}
-          <div>
-            <div
-              style={{
-                backgroundColor:
-                  satisfactionColors[plantSatisfaction] || 'grey',
-                width: `${sensorValue}%`,
-                height: '40px',
-                borderRadius: '10px',
-              }}
-              onClick={handleBarClick} // onClick 이벤트 핸들러 추가
-            ></div>
-            <p>Sensor Value: {sensorValue}</p>
-            <p>Plant Satisfaction: {plantSatisfaction}</p>
+          <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
+            <div style={satisfactionBackgroundStyle} onClick={handleBarClick}>
+              <div style={satisfactionFillStyle}></div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <span>식물 만족도: {plantSatisfaction}</span>
+            </div>
           </div>
 
           {/* 식물 이미지가 들어 갈 자리 */}
@@ -118,12 +143,10 @@ const MainPage = () => {
           </div>
 
           {/* 식물 이름이 들어 갈 자리 */}
-          <div className="plant_info" style={{ marginTop: '40px' }}>
-            <text style={boxStyle}>
-              {plantName}
-              {plantLevel}
-            </text>
+          <div className="plant_info" style={{ marginTop: '40px'}}>
+            <text style={boxStyle}>{plantName}</text>
           </div>
+          
 
           <div className="menu-bar">
             <img
@@ -154,13 +177,13 @@ const MainPage = () => {
                 shape="rect"
                 coords="225,0,300,180"
                 alt="Link 4"
-                onClick={() => navigate('/main/sun')}
+                onClick={() => controlLightModalOpen(true)}
               />
               <area
                 shape="rect"
                 coords="300,0,375,180"
                 alt="Link 5"
-                onClick={() => navigate('/main/water')}
+                onClick={() => controlWaterModalOpen(true)}
               />
             </map>
           </div>
