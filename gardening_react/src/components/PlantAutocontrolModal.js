@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import './PlantCondition.css';
+import WebSocketUtil from '../WebSocketUtil';
 
-const bridge = new WebOSServiceBridge();
+// const bridge = new WebOSServiceBridge();
 
 const ToggleContainer = styled.div`
   position: relative;
@@ -52,27 +53,26 @@ const Toggle = ({ isOn, toggleHandler }) => {
 };
 
 const PlantAutocontrolModal = ({ isOpen, onClose }) => {
-  const [currentState, setCurrentState] = useState(true);
+  let [currentState, setCurrentState] = useState(true);
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-
-    const serviceURL = "luna://com.team17.homegardening.service/toggleAutocontrol";
-
-    bridge.onservicecallback = function (msg) {
-      const response = JSON.parse(msg);
-      if (response.success) {
-        setCurrentState(response.currentState);
-      }
-    };
-
-    bridge.call(serviceURL, '{}');
   }, [isOpen]);
 
   const toggleHandler = () => {
     setCurrentState(!currentState);
+
+    const msg = {
+      "method": 16,
+      "userPlant": WebSocketUtil.selection,
+      "data": {
+        "isAutoControl": currentState
+      }
+    };
+
+    WebSocketUtil.socket.send(JSON.stringify(msg));
   };
 
   if (!isOpen) {

@@ -1,30 +1,26 @@
 import '../components/PlantCondition.css';
-
-const bridge = new WebOSServiceBridge();
+import WebSocketUtil from '../WebSocketUtil';
 
 const ControlWater = () => {
+  const handleWaterButtonClick = () => {
+    const msg = {
+      "method": 14,
+      "userPlant": WebSocketUtil.selection,
+      "data": {
+      }
+    }
 
-    const handleWaterButtonClick = () => {
-        const serviceURL = "luna://com.team11.homegardening.service/controlWater";
+    WebSocketUtil.socket.send(JSON.stringify(msg));
+  };
 
-        bridge.onservicecallback = function (msg) {
-            const response = JSON.parse(msg);
-            if (response.success) {
-                console.log("Watering successfully started");
-            } else {
-                console.error("Failed to start watering:", response);
-            }
-        };
-
-        bridge.call(serviceURL, "{}");
-    };
-
-    return (
-        <div className="control-water-container">
-            <h1>Water Control</h1>
-            <button onClick={handleWaterButtonClick} className="water-button">Start Watering</button>
-        </div>
-    );
+  return (
+    <div className="control-water-container">
+      <h1>Water Control</h1>
+      <button onClick={handleWaterButtonClick} className="water-button">
+        Start Watering
+      </button>
+    </div>
+  );
 };
 
 export default ControlWater;
