@@ -170,7 +170,8 @@ We know that the display that supports Raspberry Pi 4 only has 1024x600 resoluti
 
    name               deviceinfo               connection  profile
    ------------------ ------------------------ ----------- -------
-   emulator (default) developer@127.0.0.1:6622 ssh         ose
+   emulator (default) root@127.0.0.1:6622      ssh         ose
+   display            root@172.20.10.11:22     ssh         ose
 
    ** You can modify the device info in the above list, or add a new device.
    ? Select: add
@@ -187,7 +188,8 @@ We know that the display that supports Raspberry Pi 4 only has 1024x600 resoluti
    name               deviceinfo               connection profile
    ------------------ ------------------------ ---------- -------
    target (default)   root@10.123.45.67:22     ssh        ose
-   emulator           developer@127.0.0.1:6622 ssh        ose
+   emulator           root@127.0.0.1:6622      ssh        ose
+   display            root@172.20.10.11:22     ssh        ose
    ```
 
 **Note:** The ssh user of the installed emulator is root and the password is empty (just type 'Enter')
@@ -254,7 +256,7 @@ The script takes five arguments:
    
    example usage:
    ```sh
-   ./deploy.sh #display com.team17.homegardening 1.0.0 "my team" "new app"
+   ./deploy.sh display #com.team17.homegardening 1.0.0 "my team" "new app"
    ```
 
 <br/>
