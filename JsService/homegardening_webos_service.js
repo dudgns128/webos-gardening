@@ -125,22 +125,23 @@ service.register('start', async function (message) {
   });
 
   // Websocket : 메시지 수신 (제어하는 경우)
-connection.on('message', async (wMessage) => {
-  const method = wMessage.method
-  switch (method) {
-    case 1:  case '1':
-      await controlWater();
-      break;
-    case 2:  case '2':
-      controlLight(wMessage.light);
-      break;
-    case 16:  case '3':
-      await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
-      break;
-    default:
-      break;
-  }
-});
+  connection.on('message', async (rawMessage) => {
+    const wMessage = JSON.parse(rawMessage);
+    const method = wMessage.method
+    switch (method) {
+      case 1:  case '1':
+        await controlWater();
+        break;
+      case 2:  case '2':
+        controlLight(wMessage.light);
+        break;
+      case 16:  case '16':
+        await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
+        break;
+      default:
+        break;
+    }
+  });
 
   // WebSocket 서버 연결 설정 (초기화)
   const plantId = await plantInfo.getPlantId();
