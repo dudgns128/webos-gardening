@@ -1,0 +1,54 @@
+.plant-selection-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .plant-selection-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4CAF50;
+  }
+  
+  .plant-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+  
+  .plant-item:hover {
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .plant-image {
+    width: 60px;
+    height: 60px;
+    margin-right: 15px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .plant-details {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .plant-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .plant-birthdate {
+    font-size: 14px;
+    color: #666;
+  }
+  

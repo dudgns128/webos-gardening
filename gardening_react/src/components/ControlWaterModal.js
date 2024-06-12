@@ -1,22 +1,17 @@
 import './PlantCondition.css';
-
-const bridge = new WebOSServiceBridge();
+import WebSocketUtil from '../WebSocketUtil';
 
 const ControlWaterModal = ({ isOpen, onClose }) => {
           
     const handleWaterButtonClick = () => {
-        // const serviceURL = "luna://com.team17.homegardening.service/controlWater";
-
-        // bridge.onservicecallback = function (msg) {
-        //     const response = JSON.parse(msg);
-        //     if (response.success) {
-        //         console.log("Watering successfully started");
-        //     } else {
-        //         console.error("Failed to start watering:", response);
-        //     }
-        // };
-
-        // bridge.call(serviceURL, "{}");
+        const msg = {
+          "method": 14,
+          "userPlant": WebSocketUtil.selection,
+          "data": {
+          }
+        }
+    
+        WebSocketUtil.socket.send(JSON.stringify(msg));
     };
 
     const handleCloseClick = (event) => {

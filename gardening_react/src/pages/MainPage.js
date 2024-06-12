@@ -29,6 +29,20 @@ const MainPage = () => {
   const query = useQuery();
   const plantId = query.get('plantId'); // 이전 페이지에서 선택한 plantId 로 웹소켓 연결 설정하면 됨.
 
+  useEffect(() => {
+    WebSocketUtil.onReceivePlantPageDataCallback = (plantData) => {
+      setSensorValue((plantData.water + plantData.light + plantData.temperature + plantData.humidity) / 4);
+      setPlantSatisfactionValue(plantData.satisfaction);
+      setPlantImageUrl(plantData.imageUrl);
+      setPlantName(plantData.plantName);
+      setPlantLevel(plantData.level);
+    };
+
+    return () => {
+      WebSocketUtil.onReceivePlantPageDataCallback = undefined;
+    };
+  }, []);
+
   const satisfactionColors = {
     '매우 좋음': '#00A35E',
     좋음: 'lightgreen',
@@ -38,20 +52,19 @@ const MainPage = () => {
   };
 
   useEffect(() => {
-    const updateValues = function () {
-      setSensorValue((WebSocketUtil.plantData.water + WebSocketUtil.plantData.light + WebSocketUtil.plantData.temperature + WebSocketUtil.plantData.humidity) / 4);
-      setPlantSatisfaction(WebSocketUtil.plantData.satisfaction);
-      setPlantImageUrl(WebSocketUtil.plantData.imageUrl);
-      setPlantName(WebSocketUtil.plantData.plantName);
-      setPlantLevel(WebSocketUtil.plantData.level);
+    // 센서 값에 따른 식물 만족도 설정
+    if (80 < plantSatisfactionValue && plantSatisfactionValue <= 100) {
+      setPlantSatisfaction('매우 좋음');
+    } else if (60 < plantSatisfactionValue && plantSatisfactionValue <= 80) {
+      setPlantSatisfaction('좋음');
+    } else if (40 < plantSatisfactionValue && plantSatisfactionValue <= 60) {
+      setPlantSatisfaction('보통');
+    } else if (20 < plantSatisfactionValue && plantSatisfactionValue <= 40) {
+      setPlantSatisfaction('나쁨');
+    } else if (0 <= plantSatisfactionValue && plantSatisfactionValue <= 20) {
+      setPlantSatisfaction('아주 나쁨');
     }
-
-    // 3초마다 센서 값을 가져오는 인터벌 설정
-    const intervalId = setInterval(() => updateValues(), 3000);
-
-    // 컴포넌트가 언마운트될 때 인터벌 정리
-    return () => clearInterval(intervalId);
-  }, [plantSatisfaction, plantImageUrl, plantLevel, sensorValue]);
+  }, [plantSatisfactionValue]);
 
   const handleBarClick = () => {
     conditionModalOpen(true);
@@ -106,7 +119,7 @@ const MainPage = () => {
         }}
       >
         <div className="d-flex flex-column align-items-center">
-        <PlantConditionModal
+          <PlantConditionModal
             isOpen={isConditionModalOpen}
             onClose={() => conditionModalOpen(false)}
           />

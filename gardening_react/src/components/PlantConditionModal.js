@@ -13,17 +13,17 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
     if (!isOpen) {
       return;
     }
-    
-    const updateValues = function () {
-      setWater(WebSocketUtil.plantData.water);
-      setLight(WebSocketUtil.plantData.light);
-      setTemperature(WebSocketUtil.plantData.temperature);
-      setHumidity(WebSocketUtil.plantData.humidity);
-    }
 
-    const intervalId = setInterval(() => updateValues(), 3000);
+    WebSocketUtil.onReceivePlantConditionDataCallback = (plantData) => {
+      setWater(plantData.water);
+      setLight(plantData.light);
+      setTemperature(plantData.temperature);
+      setHumidity(plantData.humidity);
+    };
 
-    return () => clearInterval(intervalId);
+    return () => {
+      WebSocketUtil.onReceivePlantConditionDataCallback = undefined;
+    };
   }, [isOpen]);
 
 

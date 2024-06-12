@@ -17,10 +17,17 @@ WebSocketUtil.socket.onopen = function(e) {
 WebSocketUtil.socket.onmessage = function(event) {
     var arg = JSON.parse(event.data);
     if (arg.method === 11) {
-        // console.log('arg : ', arg);
-        WebSocketUtil.plants = arg.plants;
+        console.log('arg : ', arg);
+        if (WebSocketUtil.onReceivePlantsCallback != undefined) {
+            WebSocketUtil.onReceivePlantsCallback(arg.plants);
+        }
     } else if (arg.method === 13) {
-        WebSocketUtil.plantData = arg;
+        if (WebSocketUtil.onReceivePlantPageDataCallback != undefined) {
+            WebSocketUtil.onReceivePlantPageDataCallback(arg);
+        }
+        if (WebSocketUtil.onReceivePlantConditionDataCallback != undefined) {
+            WebSocketUtil.onReceivePlantConditionDataCallback(arg);
+        }
     }
 };
 
