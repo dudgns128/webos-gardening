@@ -11,23 +11,6 @@ const connection = new WebSocket(wsurl);
 connection.on('open', () => {
   console.log("연결 됨");
 });
-// 메시지 수신 (제어하는 경우)
-connection.on('message', (wMessage) => {
-  const method = wMessage.method
-  switch (method) {
-    case 1:
-      controlWater();
-      break;
-    case 2:
-      controlLight(wMessage.light);
-      break;
-    case 3:
-      toggleAutoControl(wMessage.isAutoControl);
-      break;
-    default:
-      break;
-  }
-});
 
 // *************************************** APIs ***************************************
 // (일단 임시) 메인페이지 데이터 조회 API
@@ -140,6 +123,24 @@ service.register('start', async function (message) {
   sub.addListener('response', function (msg) {
     console.log(JSON.stringify(msg.payload));
   });
+
+  // Websocket : 메시지 수신 (제어하는 경우)
+connection.on('message', (wMessage) => {
+  const method = wMessage.method
+  switch (method) {
+    case '1':
+      controlWater();
+      break;
+    case '2':
+      controlLight(wMessage.light);
+      break;
+    case '16':
+      toggleAutoControl(wMessage.isAutoControl);
+      break;
+    default:
+      break;
+  }
+});
 
   // WebSocket 서버 연결 설정 (초기화)
   const plantId = await plantInfo.getPlantId();
@@ -361,6 +362,51 @@ service.register('toggleAutocontrol', async function (message) {
     });
   }
 });
+
+// 자동제어 조회
+service.register('isAutocontrol', async function (message) {
+  try {
+    let currentState = await plantCurrentInfo.getIsAutoControl();
+    message.respond({
+      success: true,
+      currentState,
+    });
+  } catch (e) {
+    message.respond({
+      success: false,
+    });
+  }
+});
+
+// 환경 적정 범위
+service.register('envData', async function (message) {
+  const waterValue = await plantEnvInfo.getWaterValue();
+  const waterRange = await plantEnvInfo.getWaterRange();
+  const lightValue = await plantEnvInfo.getLightValue();
+  const lightRange = await plantEnvInfo.getLightRange();
+  const temperatureValue = await plantEnvInfo.getTemperatureValue();
+  const temperatureRange = await plantEnvInfo.getTemperatureRange();
+  const humidityValue = await plantEnvInfo.getHumidityValue();
+  const humidityRange = await plantEnvInfo.getHumidityRange();
+  try {
+    message.respond({
+      success: true,
+      waterValue,
+      waterRange,
+      lightValue,
+      lightRange,
+      temperatureValue,
+      temperatureRange,
+      humidityValue,
+      humidityRange
+    });
+  } catch (e) {
+    message.respond({
+      success: false,
+    });
+  }
+});
+
 
 // *************************************** Service 로직 ***************************************
 function getRandomInt(min, max) {
