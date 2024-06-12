@@ -7,6 +7,8 @@ import WebSocketUtil from '../WebSocketUtil';
 import { useLocation } from 'react-router-dom';
 import ControlLightModal from '../components/ControlLightModal';
 import ControlWaterModal from '../components/ControlWaterModal';
+import backgroundImage from '../img/background.png';
+import goalImage from '../img/present.png';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -20,6 +22,7 @@ const MainPage = () => {
   const [plantImageUrl, setPlantImageUrl] = useState('');
   const [plantName, setPlantName] = useState('초기');
   const [plantLevel, setPlantLevel] = useState(0);
+  const [plantExp, setPlantExp] = useState(50);
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
   const [isToggleModalOpen, toggleModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
@@ -31,11 +34,12 @@ const MainPage = () => {
 
   useEffect(() => {
     WebSocketUtil.onReceivePlantPageDataCallback = (plantData) => {
-      setSensorValue((plantData.water + plantData.light + plantData.temperature + plantData.humidity) / 4);
+      //setSensorValue((plantData.water + plantData.light + plantData.temperature + plantData.humidity) / 4);
       setPlantSatisfactionValue(plantData.satisfaction);
       setPlantImageUrl(plantData.imageUrl);
       setPlantName(plantData.plantName);
       setPlantLevel(plantData.level);
+      setPlantExp(plantData.exp);
     };
 
     return () => {
@@ -83,6 +87,36 @@ const MainPage = () => {
     gap: '4px'
   };
 
+  const expBackgroundStyle = {
+    boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.75)',
+    height: '24px',
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // 반투명 백그라운드
+    borderRadius: '12px',
+    margin: '2px',
+    position: 'relative',
+  };
+  //골 이미지
+  const expGoalIconStyle = {
+    position: 'absolute', // 상대적인 위치 설정
+    right: '0px', // 오른쪽 끝에 위치
+    top: '50%', // 상단에서 50% 위치
+    transform: 'translateY(-50%)', // Y축 중앙 정렬
+    width: '20px', // 이미지 너비
+    height: '20px', // 이미지 높이
+    backgroundImage: `url(${goalImage})`, // 배경 이미지 설정
+    backgroundSize: 'cover' // 이미지 크기 자동 조절
+  };
+
+  // 실제 경험치 바 스타일 (동적 길이)
+  const expFillStyle = {
+    height: '24px',
+    width: `${plantExp}%`,
+    backgroundColor: 'red',
+    borderRadius: '12px',
+    transition: 'width 0.3s ease-in-out'
+  };
+
   const satisfactionBackgroundStyle = {
     boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.75)',
     height: '40px',
@@ -110,7 +144,14 @@ const MainPage = () => {
   };
 
   return (
-    <div style={{ padding: '140px' }}>
+    <div style={{
+      padding: '140px',
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
+      backgroundPosition: 'center', // 이미지를 중앙에 배치
+      backgroundRepeat: 'no-repeat', // 이미지를 반복하지 않음
+      height: '100vh' // 배경이 전체 뷰포트를 덮도록 설정
+    }}>
       <div
         className="container d-flex justify-content-center vh-50"
         style={{
@@ -160,6 +201,19 @@ const MainPage = () => {
             <text style={boxStyle}>{plantName}</text>
           </div>
           
+          {/* 경험치 바와 레벨업 정보 */}
+          <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
+            <div style={expBackgroundStyle}>
+              <div style={expFillStyle}></div>
+              <div style={expGoalIconStyle}></div> {/* 목표 이미지 추가 */}
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p>
+                <span style={{ marginRight: '10px' }}>Lv{plantLevel}</span>
+                레벨업까지 <span style={{ color: '#FF3333' }}>{(100 - plantExp).toFixed(2)}%</span> 남음
+              </p>
+            </div>
+          </div>
 
           <div className="menu-bar">
             <img
@@ -172,7 +226,6 @@ const MainPage = () => {
                 shape="rect"
                 coords="0,0,75,180"
                 alt="Link 1"
-                onClick={() => navigate('/main/info')}
               />
               <area
                 shape="rect"

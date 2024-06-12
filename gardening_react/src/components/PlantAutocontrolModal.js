@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import './PlantCondition.css';
 import WebSocketUtil from '../WebSocketUtil';
 
-// const bridge = new WebOSServiceBridge();
-
 const ToggleContainer = styled.div`
   position: relative;
   // left: 47%;
@@ -59,6 +57,20 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
     if (!isOpen) {
       return;
     }
+
+    if (WebSocketUtil.isAutoControl !== undefined) {
+      setCurrentState(WebSocketUtil.isAutoControl);
+    }    
+
+    WebSocketUtil.onReceiveAutoControlCallback = (plants) => {
+      setPlants(plants);
+      setLoading(false);
+    };
+
+    return () => {
+      WebSocketUtil.onReceiveAutoControlCallback = undefined;
+    };
+
   }, [isOpen]);
 
   const toggleHandler = () => {
