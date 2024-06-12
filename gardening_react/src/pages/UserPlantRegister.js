@@ -178,7 +178,7 @@ const UserPlantRegister = () => {
   const BIRTHDAY_DAY_LIST = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
 
   return (
-    <div style = {{padding: '140px'}}>
+    <div>
       <MessageModal 
         content={modalMessage} 
         isOpen={showModal} 

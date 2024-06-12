@@ -34,7 +34,7 @@ const HomePage = () => {
   };
 
   return (
-    <div style={{ backgroundImage: `url()`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', height: '100vh', overflow: 'hidden', padding: '200px' }}>
+    <div style={{ backgroundImage: `url()`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', height: '100vh', overflow: 'hidden', padding: '100px' }}>
       <div className="container d-flex align-items-center justify-content-center vh-50">
         <div className="d-flex flex-column align-items-center">
           <div className="logo-container" style={{ width: calculateWidthSize(720, 0.52), height: calculateHeightSize(220, 0.3) }}>

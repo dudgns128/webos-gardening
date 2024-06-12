@@ -458,13 +458,13 @@ async function calcSatisfaction(data) {
   if (data.light < lightValue - lightRange) {
     satisfaction -= 10;
     // light 제어 api 사용
-    controlNeopixel(data.light + 10);
+    // controlNeopixel(data.light + 10);
     if (isAutoControl) {}
   }
   if (lightValue + lightRange < data.light) {
     satisfaction -= 10;
     // light 제어 api 사용
-    controlNeopixel(data.light - 10);
+    // controlNeopixel(data.light - 10);
     if (isAutoControl) {}
   }
   if (
@@ -482,7 +482,7 @@ async function calcSatisfaction(data) {
 
 function controlLight(lightValue) {
   // light 제어 api 사용하기
-  controlNeopixel(lightValue);
+  // controlNeopixel(lightValue);
 }
 
 // controlWater()가 호출되면 물을 주는 것
@@ -502,9 +502,9 @@ async function controlWater() {
     await plantCurrentInfo.updateLevel(curLevel + 1);
   } else await plantCurrentInfo.updateWaterCount(curWaterCount + 1);
   // water 제어 api 사용
-  controlPump(1);
-  await delay(3000);
-  controlPump(0);
+  // controlPump(1);
+  // await delay(3000);
+  // controlPump(0);
 }
 
 // *************************************** Heartbeat ***************************************
@@ -1616,71 +1616,71 @@ function openI2C() {
   service.call(openI2CApi, openI2CParams, openI2CApi_callback);
 }
 
-function closeI2C() {
-  var closeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/close';
-  var closeI2CParams = '{"name":"I2C1", "address":1}';
+// function closeI2C() {
+//   var closeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/close';
+//   var closeI2CParams = '{"name":"I2C1", "address":1}';
 
-  function closeI2CApi_callback(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-          console.log("close success");
-      } else {
-          console.log("close failed");
-      }
-  }
-  service.call(closeI2CApi, closeI2CParams, closeI2CApi_callback);
-}
+//   function closeI2CApi_callback(msg) {
+//       var arg = JSON.parse(msg);
+//       if (arg.returnValue) {
+//           console.log("close success");
+//       } else {
+//           console.log("close failed");
+//       }
+//   }
+//   service.call(closeI2CApi, closeI2CParams, closeI2CApi_callback);
+// }
 
-function controlNeopixel(br) {
-  var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
-  var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 0]}';
-  var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ br +']}';
+// function controlNeopixel(br) {
+//   var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+//   var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 0]}';
+//   var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ br +']}';
 
-  function writeI2CApi_callback1(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-        service.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
-      } else {
-        console.log("fail to control Neopixel");
-      }
-  }
+//   function writeI2CApi_callback1(msg) {
+//       var arg = JSON.parse(msg);
+//       if (arg.returnValue) {
+//         service.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
+//       } else {
+//         console.log("fail to control Neopixel");
+//       }
+//   }
 
-  function writeI2CApi_callback2(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-        console.log("success to control Neopixel");
-      } else {
-        console.log("fail to control Neopixel");
-      }
-  }
-  service.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
-}
+//   function writeI2CApi_callback2(msg) {
+//       var arg = JSON.parse(msg);
+//       if (arg.returnValue) {
+//         console.log("success to control Neopixel");
+//       } else {
+//         console.log("fail to control Neopixel");
+//       }
+//   }
+//   service.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
+// }
 
-function controlPump(on) {  // 0: turn off, 1: turn on
-  var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
-  var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 1]}';
-  var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ on +']}';
+// function controlPump(on) {  // 0: turn off, 1: turn on
+//   var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+//   var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 1]}';
+//   var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ on +']}';
 
-  function writeI2CApi_callback1(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-          bridge.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
-      } else {
-          console.log("fail to control water pump");
-      }
-  }
+//   function writeI2CApi_callback1(msg) {
+//       var arg = JSON.parse(msg);
+//       if (arg.returnValue) {
+//           bridge.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
+//       } else {
+//           console.log("fail to control water pump");
+//       }
+//   }
 
-  function writeI2CApi_callback2(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-          console.log("success to control water pump");
-      } else {
-          console.log("fail to control water pump");
-      }
-  }
+//   function writeI2CApi_callback2(msg) {
+//       var arg = JSON.parse(msg);
+//       if (arg.returnValue) {
+//           console.log("success to control water pump");
+//       } else {
+//           console.log("fail to control water pump");
+//       }
+//   }
 
-  bridge.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
-}
+//   bridge.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
+// }
 
 async function readSensor() {
   var readI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/read';
@@ -1691,46 +1691,46 @@ async function readSensor() {
   let water, light, temperature, humidity, watertank_level;
 
   function readI2CApi_callback(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-          var humid = arg.data[0] + arg.data[1] * 0.1;
+    var arg = JSON.parse(msg);
+    if (arg.returnValue) {
+        var humid = arg.data[0] + arg.data[1] * 0.1;
 
-          var temp = arg.data[2];
-          if (arg.data[3] & 0x80) {
-              temp = - 1 - temp;
-          }
-          temp += (arg.data[3] & 0x0f) * 0.1;
+        var temp = arg.data[2];
+        if (arg.data[3] & 0x80) {
+            temp = - 1 - temp;
+        }
+        temp += (arg.data[3] & 0x0f) * 0.1;
 
-          var cds = arg.data[4] * 256 + arg.data[5];
+        var cds = arg.data[4] * 256 + arg.data[5];
 
-          var water_level = arg.data[6] * 256 + arg.data[7];
+        var water_level = arg.data[6] * 256 + arg.data[7];
 
-          var soil_moisture = arg.data[8] * 256 + arg.data[9];
- 
-          humidity = humid;
-          temperature = temp;
-          light = 100 - (cds) / 10.23;
-          watertank_level = water_level / 10.23;
-          water = soil_moisture / 10.23;
-      } else {
-          resultElement.innerHTML = "Read Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
-      }
+        var soil_moisture = arg.data[8] * 256 + arg.data[9];
+
+        humidity = humid;
+        temperature = temp;
+        light = 100 - (cds) / 10.23;
+        watertank_level = water_level / 10.23;
+        water = soil_moisture / 10.23;
+    } else {
+        resultElement.innerHTML = "Read Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+    }
   }
 
   function writeI2CApi_callback(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-          setTimeout(function() {
-              service.call(readI2CApi, readI2CParams, readI2CApi_callback);
-          }, 23);
-      } else {
-          console.log("fail to read from sensors");
-      }
+    var arg = JSON.parse(msg);
+    if (arg.returnValue) {
+        setTimeout(function() {
+            service.call(readI2CApi, readI2CParams, readI2CApi_callback);
+        }, 23);
+    } else {
+        console.log("fail to read from sensors");
+    }
   }
 
   service.call(writeI2CApi, writeI2CParams, writeI2CApi_callback);
 
-  await delay(50);
+  await delay(1000);
   return {
     water,
     light,

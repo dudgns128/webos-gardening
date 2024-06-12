@@ -30,7 +30,7 @@ const UserLogin = () => {
     };
 
     return (
-        <div style = {{padding: '140px'}}>
+        <div>
             <MessageModal 
             content={modalMessage} 
             isOpen={showModal} 

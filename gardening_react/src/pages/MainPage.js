@@ -197,7 +197,6 @@ const MainPage = () => {
 
   return (
     <div style={{
-      padding: '140px',
       backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
       backgroundPosition: 'center', // 이미지를 중앙에 배치
