@@ -83,7 +83,7 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
   - Through a mobile web interface, users can monitor plant conditions and environmental factors, such as light and moisture levels, and make adjustments as needed.
 
 <!-- specifications -->
-## specifications
+## Specifications
 
 ### Built With
 #### WebApp
@@ -123,7 +123,7 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 - **InfluxDB**: Used for storing time-series data, appropriate for environmental sensing information collected every 5 seconds, deemed unsuitable for RDBMS.
 
 
-#### HardWare
+#### Hardware
 
 [![LG][LG]][LG-url][![Arduino][Arduino]][Arduino-url][![Raspberry][Raspberry]][Raspberry-url]
 
@@ -136,7 +136,7 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 
 [![window][window]][window-url]
 
-### Architecture
+### System Architecture
 
 
   <summary>🖼️ System Architecture 🖼️</summary>
@@ -152,16 +152,16 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
   <p align="center" style="display: flex; justify-content: space-between;">
     <img src="https://github.com/dudgns128/webos-gardening/assets/62871662/95a01590-4a6f-4642-b032-fc596e9324af" alt="Database ERD" style="width: 66%;">
   </p>
-
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Environment Setting
 
 #### Raspberry Pi
-* HardWare : [Raspberry Pi 4 Model B 8GB](https://smartstore.naver.com/eleparts/products/4799825062?n_media=11068&n_query=%EB%9D%BC%EC%A6%88%EB%B2%A0%EB%A6%AC%ED%8C%8C%EC%9D%B44&n_rank=4&n_ad_group=grp-a001-02-000000007238914&n_ad=nad-a001-02-000000229608972&n_campaign_type=2&n_mall_id=ncp_1nlzbo_01&n_mall_pid=4799825062&n_ad_group_type=2&n_match=3&NaPm=ct%3Dlpihmmrs%7Cci%3D0Au0003H1knzI6qsyfp7%7Ctr%3Dpla%7Chk%3D9ad14e585bbe9eea74201d2e1f1481527ed653e7)
+* HardWare : Raspberry Pi 4 Model B 8GB
 
-* OS : [webos ose](https://github.com/webosose/build-webos/releases)
+* OS : WebOS OSE
 
-1. Download webos image from [webos ose](https://github.com/webosose/build-webos/releases)
+1. Download WebOS image from [WebOS OSE](https://github.com/webosose/build-webos/releases)
  
      <img width="899" alt="pre build image file" src="https://github.com/dudgns128/webos-gardening/assets/62871662/16e99917-2954-41f6-8a28-02c64be7f586">
 
@@ -179,31 +179,25 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 
 
 3. Formatting SD Cards
-    * You can refer to it and format the SD card. - [Flashing webOS Open Source Edition](https://www.webosose.org/docs/guides/setup/flashing-webos-ose/) 
+    * You can refer to it and format the SD card.
     * Windows 10 default format doesn't matter!
 
 
-4. Image flushing to sd card
-    * Image flushing to sd card using program : [Win 32 Disk Imager](https://sourceforge.net/projects/win32diskimager/) 
+4. Image flashing to sd card
+    * Image flashing to sd card using program : [Win 32 Disk Imager](https://sourceforge.net/projects/win32diskimager/) 
     * Please select the .mic file obtained above, select the SD card you formatted, and press the Write button.
     * It's taking some time.
     * Done! Now when you insert the SD card into the bottom of the Raspberry Pi and boot it up, WebOs will boot normally!
    
-* If Writing Successful appears, you have successfully flushing the image on the sd card.
-
-> [webOS Offitial Docs](https://www.webosose.org/docs/guides/setup/system-requirements/)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
+* If Writing Successful appears, you have successfully flashing the image on the sd card.
 
 #### TouchDisplay & Sensor
 
-* TouchDisplay : [Raspberry Pi Display 10.1-Inch Touch Screen LCD](https://smartstore.naver.com/mcuboard/products/5006590307?NaPm=ct%3Dlpihmuhk%7Cci%3D2d0b272112d74fa2c41384d2a3b0e4a94ff945f5%7Ctr%3Dsls%7Csn%3D186400%7Chk%3D991293f6377b661f14470419dc8bc00fa26ea908)
+* TouchDisplay : Raspberry Pi Display 10.1-Inch Touch Screen LCD
 * DHT11 : A sensor used to measure temperature and humidity
 * NeoPixel : A brand of addressable LEDs developed by Adafruit for control Light 
 
   <img width="899" alt="HW + SENSOR " src="pre build image file">
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 # Getting Started
