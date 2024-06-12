@@ -5,10 +5,14 @@ import "./PlantSelection.css"; // CSS 파일 import
 
 function PlantSelection() {
   const [plants, setPlants] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(WebSocketUtil.plants === undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (WebSocketUtil.plants !== undefined) {
+      setPlants(WebSocketUtil.plants);
+    }
+
     WebSocketUtil.onReceivePlantsCallback = (plants) => {
       setPlants(plants);
       setLoading(false);

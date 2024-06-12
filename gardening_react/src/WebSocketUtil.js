@@ -18,14 +18,15 @@ WebSocketUtil.socket.onmessage = function(event) {
     var arg = JSON.parse(event.data);
     if (arg.method === 11) {
         console.log('arg : ', arg);
-        if (WebSocketUtil.onReceivePlantsCallback != undefined) {
+        if (WebSocketUtil.onReceivePlantsCallback !== undefined) {
             WebSocketUtil.onReceivePlantsCallback(arg.plants);
+            WebSocketUtil.plants = arg.plants;
         }
     } else if (arg.method === 13) {
-        if (WebSocketUtil.onReceivePlantPageDataCallback != undefined) {
+        if (WebSocketUtil.onReceivePlantPageDataCallback !== undefined) {
             WebSocketUtil.onReceivePlantPageDataCallback(arg);
         }
-        if (WebSocketUtil.onReceivePlantConditionDataCallback != undefined) {
+        if (WebSocketUtil.onReceivePlantConditionDataCallback !== undefined) {
             WebSocketUtil.onReceivePlantConditionDataCallback(arg);
         }
     }
