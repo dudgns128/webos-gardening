@@ -60,18 +60,17 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
 
     if (WebSocketUtil.isAutoControl !== undefined) {
       setCurrentState(WebSocketUtil.isAutoControl);
-    }    
+    }
 
-    WebSocketUtil.onReceiveAutoControlCallback = (plants) => {
-      setPlants(plants);
-      setLoading(false);
+    WebSocketUtil.onReceiveAutoControlCallback = (isAutoControl) => {
+      setCurrentState(isAutoControl);
     };
 
     return () => {
       WebSocketUtil.onReceiveAutoControlCallback = undefined;
     };
 
-  }, [isOpen]);
+  }, [isOpen, currentState]);
 
   const toggleHandler = () => {
     const msg = {
