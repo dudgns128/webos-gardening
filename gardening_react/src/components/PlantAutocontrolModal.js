@@ -74,15 +74,14 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const toggleHandler = () => {
-    setCurrentState(!currentState);
-
     const msg = {
       "method": 16,
       "userPlant": WebSocketUtil.selection,
       "data": {
-        "isAutoControl": currentState
+        "isAutoControl": !currentState
       }
     };
+    setCurrentState(!currentState);
 
     WebSocketUtil.socket.send(JSON.stringify(msg));
   };
