@@ -125,17 +125,17 @@ service.register('start', async function (message) {
   });
 
   // Websocket : 메시지 수신 (제어하는 경우)
-connection.on('message', (wMessage) => {
+connection.on('message', async (wMessage) => {
   const method = wMessage.method
   switch (method) {
-    case '1':
-      controlWater();
+    case 1:  case '1':
+      await controlWater();
       break;
-    case '2':
+    case 2:  case '2':
       controlLight(wMessage.light);
       break;
-    case '16':
-      toggleAutoControl(wMessage.isAutoControl);
+    case 16:  case '3':
+      await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
       break;
     default:
       break;
