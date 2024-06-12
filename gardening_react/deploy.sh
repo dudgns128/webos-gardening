@@ -37,8 +37,8 @@ echo ">> Changed to build directory."
 
 # appinfo.json 파일 생성
 echo ">> Creating appinfo.json..."
-printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation"]\n}' "com.team17.homegardening" "1.0.0" "my team" "new app" > appinfo.json
-# printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation"]\n}' "$APP_ID" "$APP_VERSION" "$VENDOR_NAME" "$APP_TITLE" > appinfo.json
+printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation", "peripheralmanager.i2c.operation"]\n}' "com.team17.homegardening" "1.0.0" "my team" "new app" > appinfo.json
+# printf '{\n "id": "%s",\n "version": "%s",\n "vendor": "%s",\n "type": "web",\n "main": "index.html",\n "title": "%s",\n "icon": "icon.png",\n "allowVideoCapture": true,\n "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation", "peripheralmanager.i2c.operation"]\n}' "$APP_ID" "$APP_VERSION" "$VENDOR_NAME" "$APP_TITLE" > appinfo.json
 
 # appinfo.json 파일 내용 확인
 echo ">> Displaying contents of appinfo.json:"
