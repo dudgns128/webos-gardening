@@ -145,7 +145,6 @@ const MainPage = () => {
 
   return (
     <div style={{
-      padding: '140px',
       backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
       backgroundPosition: 'center', // 이미지를 중앙에 배치
@@ -192,8 +191,8 @@ const MainPage = () => {
           </div>
 
           {/* 식물 이미지가 들어 갈 자리 */}
-          <div className="plant_image" style={{ marginTop: '40px' }}>
-            <img src={plantImageUrl} alt="식물 이미지" />
+          <div className="plant_image" style={{ marginTop: '40px', height: '90%' }}>
+            <img src={plantImageUrl} alt="식물 이미지" style={{ height: '100%' }} />
           </div>
 
           {/* 식물 이름이 들어 갈 자리 */}
