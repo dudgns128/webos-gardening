@@ -169,7 +169,7 @@ service.register('start', async function (message) {
       const yearNow = now.getFullYear();
       const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
       const dayNow = now.getDate();
-      const data = getSensingDataJSON();
+      const data = await getSensingDataJSON();
       if ((await plantCurrentInfo.isDataExist()) != true)
         await plantCurrentInfo.putData({
           isAutoControl: true,
@@ -458,14 +458,16 @@ async function calcSatisfaction(data) {
   if (data.light < lightValue - lightRange) {
     satisfaction -= 10;
     // light 제어 api 사용
-    // controlNeopixel(data.light + 10);
-    if (isAutoControl) {}
+    if (isAutoControl) {
+      controlNeopixel(data.light + 10);
+    }
   }
   if (lightValue + lightRange < data.light) {
     satisfaction -= 10;
     // light 제어 api 사용
-    // controlNeopixel(data.light - 10);
-    if (isAutoControl) {}
+    if (isAutoControl) {
+      controlNeopixel(data.light - 10);
+    }
   }
   if (
     data.humidity < humidityValue - humidityRange ||
@@ -482,7 +484,7 @@ async function calcSatisfaction(data) {
 
 function controlLight(lightValue) {
   // light 제어 api 사용하기
-  // controlNeopixel(lightValue);
+  controlNeopixel(lightValue);
 }
 
 // controlWater()가 호출되면 물을 주는 것
@@ -502,9 +504,9 @@ async function controlWater() {
     await plantCurrentInfo.updateLevel(curLevel + 1);
   } else await plantCurrentInfo.updateWaterCount(curWaterCount + 1);
   // water 제어 api 사용
-  // controlPump(1);
-  // await delay(3000);
-  // controlPump(0);
+  controlPump(1);
+  await delay(3000);
+  controlPump(0);
 }
 
 // *************************************** Heartbeat ***************************************
@@ -1603,96 +1605,89 @@ const avgSatisfactionRecord = {
 // *************************************** HW ***************************************
 function openI2C() {
   var openI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/open';
-  var openI2CParams = '{"name":"I2C1", "address":1}';
+  var openI2CParams = {name:"I2C1", address:1};
 
-  function openI2CApi_callback(msg) {
-      var arg = JSON.parse(msg);
-      if (arg.returnValue) {
-          console.log("open success");
-      } else {
-          console.log("open failed");
-      }
-  }
-  service.call(openI2CApi, openI2CParams, openI2CApi_callback);
+  service.call(openI2CApi, openI2CParams, (res) => {
+    if (res.payload.returnValue) {
+        console.log("open success");
+    } else {
+        console.log("open failed");
+    }
+  });
 }
 
-// function closeI2C() {
-//   var closeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/close';
-//   var closeI2CParams = '{"name":"I2C1", "address":1}';
+function closeI2C() {
+  var closeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/close';
+  var closeI2CParams = {name:"I2C1", address:1};
 
-//   function closeI2CApi_callback(msg) {
-//       var arg = JSON.parse(msg);
-//       if (arg.returnValue) {
-//           console.log("close success");
-//       } else {
-//           console.log("close failed");
-//       }
-//   }
-//   service.call(closeI2CApi, closeI2CParams, closeI2CApi_callback);
-// }
+  function closeI2CApi_callback(res) {
+      if (res.payload.returnValue) {
+          console.log("close success");
+      } else {
+          console.log("close failed");
+      }
+  }
+  service.call(closeI2CApi, closeI2CParams, closeI2CApi_callback);
+}
 
-// function controlNeopixel(br) {
-//   var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
-//   var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 0]}';
-//   var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ br +']}';
+function controlNeopixel(br) {
+  var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+  var writeI2CParams1 = {name:"I2C1", address:1, data:[0, 0]};
+  var writeI2CParams2 = {name:"I2C1", address:1, data:[br]};
 
-//   function writeI2CApi_callback1(msg) {
-//       var arg = JSON.parse(msg);
-//       if (arg.returnValue) {
-//         service.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
-//       } else {
-//         console.log("fail to control Neopixel");
-//       }
-//   }
+  function writeI2CApi_callback1(res) {
+    if (res.payload.returnValue) {
+      service.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
+    } else {
+      console.log("fail to control Neopixel");
+    }
+  }
 
-//   function writeI2CApi_callback2(msg) {
-//       var arg = JSON.parse(msg);
-//       if (arg.returnValue) {
-//         console.log("success to control Neopixel");
-//       } else {
-//         console.log("fail to control Neopixel");
-//       }
-//   }
-//   service.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
-// }
+  function writeI2CApi_callback2(res) {
+    if (res.payload.returnValue) {
+      console.log("success to control Neopixel");
+    } else {
+      console.log("fail to control Neopixel");
+    }
+  }
+  service.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
+}
 
-// function controlPump(on) {  // 0: turn off, 1: turn on
-//   var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
-//   var writeI2CParams1 = '{"name":"I2C1", "address":1, "data":[0, 1]}';
-//   var writeI2CParams2 = '{"name":"I2C1", "address":1, "data":['+ on +']}';
+function controlPump(on) {  // 0: turn off, 1: turn on
+  var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+  var writeI2CParams1 = {name:"I2C1", address:1, data:[0, 1]};
+  var writeI2CParams2 = {name:"I2C1", address:1, data:[on]};
 
-//   function writeI2CApi_callback1(msg) {
-//       var arg = JSON.parse(msg);
-//       if (arg.returnValue) {
-//           bridge.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
-//       } else {
-//           console.log("fail to control water pump");
-//       }
-//   }
+  function writeI2CApi_callback1(res) {
+      if (res.payload.returnValue) {
+          service.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
+      } else {
+          console.log("fail to control water pump");
+      }
+  }
 
-//   function writeI2CApi_callback2(msg) {
-//       var arg = JSON.parse(msg);
-//       if (arg.returnValue) {
-//           console.log("success to control water pump");
-//       } else {
-//           console.log("fail to control water pump");
-//       }
-//   }
+  function writeI2CApi_callback2(res) {
+      if (res.payload.returnValue) {
+          console.log("success to control water pump");
+      } else {
+          console.log("fail to control water pump");
+      }
+  }
 
-//   bridge.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
-// }
+  service.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
+}
 
 async function readSensor() {
   var readI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/read';
-  var readI2CParams = '{"name":"I2C1", "address":1, "size":10}';
+  var readI2CParams = {name:"I2C1", address:1, size:10};
   var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
-  var writeI2CParams = '{"name":"I2C1", "address":1, "data":[0, 2]}';
+  var writeI2CParams = {name:"I2C1", address:1, data:[0, 2]};
 
   let water, light, temperature, humidity, watertank_level;
 
-  function readI2CApi_callback(msg) {
-    var arg = JSON.parse(msg);
-    if (arg.returnValue) {
+  function readI2CApi_callback(res) {
+    const arg = res.payload;
+    if (res.payload.returnValue) {
         var humid = arg.data[0] + arg.data[1] * 0.1;
 
         var temp = arg.data[2];
@@ -1713,13 +1708,12 @@ async function readSensor() {
         watertank_level = water_level / 10.23;
         water = soil_moisture / 10.23;
     } else {
-        resultElement.innerHTML = "Read Fail, error code: " + arg.errorCode + ", error text: " + arg.errorText;
+        console.log("fail to read from sensors");
     }
   }
 
-  function writeI2CApi_callback(msg) {
-    var arg = JSON.parse(msg);
-    if (arg.returnValue) {
+  function writeI2CApi_callback(res) {
+    if (res.payload.returnValue) {
         setTimeout(function() {
             service.call(readI2CApi, readI2CParams, readI2CApi_callback);
         }, 23);
@@ -1730,7 +1724,7 @@ async function readSensor() {
 
   service.call(writeI2CApi, writeI2CParams, writeI2CApi_callback);
 
-  await delay(1000);
+  await delay(500);
   return {
     water,
     light,

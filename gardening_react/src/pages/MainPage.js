@@ -237,8 +237,8 @@ const MainPage = () => {
           </div>
 
           {/* 식물 이미지가 들어 갈 자리 */}
-          <div className="plant_image" style={{ marginTop: '40px' }}>
-            <img src={plantImageUrl} alt="식물 이미지" />
+          <div className="plant_image" style={{ marginTop: '10px', height: '90%' }}>
+            <img src={plantImageUrl} alt="식물 이미지" style={{ height: '100%' }} />
           </div>
 
           {/* 식물 이름이 들어 갈 자리 */}
@@ -247,7 +247,7 @@ const MainPage = () => {
           </div>
 
           {/* 경험치 바와 레벨업 정보 */}
-          <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
+          <div style={{ width: '100%', paddingTop: '20px', boxSizing: 'border-box' }}>
             <div style={expBackgroundStyle}>
               <div style={expFillStyle}></div>
               <div style={expGoalIconStyle}></div> {/* 목표 이미지 추가 */}
@@ -264,7 +264,7 @@ const MainPage = () => {
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
               <map name="image-map">
-                <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} />
+                <area shape="rect" coords="0,0,75,180" alt="Link 1" />
                 <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
                 <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
                 <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
