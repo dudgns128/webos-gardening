@@ -1,11 +1,33 @@
 // eslint-disable-next-line import/no-unresolved
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
-// const WebSocket = require('ws');
+const WebSocket = require('ws');
 
 const service = new Service(pkgInfo.name);
 const logHeader = '[' + pkgInfo.name + ']';
-const wsurl = 'ws://example.com';
+// *************** WebSocket ********************//
+const wsurl = 'ws://52.79.60.122:8080/ws';
+const connection = new WebSocket(wsurl);
+connection.on('open', () => {
+  console.log("연결 됨");
+});
+// 메시지 수신 (제어하는 경우)
+connection.on('message', (wMessage) => {
+  const method = wMessage.method
+  switch (method) {
+    case 1:
+      controlWater();
+      break;
+    case 2:
+      controlLight(wMessage.light);
+      break;
+    case 3:
+      toggleAutoControl(wMessage.isAutoControl);
+      break;
+    default:
+      break;
+  }
+});
 
 // *************************************** APIs ***************************************
 // (일단 임시) 메인페이지 데이터 조회 API
@@ -119,33 +141,17 @@ service.register('start', async function (message) {
     console.log(JSON.stringify(msg.payload));
   });
 
-  /* [todo] Websocket 관련 codes
-  // const connection = new WebSocket(wsurl);
-  // 연결 성공
-  connection.onopen = () => {
-    console.log('WebSocket 연결 성공');
-  };
-  // 연결 종료
-  connection.onclose = () => {
-    console.log('WebSocket 연결 종료');
-  };
-  // 연결 중 에러 발생
-  connection.onerror = (error) => {
-    console.error('WebSocket 에러 발생:', error);
-  };
-  // 메시지 수신 (제어하는 경우)
-  connection.onmessage = (wMessage) => {
-    console.log('제어 명령 수신 : ', wMessage);
-    controlLight();
-    controlWater();
-  };
-  // 5초 주기로 센싱 데이터를 외부 서버로 전송
-  const intervalId1 = setInterval(function () {
-    connection.send(
-      JSON.stringify({ plantId: plantId, data: getSensingDataJSON() })
-    );
-  }, 5000);
-  */
+  // WebSocket 서버 연결 설정 (초기화)
+  const plantId = await plantInfo.getPlantId();
+  connection.send(
+    JSON.stringify({
+      method: 30,
+      userPlant: plantId,
+      data: {
+        JSnum: true
+      }
+    })
+  );
 
   // 5초 주기로 센싱
   // 1. envSensingData 에 저장
@@ -192,6 +198,29 @@ service.register('start', async function (message) {
       );
       await plantCurrentInfo.updateSensingData(data);
       await plantCurrentInfo.updateSatisfaction(satisfaction);
+      // ****************** 서버로 데이터 보내기 ************************//
+      const plantId = await plantInfo.getPlantId();
+      const plantName = await plantInfo.getPlantName();
+      const normalImageUrl = await imageUrl.getNormalImageUrl();
+      const level = await plantCurrentInfo.getLevel();
+      const waterCount = await plantCurrentInfo.getWaterCount();
+      connection.send(
+        JSON.stringify({
+          method: 0,
+          userPlant: plantId,
+          data: {
+            plantName,
+            water: data.water,
+            light: data.light,
+            humidity: data.humidity,
+            temperature: data.temperature,
+            satisfaction,
+            level,
+            exp: (100 * waterCount) / (level * 2),
+            imageUrl: normalImageUrl
+          }
+        })
+      );
     } catch (e) {
       message.respond({
         e,
@@ -206,19 +235,8 @@ service.register('start', async function (message) {
 
 service.register('hitest', async function (message) {
   try {
-    const a = await calcSatisfaction(getSensingDataJSON());
+    const a = await plantInfo.getPlantId();
     message.respond({suc:a});
-    return;
-  } catch(e) {
-    message.respond(e);
-    return;
-  }
-});
-
-service.register('hitest2', async function (message) {
-  try {
-    await controlWater();
-    message.respond({suc:"suc"});
     return;
   } catch(e) {
     message.respond(e);
@@ -322,7 +340,17 @@ service.register('toggleAutocontrol', async function (message) {
   try {
     let currentState = await plantCurrentInfo.getIsAutoControl();
     await plantCurrentInfo.updateIsAutoControl(!currentState);
-    // [todo] 서버에도 자동제어 여부 반영하기
+    // 서버에도 자동제어 여부 반영
+    const plantId = await plantInfo.getPlantId();
+    connection.send(
+      JSON.stringify({
+        method: 3,
+        userPlant: plantId,
+        data: {
+          isAutoControl: !currentState
+        }
+      })
+    );
     message.respond({
       success: true,
       currentState: !currentState,
@@ -535,6 +563,22 @@ const plantInfo = {
       service.call(url, params, (res) => {
         if (res.payload.returnValue == true) resolve();
         else reject('put failed');
+      });
+    });
+  },
+  getPlantId: function () {
+    const url = 'luna://com.webos.service.db/find';
+    const params = {
+      query: {
+        from: kindID_plantInfo,
+      },
+    };
+    return new Promise((resolve, reject) => {
+      service.call(url, params, (res) => {
+        if (res.payload.returnValue != true) reject('getPlantId failed');
+        if (res.payload.results.length != 0)
+          resolve(res.payload.results[0].plantId);
+        else reject('getPlantId failed');
       });
     });
   },

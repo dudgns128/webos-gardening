@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import './PlantCondition.css';
 
-const bridge = new WebOSServiceBridge();
+const bridge1 = new WebOSServiceBridge();
+const bridge2 = new WebOSServiceBridge();
 
 const ToggleContainer = styled.div`
   position: relative;
@@ -58,20 +59,32 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
       return;
     }
 
-    const serviceURL = "luna://com.team17.homegardening.service/toggleAutocontrol";
+    const serviceURL = "luna://com.team17.homegardening.service/isAutocontrol";
 
-    bridge.onservicecallback = function (msg) {
+    bridge1.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
       if (response.success) {
         setCurrentState(response.currentState);
       }
     };
 
-    bridge.call(serviceURL, '{}');
+    bridge1.call(serviceURL, '{}');
+    const intervalId = setInterval(() => bridge1.call(serviceURL, '{}'), 1000);
+
+    return () => clearInterval(intervalId);
   }, [isOpen]);
 
   const toggleHandler = () => {
-    setCurrentState(!currentState);
+    const serviceURL = "luna://com.team17.homegardening.service/toggleAutocontrol";
+
+    bridge2.onservicecallback = function (msg) {
+      const response = JSON.parse(msg);
+      if (response.success) {
+        setCurrentState(response.currentState);
+      }
+    };
+
+    bridge2.call(serviceURL, '{}');
   };
 
   if (!isOpen) {

@@ -85,8 +85,8 @@ const UserPlantRegister = () => {
       });
 
       if (response.status === 201) {
-        setUserplantId(response.data.id); 
-        await delay()
+        setUserplantId(response.data.id);
+        await delay();
         navigate('/main');
       } else{
         const message = error.response?.data?.message || '서버에서 id를 못 받아오고 있습니다';

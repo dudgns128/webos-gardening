@@ -3,13 +3,19 @@
 import React, { useState, useEffect } from 'react';
 import './PlantCondition.css';
 
-const bridge = new WebOSServiceBridge();
+const bridge1 = new WebOSServiceBridge();
+const bridge2 = new WebOSServiceBridge();
 
 const PlantConditionModal = ({ isOpen, onClose }) => {
   const [water, setWater] = useState(0);
   const [light, setLight] = useState(0);
   const [temperature, setTemperature] = useState(0);
   const [humidity, setHumidity] = useState(0);
+  const [waterStatus, setWaterStatus] = useState();
+  const [lightStatus, setLightStatus] = useState();
+  const [temperatureStatus, setTemperatureStatus] = useState();
+  const [humidityStatus, setHumidityStatus] = useState();
+  
 
   /*이 식에서 min max 값 조절로 부족 과다 적절 표시가능 */
   const getStatus = (value, min, max) => {
@@ -35,14 +41,25 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
     }
   };
 
+
   useEffect(() => {
     if (!isOpen) {
       return;
     }
+
+    const serviceURL2 = "luna://com.team17.homegardening.service/envData";
+    bridge2.onservicecallback = function (msg) {
+      const response = JSON.parse(msg);
+      setWaterStatus(getStatus(water, response.waterValue-response.waterRange, response.waterValue+response.waterRange));
+      setLightStatus(getStatus(light, response.lightValue-response.lightRange, response.lightValue+response.lightRange));
+      setTemperatureStatus(getStatus(temperature, response.temperatureValue-response.temperatureRange, response.temperatureValue+response.temperatureRange));
+      setHumidityStatus(getStatus(humidity, response.humidityValue-response.humidityRange, response.humidityValue+response.humidityRange));
+    };
     
-    const serviceURL = "luna://com.team17.homegardening.service/getSensingData";
-  
-    bridge.onservicecallback = function (msg) {
+    bridge2.call(serviceURL2, '{}');
+    
+    const serviceURL1 = "luna://com.team17.homegardening.service/getSensingData";
+    bridge1.onservicecallback = function (msg) {
       const response = JSON.parse(msg);
       if (response.success) {
         setWater(response.water);
@@ -52,9 +69,13 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
       }
     };
 
-    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
+    bridge1.call(serviceURL1, '{}');
+    const intervalId1 = setInterval(() => bridge1.call(serviceURL1, '{}'), 3000);
 
-    return () => clearInterval(intervalId);
+
+    return () => {
+      clearInterval(intervalId1);
+      clearInterval(intervalId2);};
   }, [isOpen]);
 
   if (!isOpen) {
@@ -62,10 +83,10 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
   }
 
   // 예시 적정값 임의로 설정 (value,min,max)
-  const waterStatus = getStatus(water, 20, 80);
-  const lightStatus = getStatus(light, 30, 70);
-  const temperatureStatus = getStatus(temperature, 18, 25);
-  const humidityStatus = getStatus(humidity, 40, 60);
+  // const waterStatus = getStatus(water, 20, 80);
+  // const lightStatus = getStatus(light, 30, 70);
+  // const temperatureStatus = getStatus(temperature, 18, 25);
+  // const humidityStatus = getStatus(humidity, 40, 60);
 
   return (
     <div class="PlantModal">
