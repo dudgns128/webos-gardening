@@ -61,26 +61,31 @@
 </p>
 
 
-### Development Background
-As the cost of raising pet has risen recently, many people have started to take an interest in companion plants, which are comparatively less expensive to maintain. This growing interest is boosting the companion plant market, and simultaneously, there is an increasing demand for innovative ways to efficiently manage these plants. Especially in busy lifestyles, situations may arise where sudden business trips or vacations make it difficult to properly care for plants.
+### Development Motivation and Description
 
-Based on this background, the Smart Home Gardening project aims to provide a sustainable and user-friendly gardening solution suitable for modern living. Furthermore, This project seeks to reduce the hassle of plant care and to invigorate daily life through interaction with plants, aiming to make gardening an integral, lively part of daily living.
+[Difficulty in growing and managing plants at home]
+- Time and cost burden to manage plants every day, and barriers to entry into cultivation and management, especially for beginners
+- When growing at home, each environmental condition (wind, sunlight, humidity, temperature, etc.) is different, so there is a limit to cultivating only by referring to the manual
 
-### Development Direction
+[Features for user convenience and satisfaction]
+- **Automatic control to maintain appropriate environmental conditions according to plant species**, **monitoring companion plant conditions**, and **managing companion plant affection** through JS service between HW and web apps
+- Development of external servers and mobile pages to implement user information management, **remote control (watering/light volume)**, and **multiple individual plant management functions**
+
+### Key Features
 
 **1. Automation of Maintaining Optimal Environmental Conditions Based on Plant Species**
 
-  - Real-time data collection is achieved through sensors connected to an Arduino, including temperature and humidity sensors, light sensors, and moisture sensors.
+  - **Real-time data collection** is achieved through sensors connected to an Arduino, including temperature and humidity sensors, light sensors, and moisture sensors.
     
-  - Based on the collected sensor data, an automatic watering system and light control system create suitable environments for different plants automatically.
+  - Based on the collected sensor data, an **automatic watering system and light control system create suitable environments for different plants automatically.**
 
   - The appropriate environmental conditions for each plant species are stored in a database using domain knowledge in botany. For instance, cacti require temperatures of 30-40°C during the day and 10°C at night, with high light levels and 40-60% humidity, while peonies require temperatures of 18-25°C and 50-70% humidity.
 
 **2. Meeting Various User Needs**
 
-  - The system supports both an automation mode for convenient management and a customization mode for users who wish to interact directly with their plants. Users can switch between modes without restrictions. For example, someone who enjoys watering their plants manually can use the customization mode but switch to automation mode when they need to be away for an extended period.
+  - The system supports both **an automation mode for convenient management** and **a customization mode for users who wish to interact directly with their plants.** Users can switch between modes without restrictions. For example, someone who enjoys watering their plants manually can use the customization mode but switch to automation mode when they need to be away for an extended period.
   
-  - Through a mobile web interface, users can monitor plant conditions and environmental factors, such as light and moisture levels, and make adjustments as needed.
+  - Through a mobile web interface, users can monitor plant conditions and environmental factors remotely, such as light and moisture levels, and make adjustments as needed.
 
 <!-- specifications -->
 ## Specifications
