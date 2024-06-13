@@ -159,7 +159,7 @@
   </p>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Environment Setting
+### Hardware Setup
 
 #### Raspberry Pi
 * HardWare : Raspberry Pi 4 Model B 8GB
