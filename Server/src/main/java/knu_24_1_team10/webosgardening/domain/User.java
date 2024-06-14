@@ -2,12 +2,7 @@ package knu_24_1_team10.webosgardening.domain;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,17 +29,17 @@ public class User {
 
 
 
-    @Column(name = "email", nullable = false, unique=true, length = 30)
+    @Column(name = "email", nullable = false, unique = true, length = 30)
     private String email;
 
-    @Column(name = "password", nullable = true, length = 20)
+    @Column(name = "password", nullable = false, length = 20)
     private String password;
 
-    @Column(name = "name", nullable = true, length = 20)
+    @Column(name = "name", nullable = false, length = 20)
     private String name;
 
 
-    @Column(name = "nickname", nullable = true, length = 20)
+    @Column(name = "nickname", nullable = false, length = 20)
     private String nickname;
 
 
@@ -52,7 +47,7 @@ public class User {
     private boolean gender;
 
 
-    @Column(name = "birth", nullable = true, length = 20)
+    @Column(name = "birth", nullable = false, length = 20)
     private String birth;
 
 
