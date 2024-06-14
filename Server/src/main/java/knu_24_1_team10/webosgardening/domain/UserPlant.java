@@ -55,6 +55,15 @@ public class UserPlant {
 
 
   // Getters
+
+  public String getBirthdate() {
+    return birthdate;
+  }
+
+  public boolean isAutoControl() {
+    return isAutoControl;
+  }
+
   public Long getId() {
     return this.id;
   }
