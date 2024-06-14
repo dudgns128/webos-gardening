@@ -1,7 +1,9 @@
 package knu_24_1_team10.webosgardening.repository;
 
+import java.util.List;
 import java.util.Optional;
 
+import knu_24_1_team10.webosgardening.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,25 +11,9 @@ import jakarta.persistence.EntityManager;
 import knu_24_1_team10.webosgardening.domain.UserPlant;
 
 @Repository
-public class UserPlantRepository {
+public interface UserPlantRepository extends JpaRepository<UserPlant, Long> {
+
+    List<UserPlant> findByUser(User user);
 
 
-  private final EntityManager em;
-
-  public UserPlantRepository(EntityManager em) {
-    this.em = em;
-  }
-
-  public boolean save(UserPlant userPlant) {
-    try {
-      em.persist(userPlant);
-    } catch(Exception e) {
-      return false;
-    }
-    return true;
-  }
-
-  public Optional<UserPlant> findById(Long id) {
-    return Optional.ofNullable(em.find(UserPlant.class, id));
-  }
 }
