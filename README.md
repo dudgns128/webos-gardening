@@ -19,8 +19,6 @@
     It's a webOS-based smart home gardening project with remote and automatic control!
     <br />
     <br />
-    <a href="https://youtu.be/V7H0JUiSZ7Y">🎥 View Demo</a>
-    ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">🐞 Report Bug</a>
     ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">💬 Request Feature</a>
@@ -38,11 +36,10 @@
      <ul>
         <li><a href="#built-with">Built With</a></li>
         <li><a href="#system-architecture">System Architecture</a></li>
-       <li><a href="#environment-setting">Environment setting</a></li>
+       <li><a href="#hardware-setup">Hardware setup</a></li>
      </ul>
     </li>
     <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#usage-screenshot">Usage Screenshot</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -234,6 +231,18 @@ step is detailed in the `README.md` file of the respective folder, allowing you 
 
 [Guide for Starting App]()
 
+## Contact
+
+### 💡 김영훈 ([dudgns128](https://https://github.com/dudgns128)) : [xoals128@naver.com](mailto:xoals128@naver.com)
+
+### 💡 박지환 ([hw-ani](https://https://github.com/hw-ani)) : [pcbmlh73@gmail.com](mailto:pcbmlh73@gmail.com)
+
+### 💡 김재훈 ([nanocode00](https://github.com/nanocode00)) : [rwg0901@naver.com](mailto:rwg0901@naver.com)
+
+### 💡 오승우 ([dhtmddn00](https://github.com/dhtmddn00)) : [dhtmddn00@gmail.com](mailto:dhtmddn00@gmail.com)
+
+### 💡 홍지승 ([HONG-2019110129](https://https://https://github.com/HONG-2019110129)) : [wltmd3847@naver.com](mailto:wltmd3847@naver.com)
+
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
@@ -248,7 +257,7 @@ step is detailed in the `README.md` file of the respective folder, allowing you 
 [issues-shield]: https://img.shields.io/github/issues/dudgns128/webos-gardening.svg?style=for-the-badge
 [issues-url]: https://github.com/dudgns128/webos-gardening/issues
 [license-shield]: https://img.shields.io/github/license/noFlowWater/signage_solution.svg?style=for-the-badge
-[license-url]: https://github.com/noFlowWater/signage_solution/blob/master/LICENSE.txt
+[license-url]: https://github.com/moby/moby/blob/master/LICENSE
 [webos-shield]: https://img.shields.io/badge/webos%20official%20example-A50034?style=for-the-badge&logo=lg
 [webos-url]: https://www.webosose.org/samples/2023/12/21/facial-recognition-kiosk-using-webos
 [product-screenshot]: images/screenshot.png
