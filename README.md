@@ -229,7 +229,6 @@ This guide will help you set up and run the project in your local environment. F
 
 step is detailed in the `README.md` file of the respective folder, allowing you to sequentially progress and gather the necessary information.
 
-[Guide for Starting App]()
 
 ## Contact
 
