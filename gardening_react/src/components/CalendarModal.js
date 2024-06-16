@@ -236,7 +236,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
         <ModalBackdrop onClick={onClose}>
             <div onClick={(e) => e.stopPropagation()}>
                 <ThemeProvider theme={theme}>
-                    <StyledCalendarWrapper>
+                    <StyledCalendarWrapper onClick={onClose}>
                         <StyledCalendar
                             value={date}
                             // onChange={handleDateChange}
