@@ -45,7 +45,6 @@ echo ">> Displaying contents of appinfo.json:"
 cat appinfo.json
 
 # 아이콘 파일 복사
-echo ">> Copying icon file..."
 if [ ! -f icon.png ]; then
     echo ">> Copying icon file..."
     cp ../icon.png icon.png
