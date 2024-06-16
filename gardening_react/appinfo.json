@@ -1,0 +1,11 @@
+{
+ "id": "com.team17.homegardening",
+ "version": "1.0.0",
+ "vendor": "my",
+ "type": "web",
+ "main": "index.html",
+ "title": "my",
+ "icon": "icon.png",
+ "allowVideoCapture": true,
+ "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation"]
+}

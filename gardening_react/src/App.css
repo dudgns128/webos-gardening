@@ -1,0 +1,74 @@
+body {
+  font-family: 'SansM';
+  background-color: #f0f8ff;
+}
+
+/* .App {
+  text-align: center;
+}
+
+.App-logo {
+  display: flex;
+  width: 375px;
+  height: 812px;
+  padding: 202px 109px 458px 108px;
+  flex-direction: column;
+  align-items: center;
+  background: #FFF;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+} */
+
+/* @keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} */
+
+
+.logo-container {
+  display: flex;
+  flex-direction: column;
+  /* animation-delay: 2000ms;
+  animation-timing-function: ease-in-out;
+  animation-duration: 600ms; */
+}
+
+.gauge-container {
+  width: 408px;
+  height: 24px;
+  border-radius: 30px;
+  background-color: #ccc; /* 기본 배경색 */
+  box-shadow: 0px 8px 20px 0px rgba(175, 175, 175, 0.40);
+  overflow: hidden; /* 바의 둥근 모서리를 유지하기 위함 */
+}
+
+.gauge-bar {
+  height: 100%;
+  flex-shrink: 0;
+  border-radius: 30px; /* 컨테이너와 동일한 값을 유지하여 둥근 모서리를 유지 */
+  background: linear-gradient(270deg, #00A35E 0%, #E6E939 49.08%, #F00 103.55%);
+  transition: width 0.5s ease-in-out; /* 부드러운 너비 변경 효과 */
+}
