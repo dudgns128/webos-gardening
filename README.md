@@ -199,7 +199,7 @@
 * DHT11 : A sensor used to measure temperature and humidity
 * NeoPixel : A brand of addressable LEDs developed by Adafruit for control Light 
 
-  <img width="899" alt="HW + SENSOR " src="pre build image file">
+  <img width="899" alt="HW + SENSOR " src="https://github.com/dudgns128/webos-gardening/assets/62871662/51fa53d8-2721-4015-95e8-d17fb2efaff7">
 
 <!-- GETTING STARTED -->
 # Getting Started
