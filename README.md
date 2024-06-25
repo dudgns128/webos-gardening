@@ -84,6 +84,12 @@
   
   - Through a mobile web interface, users can monitor plant conditions and environmental factors remotely, such as light and moisture levels, and make adjustments as needed.
 
+### Must Read
+
+In this `main` branch, except for the HW connection, the contents corresponding to the `webos/dev` branch are merged.
+We provide logic and functions to make them easier to understand and utilize, and we use dummy data, not actual data.
+If you would like to see the contents including the HW connection, you can find it on the `webos/devHW` branch.
+
 <!-- specifications -->
 ## Specifications
 
