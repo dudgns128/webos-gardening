@@ -4,6 +4,13 @@ import './PlantCondition.css';
 
 const bridge1 = new WebOSServiceBridge();
 const bridge2 = new WebOSServiceBridge();
+const bridge3 = new WebOSServiceBridge();
+
+
+// var sub = service.subscribe("luna://com.webos.service.connectionmanager/getStatus", {"subscribe": true});
+// sub.on("response", function(message) {
+//     //do something with the subscription
+// });
 
 const ToggleContainer = styled.div`
   position: relative;
@@ -33,11 +40,12 @@ const Span = styled.span`
   margin-right: 20px;
 `;
 
-const Toggle = ({ isOn, toggleHandler }) => {
+const Toggle = ({ isOn, toggleHandler, updateAutoControl }) => {
   return (
     <ToggleContainer onClick={(e) => {
       e.stopPropagation();
       toggleHandler();
+      updateAutoControl();
     }}>
       <ToggleBackground isOn={isOn} />
       <ToggleCircle isOn={isOn} />
@@ -87,6 +95,17 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
     bridge2.call(serviceURL, '{}');
   };
 
+  const updateAutoControl = () => {
+    const serviceURL = "luna://com.team17.homegardening.service/autoControlMonitoring";
+  
+    bridge3.onservicecallback = function (msg) { 
+      var response = JSON.parse(msg);
+      setCurrentState(response.isAutoControl)
+    };
+  
+    bridge3.call(serviceURL, '{"subscribe":true}');
+  };
+
   if (!isOpen) {
     return null;
   }
@@ -99,7 +118,7 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
           <div className="plant-status">
             <div className="status-item">
               <Span>자동 제어 유무</Span>
-              <Toggle isOn={currentState} toggleHandler={toggleHandler} style={{ marginLeft: '20px' }}/>
+              <Toggle isOn={currentState} toggleHandler={toggleHandler} updateAutoControl={updateAutoControl} style={{ marginLeft: '20px' }}/>
             </div>
             <div className="autocontrol-text">
               {descriptionLines}

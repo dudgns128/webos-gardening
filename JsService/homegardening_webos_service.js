@@ -137,11 +137,14 @@ service.register('start', async function (message) {
         break;
       case 16:  case '16':
         await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
+        await sendAutoControlMonitoring();
         break;
       default:
         break;
     }
   });
+
+
 
   // WebSocket 서버 연결 설정 (초기화)
   const plantId = await plantInfo.getPlantId();
@@ -506,7 +509,7 @@ heartbeat2.on('request', function (message) {
   console.log('heartbeat callback');
   message.respond({ event: 'beat' });
   if (message.isSubscription) {
-    subscriptions[message.uniqueToken] = message;
+    subscriptions_heartbeat[message.uniqueToken] = message;
     if (!interval) {
       createInterval();
     }
@@ -515,8 +518,8 @@ heartbeat2.on('request', function (message) {
 heartbeat2.on('cancel', function (message) {
   console.log(logHeader, 'SERVICE_METHOD_CALLED:/heartbeat/cancel');
   console.log('Canceled ' + message.uniqueToken);
-  delete subscriptions[message.uniqueToken];
-  const keys = Object.keys(subscriptions);
+  delete subscriptions_heartbeat[message.uniqueToken];
+  const keys = Object.keys(subscriptions_heartbeat);
   if (keys.length === 0) {
     console.log('no more subscriptions, canceling interval');
     clearInterval(interval);
@@ -527,9 +530,9 @@ heartbeat2.on('cancel', function (message) {
 function sendResponses() {
   // console.log(logHeader, "send_response");
   // console.log("Sending responses, subscription count=" + Object.keys(subscriptions).length);
-  for (const i in subscriptions) {
-    if (Object.prototype.hasOwnProperty.call(subscriptions, i)) {
-      const s = subscriptions[i];
+  for (const i in subscriptions_heartbeat) {
+    if (Object.prototype.hasOwnProperty.call(subscriptions_heartbeat, i)) {
+      const s = subscriptions_heartbeat[i];
       s.respond({
         returnValue: true,
         event: 'beat ' + x,
@@ -539,7 +542,7 @@ function sendResponses() {
   x++;
 }
 // handle subscription requests
-const subscriptions = {};
+const subscriptions_heartbeat = {};
 let interval;
 let x = 1;
 function createInterval() {
@@ -552,6 +555,46 @@ function createInterval() {
     sendResponses();
   }, 1000);
 }
+
+// *************************************** AutoControlMonitoring ***************************************
+// auto control을 웹앱 페이지에서 모니터링하기 위한 api
+const subscriptions_autoControlMonitoring = {};
+const autoControlMonitoring = service.register('autoControlMonitoring');
+autoControlMonitoring.on('request', function (message) {
+  console.log('autoControlMonitoring callback');
+  message.respond({ event: 'autoControlMonitoring started' });
+  if (message.isSubscription) {
+    subscriptions_autoControlMonitoring[message.uniqueToken] = message;
+    if (!interval) {
+      createInterval();
+    }
+  }
+});
+autoControlMonitoring.on('cancel', function (message) {
+  console.log('Canceled ' + message.uniqueToken);
+  delete subscriptions_autoControlMonitoring[message.uniqueToken];
+  const keys = Object.keys(subscriptions_autoControlMonitoring);
+  if (keys.length === 0) {
+    console.log('no more subscriptions, canceling interval');
+    clearInterval(interval);
+    interval = undefined;
+  }
+});
+// send responses to each subscribed client
+async function sendAutoControlMonitoring() {
+  for (const i in subscriptions_autoControlMonitoring) {
+    if (Object.prototype.hasOwnProperty.call(subscriptions_autoControlMonitoring, i)) {
+      const s = subscriptions_autoControlMonitoring[i];
+      const isAutoControl = await plantCurrentInfo.getIsAutoControl();
+      s.respond({
+        returnValue: true,
+        isAutoControl: isAutoControl,
+      });
+    }
+  }
+  x++;
+}
+
 
 // *************************************** DB ***************************************
 const busID = 'com.team17.homegardening.service';
