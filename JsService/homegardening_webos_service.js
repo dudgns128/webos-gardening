@@ -6,7 +6,7 @@ const WebSocket = require('ws');
 const service = new Service(pkgInfo.name);
 const logHeader = '[' + pkgInfo.name + ']';
 // *************** WebSocket ********************//
-const wsurl = 'ws://52.79.60.122:8080/ws';
+const wsurl = 'ws://15.164.95.57:8080/ws';
 const connection = new WebSocket(wsurl);
 connection.on('open', () => {
   console.log("연결 됨");

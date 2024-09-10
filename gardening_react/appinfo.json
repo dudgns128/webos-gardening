@@ -1,10 +1,10 @@
 {
  "id": "com.team17.homegardening",
  "version": "1.0.0",
- "vendor": "my",
+ "vendor": "my team",
  "type": "web",
  "main": "index.html",
- "title": "my",
+ "title": "new app",
  "icon": "icon.png",
  "allowVideoCapture": true,
  "requiredPermissions": [ "time.query", "activity.operation", "com.team17.homegardening.service.group", "database.operation"]
