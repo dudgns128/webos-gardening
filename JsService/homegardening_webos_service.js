@@ -137,7 +137,7 @@ service.register('start', async function (message) {
         controlLight(wMessage.light);
         break;
       case 16:  case '16': case 3: case '3':  // 16만 있어도 되는데 3은 오류 체크로 추가해봄
-        test += i;
+        test = wMessage.isAutoControl;
         i += 1;
         await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
         break;
