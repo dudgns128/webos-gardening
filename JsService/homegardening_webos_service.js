@@ -135,7 +135,7 @@ service.register('start', async function (message) {
       case 2:  case '2':
         controlLight(wMessage.light);
         break;
-      case 16:  case '16':
+      case 16:  case '16': case 3: case '3':  // 16만 있어도 되는데 3은 오류 체크로 추가해봄
         await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
         break;
       default:
@@ -353,6 +353,17 @@ service.register('toggleAutocontrol', async function (message) {
         }
       })
     );
+    // temp
+    connection.send(
+      JSON.stringify({
+        method: 16,
+        userPlant: plantId,
+        data: {
+          isAutoControl: !currentState
+        }
+      })
+    );
+    /////////
     message.respond({
       success: true,
       currentState: !currentState,
