@@ -69,9 +69,9 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
     };
 
     bridge1.call(serviceURL, '{}');
-    const intervalId = setInterval(() => bridge1.call(serviceURL, '{}'), 1000);
+    // const intervalId = setInterval(() => bridge1.call(serviceURL, '{}'), 1000);
 
-    return () => clearInterval(intervalId);
+    // return () => clearInterval(intervalId);
   }, [isOpen]);
 
   const toggleHandler = () => {
