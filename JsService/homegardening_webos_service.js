@@ -125,6 +125,7 @@ service.register('start', async function (message) {
   });
 
   // Websocket : 메시지 수신 (제어하는 경우)
+  let test=77, i=1;
   connection.on('message', async (rawMessage) => {
     const wMessage = JSON.parse(rawMessage);
     const method = wMessage.method
@@ -136,6 +137,8 @@ service.register('start', async function (message) {
         controlLight(wMessage.light);
         break;
       case 16:  case '16': case 3: case '3':  // 16만 있어도 되는데 3은 오류 체크로 추가해봄
+        test += i;
+        i += 1;
         await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
         break;
       default:
@@ -238,7 +241,7 @@ service.register('start', async function (message) {
 service.register('hitest', async function (message) {
   try {
     const a = await plantInfo.getPlantId();
-    message.respond({suc:a});
+    message.respond({suc:a, test});
     return;
   } catch(e) {
     message.respond(e);
