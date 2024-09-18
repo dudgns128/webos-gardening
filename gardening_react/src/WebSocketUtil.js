@@ -31,8 +31,8 @@ WebSocketUtil.socket.onmessage = function(event) {
         }
     } else if (arg.method === 3) {
         if (WebSocketUtil.onReceiveAutoControlCallback !== undefined) {
-            WebSocketUtil.isAutoControl = arg.isAutoControl;
-            WebSocketUtil.onReceiveAutoControlCallback(arg.isAutoControl);
+            WebSocketUtil.isAutoControl = (Boolean)(arg.autoControl);
+            WebSocketUtil.onReceiveAutoControlCallback((Boolean)(arg.autoControl));
         }
     }
 };
