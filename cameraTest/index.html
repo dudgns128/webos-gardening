@@ -1,0 +1,120 @@
+<!--
+Copyright (c) 2020-2024 LG Electronics Inc.
+
+SPDX-License-Identifier: Apache-2.0
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Example Web App</title>
+<style type="text/css">
+    body {
+        width: 100%;
+        height: 100%;
+        align-items: center;
+        background-color:#202020;
+    }
+    div {
+        position:relative;
+        height:100%;
+        width:100%;
+        display: table;
+    }
+    h1 {
+        display: table-cell;
+        vertical-align: middle;
+        text-align:center;
+        color:#FFFFFF;
+    }
+</style>
+<script type="text/javascript">
+    var bridge = new WebOSServiceBridge();
+    var isCameraOpened = false;
+    var handle = 0;
+
+    function openCamera() {
+        var openCameraApi = "luna://com.webos.service.camera2/open";
+        var openCameraParams = "{\"id\":\"camera1\"}";
+
+        function openCameraCallback(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById("open_camera_result");
+            var cameraStatusElement = document.getElementById("camera_status");
+
+            if (arg.returnValue) {
+                resultElement.innerHTML = "Success, handle = " + arg.handle;
+                cameraStatusElement.innerHTML = "Opened";
+                isCameraOpened = true;
+                handle = arg.handle;
+            } else {
+                resultElement.innerHTML = "Failed: " + arg.errorCode;
+            }
+        }
+
+        bridge.onservicecallback = openCameraCallback;
+        bridge.call(openCameraApi, openCameraParams);
+    }
+
+    function capture() {
+        var captureApi = "luna://com.webos.service.camera2/capture";
+        var captureParams = "{\"handle\": " + handle + "}";
+
+        function captureCallback(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById("capture_result");
+
+            if (arg.returnValue) {
+                resultElement.innerHTML = "Success, path = " + arg.path;
+            } else {
+                resultElement.innerHTML = "Failed: " + arg.errorCode;
+            }
+        }
+
+        bridge.onservicecallback = captureCallback;
+        bridge.call(captureApi, captureParams);
+    }
+
+    function closeCamera() {
+        var closeCameraApi = "luna://com.webos.service.camera2/close";
+        var closeCameraParams = "{\"handle\":" + handle + "}";
+
+        function openCameraCallback(msg) {
+            var arg = JSON.parse(msg);
+            var resultElement = document.getElementById("close_camera_result");
+            var cameraStatusElement = document.getElementById("camera_status");
+
+            if (arg.returnValue) {
+                resultElement.innerHTML = "Success";
+                cameraStatusElement.innerHTML = "Closed";
+                isCameraOpened = false;
+                handle = 0;
+            } else {
+                resultElement.innerHTML = "Failed: " + arg.errorCode;
+            }
+        }
+
+        bridge.onservicecallback = openCameraCallback;
+        bridge.call(closeCameraApi, closeCameraParams);
+    }
+</script>
+</head>
+<body>
+    <div>
+        <h1 id="camera_status_label">Camera Status</h1>
+        <h1 id="camera_status">Closed</h1>
+    </div>
+    <div>
+        <h1 id="open_camera" onclick="openCamera()">Open Camera</h1>
+        <h1 id="open_camera_result">Open Camera Result</h1>
+    </div>
+    <div>
+        <h1 id="capture" onclick="capture()">Capture</h1>
+        <h1 id="capture_result">Capture result</h1>
+    </div>
+    <div>
+        <h1 id="close_camera" onclick="closeCamera()">Close Camera</h1>
+        <h1 id="close_camera_result">Close Camera Result</h1>
+    </div>
+</body>
+</html>

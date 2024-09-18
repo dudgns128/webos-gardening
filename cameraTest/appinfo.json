@@ -1,0 +1,14 @@
+{
+  "id": "com.team17.test.camera",
+  "version": "1.0.0",
+  "vendor": "My Company",
+  "type": "web",
+  "main": "index.html",
+  "title": "Camera Test",
+  "icon": "icon.png",
+  "requiredPermissions": [
+    "time.query",
+    "activity.operation",
+    "camera.operation"
+  ]
+}
