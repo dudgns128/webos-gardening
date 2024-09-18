@@ -1,6 +1,6 @@
 var WebSocketUtil = {};
 
-WebSocketUtil.socket = new WebSocket("ws://52.79.60.122:8080/ws");
+WebSocketUtil.socket = new WebSocket("ws://15.164.95.57:8080/ws");
 
 WebSocketUtil.socket.onopen = function(e) {
     const msg = {
