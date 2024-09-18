@@ -1,3 +1,4 @@
+let test=77, i=1;
 // eslint-disable-next-line import/no-unresolved
 const pkgInfo = require('./package.json');
 const Service = require('webos-service');
@@ -125,7 +126,6 @@ service.register('start', async function (message) {
   });
 
   // Websocket : 메시지 수신 (제어하는 경우)
-  let test=77, i=1;
   connection.on('message', async (rawMessage) => {
     const wMessage = JSON.parse(rawMessage);
     const method = wMessage.method
