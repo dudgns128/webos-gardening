@@ -36,7 +36,7 @@ const Span = styled.span`
 const Toggle = ({ isOn, toggleHandler }) => {
   return (
     <ToggleContainer onClick={(e) => {
-      e.stopPropagation();
+      // e.stopPropagation();
       toggleHandler();
     }}>
       <ToggleBackground isOn={isOn} />
