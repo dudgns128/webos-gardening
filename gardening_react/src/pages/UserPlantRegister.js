@@ -30,7 +30,7 @@ const UserPlantRegister = () => {
   async function delay() {
     return new Promise(resolve => setTimeout(resolve, 1));
   }
-
+  
   useEffect(() => {
     const fetchPlantInfo = async () => {
       try {
@@ -60,20 +60,20 @@ const UserPlantRegister = () => {
     .map(plant => plant.scientificName);
 
   const onSubmit = async () => {
-
+    
     const email = localStorage.getItem('email');
     const password = localStorage.getItem('password');
 
     const formatYear = year.replace('년', '');
     const formatMonth = month.replace('월', '').padStart(2, '0');
     const formatDay = day.replace('일', '').padStart(2, '0');
-
+    
     const birthDate = `${formatYear}-${formatMonth}-${formatDay}`;
     setPlantBirthdate(birthDate) // just for JS service API
-
+    
     try {
       const response = await axios.post(`${server}/api/userplant`, null, {
-        params: {
+        params:{
           email: email,
           password: password,
           plantInfoId: selectedPlantId,
@@ -88,7 +88,7 @@ const UserPlantRegister = () => {
         setUserplantId(response.data.id);
         await delay();
         navigate('/main');
-      } else {
+      } else{
         const message = error.response?.data?.message || '서버에서 id를 못 받아오고 있습니다';
         setModalMessage(message);
         setShowModal(true);
@@ -97,7 +97,7 @@ const UserPlantRegister = () => {
       let message;
       if (error.response && error.response.status === 404) {
         message = error.response?.data?.message || '사용자 정보나 식물 정보가 없습니다';
-      }
+      } 
       else if (error.response && error.response.status === 400) {
         message = error.response?.data?.message || '사용자 이메일과 비멀번호가 일치하지 않습니다';
       }
@@ -107,7 +107,7 @@ const UserPlantRegister = () => {
       setModalMessage(message);
       setShowModal(true);
     }
-  };
+  };    
 
   useEffect(() => {
     const selectedPlant = plantList.find(plant => plant.scientificName === plantSpecies);
@@ -117,12 +117,12 @@ const UserPlantRegister = () => {
       localStorage.setItem('description', selectedPlant.shortDescription);     // API 개발 이전 임시용
 
       const serviceURL = "luna://com.team17.homegardening.service/start";
-
+      
       bridge.onservicecallback = function (msg) {
-        const response = JSON.parse(msg);
-        if (response.success) {
-          console.log("Luna service response success",);
-        }
+          const response = JSON.parse(msg);
+          if (response.success) {
+            console.log("Luna service response success",);
+          }
       };
       const payload = {
         "plantId": userplantId,
@@ -172,27 +172,27 @@ const UserPlantRegister = () => {
   const calculateHeightSize = (originalSize, ratio) => {
     return Math.round(window.innerHeight * ratio) || originalSize;
   };
-
+  
   const BIRTHDAY_YEAR_LIST = Array.from({ length: 30 }, (_, i) => `${2024 - i}년`);
   const BIRTHDAY_MONTH_LIST = Array.from({ length: 12 }, (_, i) => `${i + 1}월`);
   const BIRTHDAY_DAY_LIST = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
 
   return (
-    <div style={{ padding: '15vh' }}>
-      <MessageModal
-        content={modalMessage}
-        isOpen={showModal}
-        setIsOpen={setShowModal}
-        closeMethod={() => setShowModal(false)}
+    <div style = {{padding: '140px'}}>
+      <MessageModal 
+        content={modalMessage} 
+        isOpen={showModal} 
+        setIsOpen={setShowModal} 
+        closeMethod={() => setShowModal(false)}  
       />
       <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
         <div className="d-flex flex-column align-items-center">
-          <h1 style={{ fontFamily: 'SansM', fontSize: '35px' }}>식물 정보 등록</h1>
-          <div style={{ textAlign: 'center', paddingTop: '5vh' }}>
-            <div className="speciesFrame-nameFrame" style={{ marginTop: '40px' }}>
+          <h1 style = {{fontFamily: 'SansM', fontSize:'35px'}}>식물 정보 등록</h1>
+          <div style={{ textAlign: 'center',paddingTop:'20px' }}>
+            <div className="speciesFrame-nameFrame" style={{ marginTop: '40px'}}> 
               <select
                 className="speciesBox"
-                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', marginRight: '20px' }}
+                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', marginRight: '20px' }}
                 type="text"
                 value={plantSpecies}
                 onChange={(e) => {
@@ -208,7 +208,7 @@ const UserPlantRegister = () => {
               </select>
               <input
                 className="nameBox"
-                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', width: '300px' }}
+                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', width: '300px' }}
                 type="text"
                 value={plantName}
                 onChange={(e) => setPlantName(e.target.value)}
@@ -217,10 +217,10 @@ const UserPlantRegister = () => {
               />
             </div>
             <div className="birthdateSelectFrame" style={{ marginTop: '20px' }}>
-              <label className="form-label" style={{ fontFamily: 'SansM', fontSize: '20px', marginRight: '10px' }}>식물 생년월일</label>
+              <label className="form-label" style = {{fontFamily: 'SansM', fontSize:'20px', marginRight: '10px' }}>식물 생년월일</label>
               <select
                 className="birthdateBox yearBox"
-                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                 type="year"
                 value={year}
                 onChange={(e) => {
@@ -229,12 +229,12 @@ const UserPlantRegister = () => {
                 required
               >
                 {BIRTHDAY_YEAR_LIST.map((year, index) => (
-                  <option key={index}>{year}</option>
+                    <option key={index}>{year}</option>
                 ))}
               </select>
               <select
                 className="birthdateBox monthBox"
-                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                 type="month"
                 value={month}
                 onChange={(e) => {
@@ -243,12 +243,12 @@ const UserPlantRegister = () => {
                 required
               >
                 {BIRTHDAY_MONTH_LIST.map((year, index) => (
-                  <option key={index}>{year}</option>
+                    <option key={index}>{year}</option>
                 ))}
               </select>
               <select
                 className="birthdateBox dayBox"
-                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                 type="day"
                 value={day}
                 onChange={(e) => {
@@ -257,22 +257,22 @@ const UserPlantRegister = () => {
                 required
               >
                 {BIRTHDAY_DAY_LIST.map((day, index) => (
-                  <option key={index}>{day}</option>
+                    <option key={index}>{day}</option>
                 ))}
               </select>
             </div>
           </div>
           <div>
             <div className="btn" style={{ marginTop: '40px' }}>
-              <button type="button" onClick={onSubmit} style={{ background: 'transparent', border: 'none' }}>
-                <img src={require('../img/CheckBtn.png')} alt="" className="btn-image" />
+              <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
+                <img src={require('../img/CheckBtn.png')} alt="" className="btn-image"/>
               </button>
             </div>
-          </div>
+          </div>  
           <div>
             <div className="btn" style={{ marginTop: '20px' }}>
-              <button type="button" onClick={goBack} style={{ background: 'transparent', border: 'none' }}>
-                <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image" />
+              <button type="button" onClick ={goBack} style={{ background: 'transparent', border: 'none' }}>
+                <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image"/>
               </button>
             </div>
           </div>

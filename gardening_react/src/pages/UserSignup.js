@@ -6,40 +6,40 @@ import { server } from '../const';
 
 const UserSignup = () => {
     const navigate = useNavigate();
-    const [name, setName] = useState('');
-    const [sex, setSex] = useState(true);
-    const [nickname, setNickname] = useState('');
-    const [year, setYear] = useState('1990년');
-    const [month, setMonth] = useState('1월');
-    const [day, setDay] = useState('1일');
-    const [email, setEmail] = useState('');
-    const [pwd, setPwd] = useState('');
-    const [pwdconfirm, setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
+    const [name,setName] = useState('');
+    const [sex,setSex] = useState(true);
+    const [nickname,setNickname] = useState('');
+    const [year,setYear] = useState('1990년');
+    const [month,setMonth] = useState('1월');
+    const [day,setDay] = useState('1일');
+    const [email,setEmail] = useState('');
+    const [pwd,setPwd] = useState('');
+    const [pwdconfirm,setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const checkPassword = () => {
         if (pwd !== pwdconfirm) {
-            setErrorMessage('비밀번호가 일치하지 않습니다. 다시 시도해주세요.');
-            return false;
+          setErrorMessage('비밀번호가 일치하지 않습니다. 다시 시도해주세요.');
+          return false;
         } else {
-            setErrorMessage('');
-            return true;
+          setErrorMessage('');
+          return true;
         }
     };
 
     const onSubmit = async () => {
         if (!checkPassword()) return;
 
-
+        
         const formatYear = year.replace('년', '');
         const formatMonth = month.replace('월', '').padStart(2, '0');
         const formatDay = day.replace('일', '').padStart(2, '0');
 
         // year, month, day를 'YYYY-MM-DD' 형식의 문자열로 합치기
         const birthdate = `${formatYear}-${formatMonth}-${formatDay}`;
-
+        
         const userData = {
             name: name,
             gender: sex,
@@ -48,14 +48,14 @@ const UserSignup = () => {
             email: email,
             password: pwd
         };
-
+            
         try {
             const response = await axios.post(`${server}/api/user`, userData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-
+            
             if (response.status === 201) {
                 navigate('/user/login');
             }
@@ -79,32 +79,32 @@ const UserSignup = () => {
     const handleSexChange = (e) => {
         const selectedSex = e.target.value;
         setSex(selectedSex === '남');
-    };
+      };
 
     const calculateWidthSize = (originalSize, ratio) => {
         return Math.round(window.innerWidth * ratio) || originalSize;
-    };
-
+      };
+    
     const calculateHeightSize = (originalSize, ratio) => {
         return Math.round(window.innerHeight * ratio) || originalSize;
     };
 
     return (
-        <div style={{ padding: '5vh' }}>
-            <MessageModal
-                content={modalMessage}
-                isOpen={showModal}
-                setIsOpen={setShowModal}
-                closeMethod={() => setShowModal(false)}
+        <div style = {{padding: '140px'}}>
+            <MessageModal 
+                content={modalMessage} 
+                isOpen={showModal} 
+                setIsOpen={setShowModal} 
+                closeMethod={() => setShowModal(false)}  
             />
             <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
                 <div className="d-flex flex-column align-items-center">
-                    <h1 style={{ fontFamily: 'SansM', fontSize: '35px' }}>회원가입</h1>
-                    <div style={{ textAlign: 'center' }}>
+                    <h1 style = {{fontFamily: 'SansM', fontSize:'35px'}}>회원가입</h1>
+                    <div style={{ textAlign: 'center',paddingTop:'40px' }}>
                         <div className="emailFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="email"
                                 placeholder="이메일 입력"
                                 value={email}
@@ -117,7 +117,7 @@ const UserSignup = () => {
                         <div className="pwdFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="password"
                                 placeholder="비밀번호 입력"
                                 value={pwd}
@@ -130,7 +130,7 @@ const UserSignup = () => {
                         <div className="pwdConfirmFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="password"
                                 placeholder="비밀번호 재입력"
                                 value={pwdconfirm}
@@ -144,7 +144,7 @@ const UserSignup = () => {
                         <div className="nameFrame-sexFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', width: '300px', marginRight: '40px' }}
+                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', width: '300px', marginRight: '40px' }}
                                 type="name"
                                 placeholder="이름"
                                 value={name}
@@ -153,23 +153,23 @@ const UserSignup = () => {
                                 }}
                                 required
                             />
-                            <select
-                                className="sexBox"
-                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
-                                value={sex ? '남' : '여'}
-                                onChange={handleSexChange}
-                                required
-                            >
-                                <option value="" disabled>성별</option>
-                                {SEX_LIST.map((sex, index) => (
-                                    <option key={index}>{sex}</option>
+                                <select
+                                    className="sexBox"
+                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    value={sex ? '남' : '여'}
+                                    onChange={handleSexChange}
+                                    required
+                                >
+                                    <option value="" disabled>성별</option>
+                                    {SEX_LIST.map((sex, index) => (
+                                        <option key={index}>{sex}</option>
                                 ))}
                             </select>
                         </div>
-                        <div className="nicknameFrame" style={{ marginTop: '20px' }}>
+                        <div className="nicknameFrame" style={{ marginTop: '20px' }}>       
                             <input
                                 className="nicknameBox"
-                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="nickname"
                                 placeholder="닉네임"
                                 value={nickname}
@@ -181,10 +181,10 @@ const UserSignup = () => {
                         </div>
                         <div className="birthdateFrame" style={{ marginTop: '20px' }}>
                             <div className="birthdateSelectFrame">
-                                <label className="form-label" style={{ fontFamily: 'SansM', fontSize: '20px', marginRight: '10px' }}>생년월일</label>
+                            <label className="form-label" style={{ fontFamily: 'SansM', fontSize: '20px', marginRight: '10px' }}>생년월일</label>
                                 <select
                                     className="birthdateBox yearBox"
-                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                     type="year"
                                     value={year}
                                     onChange={(e) => {
@@ -198,7 +198,7 @@ const UserSignup = () => {
                                 </select>
                                 <select
                                     className="birthdateBox monthBox"
-                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                     type="month"
                                     value={month}
                                     onChange={(e) => {
@@ -212,7 +212,7 @@ const UserSignup = () => {
                                 </select>
                                 <select
                                     className="birthdateBox dayBox"
-                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                     type="day"
                                     value={day}
                                     onChange={(e) => {
@@ -227,20 +227,20 @@ const UserSignup = () => {
                             </div>
                         </div>
 
-
+                        
                     </div>
 
                     <div>
                         <div className="btn" style={{ marginTop: '40px' }}>
-                            <button type="button" onClick={onSubmit} style={{ background: 'transparent', border: 'none' }}>
-                                <img src={require('../img/CheckBtn.png')} alt="" className="btn-image" />
+                            <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
+                                <img src={require('../img/CheckBtn.png')} alt="" className="btn-image"/>
                             </button>
                         </div>
                     </div>
                     <div>
                         <div className="btn" style={{ marginTop: '20px' }}>
-                            <button type="button" onClick={goBack} style={{ background: 'transparent', border: 'none' }}>
-                                <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image" />
+                            <button type="button" onClick ={goBack} style={{ background: 'transparent', border: 'none' }}>
+                                <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image"/>
                             </button>
                         </div>
                     </div>

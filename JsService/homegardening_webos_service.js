@@ -6,7 +6,7 @@ const WebSocket = require('ws');
 const service = new Service(pkgInfo.name);
 const logHeader = '[' + pkgInfo.name + ']';
 // *************** WebSocket ********************//
-const wsurl = 'ws://15.164.95.57:8080/ws';
+const wsurl = 'ws://52.79.60.122:8080/ws';
 const connection = new WebSocket(wsurl);
 connection.on('open', () => {
   console.log("연결 됨");
@@ -65,7 +65,7 @@ service.register('start', async function (message) {
       shortDescription: message.payload.shortDescription,
       maxLevel: message.payload.maxLevel,
     });
-  } catch (e) {
+  } catch(e) {
     message.respond({
       customErrorMessage: e,
       success: false,
@@ -129,13 +129,13 @@ service.register('start', async function (message) {
     const wMessage = JSON.parse(rawMessage);
     const method = wMessage.method
     switch (method) {
-      case 1: case '1':
+      case 1:  case '1':
         await controlWater();
         break;
-      case 2: case '2':
+      case 2:  case '2':
         controlLight(wMessage.light);
         break;
-      case 16: case '16':
+      case 16:  case '16':
         await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
         break;
       default:
@@ -238,9 +238,9 @@ service.register('start', async function (message) {
 service.register('hitest', async function (message) {
   try {
     const a = await plantInfo.getPlantId();
-    message.respond({ suc: a });
+    message.respond({suc:a});
     return;
-  } catch (e) {
+  } catch(e) {
     message.respond(e);
     return;
   }
@@ -453,12 +453,12 @@ async function calcSatisfaction(data) {
   if (data.light < lightValue - lightRange) {
     satisfaction -= 10;
     // [todo] 빛 세기 조절 api 사용
-    if (isAutoControl) { }
+    if (isAutoControl) {}
   }
   if (lightValue + lightRange < data.light) {
     satisfaction -= 10;
     // [todo] 빛 세기 조절 api 사용
-    if (isAutoControl) { }
+    if (isAutoControl) {}
   }
   if (
     data.humidity < humidityValue - humidityRange ||
@@ -565,7 +565,7 @@ const plantInfo = {
       id: kindID_plantInfo,
       owner: busID,
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putPermissions: function () {
     const url = 'luna://com.webos.service.db/putPermissions';
@@ -584,7 +584,7 @@ const plantInfo = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   replaceData: async function (newData) {
     try {
@@ -670,7 +670,7 @@ const plantCurrentInfo = {
       id: kindID_plantCurrentInfo,
       owner: busID,
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putPermissions: function () {
     const url = 'luna://com.webos.service.db/putPermissions';
@@ -689,7 +689,7 @@ const plantCurrentInfo = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putData: function (data) {
     const url = 'luna://com.webos.service.db/put';
@@ -942,7 +942,7 @@ const imageUrl = {
       id: kindID_imageUrl,
       owner: busID,
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putPermissions: function () {
     const url = 'luna://com.webos.service.db/putPermissions';
@@ -961,7 +961,7 @@ const imageUrl = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   replaceData: async function (newData) {
     try {
@@ -1037,7 +1037,7 @@ const plantEnvInfo = {
       id: kindID_plantEnvInfo,
       owner: busID,
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putPermissions: function () {
     const url = 'luna://com.webos.service.db/putPermissions';
@@ -1056,7 +1056,7 @@ const plantEnvInfo = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   replaceData: async function (newData) {
     try {
@@ -1246,7 +1246,7 @@ const envSensingData = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putPermissions: function () {
     const url = 'luna://com.webos.service.db/putPermissions';
@@ -1265,7 +1265,7 @@ const envSensingData = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putData: function (data) {
     const url = 'luna://com.webos.service.db/put';
@@ -1322,7 +1322,7 @@ const wateringRecord = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putPermissions: function () {
     const url = 'luna://com.webos.service.db/putPermissions';
@@ -1341,7 +1341,7 @@ const wateringRecord = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putData: function (data) {
     const url = 'luna://com.webos.service.db/put';
@@ -1457,7 +1457,7 @@ const avgSatisfactionRecord = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putPermissions: function () {
     const url = 'luna://com.webos.service.db/putPermissions';
@@ -1476,7 +1476,7 @@ const avgSatisfactionRecord = {
         },
       ],
     };
-    service.call(url, params, (res) => { });
+    service.call(url, params, (res) => {});
   },
   putData: function (data) {
     const url = 'luna://com.webos.service.db/put';

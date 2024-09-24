@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const HomePage = () => {
   const nameStyle = {
     fontFamily: "Reem Kufi",
-    fontSize: "6vw", // 반응형 텍스트 크기
+    fontSize: "36px",
     fontStyle: "normal",
     fontWeight: 700,
     lineHeight: "normal",
@@ -21,26 +21,24 @@ const HomePage = () => {
       navigate('/user/login');
     }, 3000); // 3000ms = 3s 후에 페이지를 이동
 
-    return () => clearTimeout(timer);
-  }, [navigate]);
+    return () => clearTimeout(timer); // 
+  }, []); // 
+
+  // 화면 크기에 따른 픽셀 값 계산
+  const calculateWidthSize = (originalSize, ratio) => {
+    return Math.round(window.innerWidth * ratio) || originalSize;
+  };
+
+  const calculateHeightSize = (originalSize, ratio) => {
+    return Math.round(window.innerHeight * ratio) || originalSize;
+  };
 
   return (
-    <div style={{
-      backgroundImage: `url()`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      width: '100vw',
-      height: '100vh',
-      overflow: 'hidden',
-      padding: '33vh', // 반응형 패딩
-    }}>
+    <div style={{ backgroundImage: `url()`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', height: '100vh', overflow: 'hidden', padding: '200px' }}>
       <div className="container d-flex align-items-center justify-content-center vh-50">
         <div className="d-flex flex-column align-items-center">
-          <div className="logo-container" style={{
-            width: '40vw', // 반응형 너비
-            height: '25vh' // 반응형 높이
-          }}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 139 74" style={{ width: '100%', height: '100%' }}>
+          <div className="logo-container" style={{ width: calculateWidthSize(720, 0.52), height: calculateHeightSize(220, 0.3) }}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="139" height="74" viewBox="0 0 139 74" fill="none">
               <path d="M52.1739 5.34552C67.7763 15.9675 71.8061 49.5108 71.8061 49.5108C71.8061 49.5108 24.7675 59.412 9.88335 39.9939C1.29763 28.7929 1.17564 4.92006 1.17564 4.92006C1.17564 4.92006 35.7103 -5.86279 52.1739 5.34552Z" fill="#59E031" />
               <path d="M52.4365 6.4381C68.5689 17.4041 72.9999 52.4283 72.9999 52.4283C72.9999 52.4283 24.7229 63.1871 9.25339 43.0212C0.330063 31.3888 -0.0001297 6.4381 -0.0001297 6.4381C-0.0001297 6.4381 35.4136 -5.13323 52.4365 6.4381Z" fill="#06B85B" />
               <path d="M72.4999 52.2953C57.9999 35.7953 42.9999 28.7953 28.9999 25.2953" stroke="#B4F077" />
@@ -50,7 +48,7 @@ const HomePage = () => {
               <path d="M66.5001 69.2953C81.0001 52.7953 96.0001 45.7953 110 42.2953" stroke="#61FFAE" />
             </svg>
 
-            <div style={nameStyle}>grown</div>
+            <text style={nameStyle}>grown</text>
           </div>
         </div>
       </div>
