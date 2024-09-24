@@ -1,91 +1,70 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { display } from '../constants';
-import UserLoginModal from '../components/UserLoginModal';
+import MessageModal from '../components/MessageModal';
+import axios from 'axios';
+import { server } from '../const';
 
 const UserSignup = () => {
     const navigate = useNavigate();
-    const [name,setName] = useState('');
-    const [sex,setSex] = useState('');
-    const [nickname,setNickname] = useState('');
-    const [year,setYear] = useState('');
-    const [month,setMonth] = useState('');
-    const [day,setDay] = useState('');
-    const [email,setEmail] = useState('');
-    const [pwd,setPwd] = useState('');
-    const [pwdconfirm,setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
-    const [ws, setWs] = useState(null);
+    const [name, setName] = useState('');
+    const [sex, setSex] = useState(true);
+    const [nickname, setNickname] = useState('');
+    const [year, setYear] = useState('1990년');
+    const [month, setMonth] = useState('1월');
+    const [day, setDay] = useState('1일');
+    const [email, setEmail] = useState('');
+    const [pwd, setPwd] = useState('');
+    const [pwdconfirm, setPwdconfirm] = useState(''); // 패스워드 일치여부 확인용
     const [showModal, setShowModal] = useState(false);
     const [modalMessage, setModalMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        // 웹소켓 연결 생성
-        const websocket = new WebSocket('ws://localhost:3000');
-        websocket.onopen = () => {
-            console.log('웹소켓 연결 성공');
-        };
-
-        websocket.onerror = (error) => {
-            console.error('웹소켓 오류', error);
-        };
-        setWs(websocket);
-
-        // 컴포넌트 언마운트 시 웹소켓 연결 종료
-        return () => {
-            websocket.close();
-        };
-    }, [navigate]);
-
     const checkPassword = () => {
         if (pwd !== pwdconfirm) {
-          setErrorMessage('비밀번호가 일치하지 않습니다. 다시 시도해주세요.');
+            setErrorMessage('비밀번호가 일치하지 않습니다. 다시 시도해주세요.');
+            return false;
         } else {
-          setErrorMessage('');
+            setErrorMessage('');
+            return true;
         }
     };
 
-    const onSubmit = () => {
-        if (ws) {
-            // year, month, day를 'YYYY-MM-DD' 형식의 문자열로 합치기
-            const birthdate = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    const onSubmit = async () => {
+        if (!checkPassword()) return;
 
-            const userData = {
-                name: name,
-                sex: sex,
-                nickname: nickname,
-                birthdate: birthdate,
-                email: email,
-                password: pwd
-            };
-            
-            ws.send(JSON.stringify(userData));  // 웹소켓을 통해 서버로 데이터 전송
-            //sendToLunaService(userData);        // WebOSServiceBridge를 사용하여 데이터 전송
+
+        const formatYear = year.replace('년', '');
+        const formatMonth = month.replace('월', '').padStart(2, '0');
+        const formatDay = day.replace('일', '').padStart(2, '0');
+
+        // year, month, day를 'YYYY-MM-DD' 형식의 문자열로 합치기
+        const birthdate = `${formatYear}-${formatMonth}-${formatDay}`;
+
+        const userData = {
+            name: name,
+            gender: sex,
+            nickname: nickname,
+            birth: birthdate,
+            email: email,
+            password: pwd
+        };
+
+        try {
+            const response = await axios.post(`${server}/api/user`, userData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.status === 201) {
+                navigate('/user/login');
+            }
+        } catch (error) {
+            const message = error.response?.data?.message || '회원가입에 실패했습니다. 다시 시도해 주세요.';
+            setModalMessage(message);
+            setShowModal(true);
         }
     };
-
-    // function sendToLunaService(userData) {
-    //     const serviceURL = "luna://com.your.service/createUser"; // 사용할 서비스의 URL
-    //     const bridge = new WebOSServiceBridge();
-        
-    //     bridge.onservicecallback = function (msg) {
-    //         const response = JSON.parse(msg);
-    //         console.log("Luna service response:", response);
-    //         if (response.returnValue) {
-    //             console.log("Data successfully sent to the service");
-    //         } else {
-    //             console.error("Failed to send data to the service");
-    //         }
-    //     };
-        
-    //     const payload = {
-    //         method: "createUser", // 사용할 메소드 이름
-    //         parameters: JSON.stringify(userData), // 전송할 데이터
-    //         subscribe: false // 구독 필요 여부
-    //     };
-        
-    //     bridge.call(serviceURL, JSON.stringify(payload));
-    // }
 
     const goBack = () => {
         navigate('/user/login');
@@ -97,30 +76,35 @@ const UserSignup = () => {
     const BIRTHDAY_DAY_LIST = Array.from({ length: 31 }, (_, i) => `${i + 1}일`);
     const SEX_LIST = ['남', '여'];
 
+    const handleSexChange = (e) => {
+        const selectedSex = e.target.value;
+        setSex(selectedSex === '남');
+    };
+
     const calculateWidthSize = (originalSize, ratio) => {
         return Math.round(window.innerWidth * ratio) || originalSize;
-      };
-    
+    };
+
     const calculateHeightSize = (originalSize, ratio) => {
         return Math.round(window.innerHeight * ratio) || originalSize;
     };
 
     return (
-        <div style = {{padding: '140px'}}>
-             <UserLoginModal 
-            content={modalMessage} 
-            isOpen={showModal} 
-            setIsOpen={setShowModal} 
-            closeMethod={() => setShowModal(false)}  
-        />
+        <div style={{ padding: '5vh' }}>
+            <MessageModal
+                content={modalMessage}
+                isOpen={showModal}
+                setIsOpen={setShowModal}
+                closeMethod={() => setShowModal(false)}
+            />
             <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
                 <div className="d-flex flex-column align-items-center">
-                    <h1 style = {{fontFamily: 'SansM', fontSize:'35px'}}>회원가입</h1>
-                    <div style={{ textAlign: 'center',paddingTop:'40px' }}>
+                    <h1 style={{ fontFamily: 'SansM', fontSize: '35px' }}>회원가입</h1>
+                    <div style={{ textAlign: 'center' }}>
                         <div className="emailFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="email"
                                 placeholder="이메일 입력"
                                 value={email}
@@ -133,7 +117,7 @@ const UserSignup = () => {
                         <div className="pwdFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="password"
                                 placeholder="비밀번호 입력"
                                 value={pwd}
@@ -146,7 +130,7 @@ const UserSignup = () => {
                         <div className="pwdConfirmFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="password"
                                 placeholder="비밀번호 재입력"
                                 value={pwdconfirm}
@@ -160,7 +144,7 @@ const UserSignup = () => {
                         <div className="nameFrame-sexFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="form-login"
-                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', width: '300px', marginRight: '40px' }}
+                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc', width: '300px', marginRight: '40px' }}
                                 type="name"
                                 placeholder="이름"
                                 value={name}
@@ -171,12 +155,9 @@ const UserSignup = () => {
                             />
                             <select
                                 className="sexBox"
-                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
-                                type="sex"
-                                value={sex}
-                                onChange={(e) => {
-                                    setSex(e.target.value);
-                                }}
+                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                value={sex ? '남' : '여'}
+                                onChange={handleSexChange}
                                 required
                             >
                                 <option value="" disabled>성별</option>
@@ -185,10 +166,10 @@ const UserSignup = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="nicknameFrame" style={{ marginTop: '20px' }}>       
+                        <div className="nicknameFrame" style={{ marginTop: '20px' }}>
                             <input
                                 className="nicknameBox"
-                                style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                 type="nickname"
                                 placeholder="닉네임"
                                 value={nickname}
@@ -200,10 +181,10 @@ const UserSignup = () => {
                         </div>
                         <div className="birthdateFrame" style={{ marginTop: '20px' }}>
                             <div className="birthdateSelectFrame">
-                            <label className="form-label" style={{ fontFamily: 'SansM', fontSize: '20px', marginRight: '10px' }}>생년월일</label>
+                                <label className="form-label" style={{ fontFamily: 'SansM', fontSize: '20px', marginRight: '10px' }}>생년월일</label>
                                 <select
                                     className="birthdateBox yearBox"
-                                    style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                     type="year"
                                     value={year}
                                     onChange={(e) => {
@@ -217,7 +198,7 @@ const UserSignup = () => {
                                 </select>
                                 <select
                                     className="birthdateBox monthBox"
-                                    style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                     type="month"
                                     value={month}
                                     onChange={(e) => {
@@ -231,7 +212,7 @@ const UserSignup = () => {
                                 </select>
                                 <select
                                     className="birthdateBox dayBox"
-                                    style={{ fontFamily: 'SansM',padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
+                                    style={{ fontFamily: 'SansM', padding: '15px', fontSize: '20px', borderRadius: '5px', border: '1px solid #ccc' }}
                                     type="day"
                                     value={day}
                                     onChange={(e) => {
@@ -246,25 +227,21 @@ const UserSignup = () => {
                             </div>
                         </div>
 
-                        
+
                     </div>
 
                     <div>
                         <div className="btn" style={{ marginTop: '40px' }}>
-                            <Link to="/user/login" style={{ textDecoration: 'none' }}>
-                                <button type="button" onClick ={onSubmit} style={{ background: 'transparent', border: 'none' }}>
-                                    <img src={require('../img/CheckBtn.png')} alt="" className="btn-image"/>
-                                </button>
-                            </Link>
+                            <button type="button" onClick={onSubmit} style={{ background: 'transparent', border: 'none' }}>
+                                <img src={require('../img/CheckBtn.png')} alt="" className="btn-image" />
+                            </button>
                         </div>
                     </div>
                     <div>
                         <div className="btn" style={{ marginTop: '20px' }}>
-                            <Link to="/user/login" style={{ textDecoration: 'none' }}>
-                                <button type="button" onClick ={goBack} style={{ background: 'transparent', border: 'none' }}>
-                                    <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image"/>
-                                </button>
-                            </Link>
+                            <button type="button" onClick={goBack} style={{ background: 'transparent', border: 'none' }}>
+                                <img src={require('../img/BacktoBtn.png')} alt="" className="btn-image" />
+                            </button>
                         </div>
                     </div>
 

@@ -19,8 +19,6 @@
     It's a webOS-based smart home gardening project with remote and automatic control!
     <br />
     <br />
-    <a href="https://youtu.be/V7H0JUiSZ7Y">🎥 View Demo</a>
-    ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">🐞 Report Bug</a>
     ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">💬 Request Feature</a>
@@ -38,11 +36,10 @@
      <ul>
         <li><a href="#built-with">Built With</a></li>
         <li><a href="#system-architecture">System Architecture</a></li>
-       <li><a href="#environment-setting">Environment setting</a></li>
+       <li><a href="#hardware-setup">Hardware setup</a></li>
      </ul>
     </li>
     <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#usage-screenshot">Usage Screenshot</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -61,26 +58,37 @@
 </p>
 
 
-### Development Background
-As the cost of raising pet has risen recently, many people have started to take an interest in companion plants, which are comparatively less expensive to maintain. This growing interest is boosting the companion plant market, and simultaneously, there is an increasing demand for innovative ways to efficiently manage these plants. Especially in busy lifestyles, situations may arise where sudden business trips or vacations make it difficult to properly care for plants.
+### Development Motivation and Description
 
-Based on this background, the Smart Home Gardening project aims to provide a sustainable and user-friendly gardening solution suitable for modern living. Furthermore, This project seeks to reduce the hassle of plant care and to invigorate daily life through interaction with plants, aiming to make gardening an integral, lively part of daily living.
+[Difficulty in growing and managing plants at home]
+- Time and cost burden to manage plants every day, and barriers to entry into cultivation and management, especially for beginners
+- When growing at home, each environmental condition (wind, sunlight, humidity, temperature, etc.) is different, so there is a limit to cultivating only by referring to the manual
 
-### Development Direction
+[Features for user convenience and satisfaction]
+- **Automatic control to maintain appropriate environmental conditions according to plant species**, **monitoring companion plant conditions**, and **managing companion plant affection** through JS service between HW and web apps
+- Development of external servers and mobile pages to implement user information management, **remote control (watering/light volume)**, and **multiple individual plant management functions**
+
+### Key Features
 
 **1. Automation of Maintaining Optimal Environmental Conditions Based on Plant Species**
 
-  - Real-time data collection is achieved through sensors connected to an Arduino, including temperature and humidity sensors, light sensors, and moisture sensors.
+  - **Real-time data collection** is achieved through sensors connected to an Arduino, including temperature and humidity sensors, light sensors, and moisture sensors.
     
-  - Based on the collected sensor data, an automatic watering system and light control system create suitable environments for different plants automatically.
+  - Based on the collected sensor data, an **automatic watering system and light control system create suitable environments for different plants automatically.**
 
   - The appropriate environmental conditions for each plant species are stored in a database using domain knowledge in botany. For instance, cacti require temperatures of 30-40°C during the day and 10°C at night, with high light levels and 40-60% humidity, while peonies require temperatures of 18-25°C and 50-70% humidity.
 
 **2. Meeting Various User Needs**
 
-  - The system supports both an automation mode for convenient management and a customization mode for users who wish to interact directly with their plants. Users can switch between modes without restrictions. For example, someone who enjoys watering their plants manually can use the customization mode but switch to automation mode when they need to be away for an extended period.
+  - The system supports both **an automation mode for convenient management** and **a customization mode for users who wish to interact directly with their plants.** Users can switch between modes without restrictions. For example, someone who enjoys watering their plants manually can use the customization mode but switch to automation mode when they need to be away for an extended period.
   
-  - Through a mobile web interface, users can monitor plant conditions and environmental factors, such as light and moisture levels, and make adjustments as needed.
+  - Through a mobile web interface, users can monitor plant conditions and environmental factors remotely, such as light and moisture levels, and make adjustments as needed.
+
+### Must Read
+
+In this `main` branch, except for the HW connection, the contents corresponding to the `webos/dev` branch are merged.
+We provide logic and functions to make them easier to understand and utilize, and we use dummy data, not actual data.
+If you would like to see the contents including the HW connection, you can find it on the `webos/devHW` branch.
 
 <!-- specifications -->
 ## Specifications
@@ -154,7 +162,7 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
   </p>
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### Environment Setting
+### Hardware Setup
 
 #### Raspberry Pi
 * HardWare : Raspberry Pi 4 Model B 8GB
@@ -197,7 +205,7 @@ Based on this background, the Smart Home Gardening project aims to provide a sus
 * DHT11 : A sensor used to measure temperature and humidity
 * NeoPixel : A brand of addressable LEDs developed by Adafruit for control Light 
 
-  <img width="899" alt="HW + SENSOR " src="pre build image file">
+  <img width="899" alt="HW + SENSOR " src="https://github.com/dudgns128/webos-gardening/assets/62871662/51fa53d8-2721-4015-95e8-d17fb2efaff7">
 
 <!-- GETTING STARTED -->
 # Getting Started
@@ -227,7 +235,18 @@ This guide will help you set up and run the project in your local environment. F
 
 step is detailed in the `README.md` file of the respective folder, allowing you to sequentially progress and gather the necessary information.
 
-[Guide for Starting App]()
+
+## Contact
+
+### 💡 김영훈 ([dudgns128](https://https://github.com/dudgns128)) : [xoals128@naver.com](mailto:xoals128@naver.com)
+
+### 💡 박지환 ([hw-ani](https://https://github.com/hw-ani)) : [pcbmlh73@gmail.com](mailto:pcbmlh73@gmail.com)
+
+### 💡 김재훈 ([nanocode00](https://github.com/nanocode00)) : [rwg0901@naver.com](mailto:rwg0901@naver.com)
+
+### 💡 오승우 ([dhtmddn00](https://github.com/dhtmddn00)) : [dhtmddn00@gmail.com](mailto:dhtmddn00@gmail.com)
+
+### 💡 홍지승 ([HONG-2019110129](https://https://https://github.com/HONG-2019110129)) : [wltmd3847@naver.com](mailto:wltmd3847@naver.com)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -243,7 +262,7 @@ step is detailed in the `README.md` file of the respective folder, allowing you 
 [issues-shield]: https://img.shields.io/github/issues/dudgns128/webos-gardening.svg?style=for-the-badge
 [issues-url]: https://github.com/dudgns128/webos-gardening/issues
 [license-shield]: https://img.shields.io/github/license/noFlowWater/signage_solution.svg?style=for-the-badge
-[license-url]: https://github.com/noFlowWater/signage_solution/blob/master/LICENSE.txt
+[license-url]: https://github.com/moby/moby/blob/master/LICENSE
 [webos-shield]: https://img.shields.io/badge/webos%20official%20example-A50034?style=for-the-badge&logo=lg
 [webos-url]: https://www.webosose.org/samples/2023/12/21/facial-recognition-kiosk-using-webos
 [product-screenshot]: images/screenshot.png

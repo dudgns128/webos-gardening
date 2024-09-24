@@ -1,0 +1,1 @@
+export const server = 'http://15.164.95.57:8080';

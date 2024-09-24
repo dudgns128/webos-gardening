@@ -81,7 +81,7 @@ export const ModalButton = styled.button`
     }
   `;
 
-export const UserLoginModal = ({ 
+export const MessageModal = ({ 
     content, 
     isOpen, setIsOpen,        // 부모 컴포넌트에서 정의된 함수
     closeMethod
@@ -110,4 +110,4 @@ export const UserLoginModal = ({
     );
 };
 
-export default UserLoginModal;
+export default MessageModal;

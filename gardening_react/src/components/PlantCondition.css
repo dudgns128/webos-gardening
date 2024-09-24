@@ -1,0 +1,169 @@
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 반투명 검정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.plant-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 2;
+    /* 백그라운드 위에 표시 */
+}
+
+.PlantModal h1 {
+    margin-bottom: 20px;
+    color: #4CAF50;
+}
+
+.plant-status {
+    margin-bottom: 20px;
+}
+
+.status-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.status-item span:last-child {
+    font-weight: bold;
+}
+
+.autocontrol-text {
+    text-align: left;
+    display: block;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.autocontrol-text span:last-child {
+    font-weight: bold;
+}
+
+.block-span {
+    display: block;
+  }
+
+.PlantModal button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.PlantModal button:hover {
+    background-color: #45a049;
+}
+
+.PlantModal a {
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.PlantModal a:hover {
+    text-decoration: underline;
+}
+
+
+.control-light-container {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 80%;
+    height: 15px;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #8bc34a 0%, #4caf50 100%);
+    outline: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4caf50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4caf50;
+    cursor: pointer;
+}
+
+.control-water-container {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    color: #333;
+}
+
+.status-low {
+    color: red;
+}
+
+.status-high {
+    color: orange;
+}
+
+.status-normal {
+    color: green;
+}
+
+.water-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: white;
+    border: 2px solid #4CAF50;
+    border-radius: 8px;
+    width: 100px;
+    height: 100px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.water-button:hover {
+    background-color: #f1f1f1;
+}
+
+.water-button img.btn-image {
+    width: 80px;
+    height: 80px;
+}

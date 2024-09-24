@@ -1,52 +1,192 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { WebOSServiceBridge } from '@enact/webos';
-
+import PlantConditionModal from '../components/PlantConditionModal';
+import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
+import CalendarModal from '../components/CalendarModal';
+import ControlLightModal from '../components/ControlLightModal';
+import ControlWaterModal from '../components/ControlWaterModal';
+import backgroundImage from '../img/background.png';
+import goalImage from '../img/present.png';
 
 const MainPage = () => {
   const navigate = useNavigate();
 
-  const [sensorValue, setSensorValue] = useState(0);
-  const [plantSatisfaction, setPlantSatisfaction] = useState('Neutral');
+  const [plantSatisfactionValue, setPlantSatisfactionValue] = useState(0);
+  const [plantSatisfaction, setPlantSatisfaction] = useState(0);
+  const [plantImageUrl, setPlantImageUrl] = useState('');
+  const [plantName, setPlantName] = useState('초기');
+  const [plantLevel, setPlantLevel] = useState(0);
+  const [plantExp, setPlantExp] = useState(50);
+  const [isConditionModalOpen, conditionModalOpen] = useState(false);
+  const [isToggleModalOpen, toggleModalOpen] = useState(false);
+  const [isCalendarModalOpen, calendarModalOpen] = useState(false);
+  const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
+  const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
+
 
   useEffect(() => {
-    // 센서 값 가져오는 코드
-    // 여기서는 임의의 값을 사용합니다.
+    const bridge = new WebOSServiceBridge();
 
-    setTimeout(function () {
-      const serviceURL = "luna://com.team10.homegardening.service/get-plant-satisfaction"; // 사용할 서비스의 URL
-      const bridge = new WebOSServiceBridge();
-    
-      bridge.onservicecallback = function (msg) {
-        const response = JSON.parse(msg);
-        setSensorValue(response.satisfaction);
-        
-      };
-    
-      bridge.call(serviceURL);
-    }, 5000);
+    const serviceURL = "luna://com.team17.homegardening.service/getPlantInfos"; // 사용할 서비스의 URL
 
-    
-    //setSensorValue(newSensorValue);
+    bridge.onservicecallback = function (msg) {
+      const response = JSON.parse(msg);
+      if (response.success) {
+        setPlantSatisfactionValue(response.satisfaction);
+        setPlantImageUrl(response.imageUrl);
+        setPlantName(response.name);
+        setPlantLevel(response.level);
+        setPlantExp(response.exp);
+      }
 
+    };
 
-    // 센서 값에 따른 식물 만족도 설정
-    if (sensorValue >= 100) {
-      setPlantSatisfaction('Satisfied');
-    } else {
-      setPlantSatisfaction('Angry');
-    }
+    // 3초마다 센서 값을 가져오는 인터벌 설정
+    const intervalId = setInterval(() => bridge.call(serviceURL, '{}'), 3000);
 
+    // 컴포넌트가 언마운트될 때 인터벌 정리
+    return () => clearInterval(intervalId);
   }, []);
 
-  // 이벤트 핸들러 함수 추가
-  const handleBarClick = () => {
-    // 페이지 이동 로직 구현
-    // 예: 특정 URL로 이동
-    navigate('/plant/condition');
+  // useEffect(() => {
+  //   const bridge = new WebOSServiceBridge();
+  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantSatisfaction"; // 사용할 서비스의 URL
 
+  //   bridge.onservicecallback = function (msg) {
+  //     const response = JSON.parse(msg);
+  //     setSensorValue(response.satisfaction);
+  //   };
+
+  //   // 5초마다 센서 값을 가져오는 인터벌 설정
+  //   const intervalId = setInterval(bridge.call(serviceURL, '{}'), 5000);
+
+  //   // 컴포넌트가 언마운트될 때 인터벌 정리
+  //   return () => clearInterval(intervalId);
+  // }, []);
+
+  // useEffect(() => {
+  //   const bridge2 = new WebOSServiceBridge();
+  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantInfo"; // 사용할 서비스의 URL
+
+
+  //   bridge2.onservicecallback = function (msg) {
+  //     const response = JSON.parse(msg);
+  //     setPlantImageUrl(response.normalImageUrl);
+  //     setPlantName(response.name);
+  //   };
+
+  //   bridge2.call(serviceURL, '{}');
+
+  //   const bridge3 = new WebOSServiceBridge();
+  //   const levelserviceURL = "luna://com.team11.homegardening.service/getPlantLevel"; // 사용할 서비스의 URL
+
+  //   bridge3.onservicecallback = function (msg) {
+  //     const response = JSON.parse(msg);
+  //     setPlantLevel(response.level);
+  //   };
+
+  //   bridge3.call(levelserviceURL, '{}');
+  //   // // localStorage에서 plantSpecies 이름을 가져옴
+  //   // const plantSpecies = localStorage.getItem('plantSpecies');
+  //   // // plantSpecies 이름을 기반으로 이미지 URL 키 생성
+  //   // const imageKey = `${plantSpecies}-image`;
+  //   // // 생성된 키로 localStorage에서 이미지 URL 가져오기
+  //   // const storedImageUrl = localStorage.getItem(imageKey);
+
+  //   // if (storedImageUrl) {
+  //   //   setPlantImageUrl(storedImageUrl);
+  //   // }
+  // }, [])
+
+  const satisfactionColors = {
+    '매우 좋음': '#00A35E',
+    '좋음': 'lightgreen',
+    '보통': 'yellow',
+    '나쁨': 'orange',
+    '아주 나쁨': 'red'
   };
-  // 화면 크기에 따른 픽셀 값 계산
+
+  useEffect(() => {
+    // 센서 값에 따른 식물 만족도 설정
+    if (80 < plantSatisfactionValue && plantSatisfactionValue <= 100) {
+      setPlantSatisfaction('매우 좋음');
+    } else if (60 < plantSatisfactionValue && plantSatisfactionValue <= 80) {
+      setPlantSatisfaction('좋음');
+    } else if (40 < plantSatisfactionValue && plantSatisfactionValue <= 60) {
+      setPlantSatisfaction('보통');
+    } else if (20 < plantSatisfactionValue && plantSatisfactionValue <= 40) {
+      setPlantSatisfaction('나쁨');
+    } else if (0 <= plantSatisfactionValue && plantSatisfactionValue <= 20) {
+      setPlantSatisfaction('아주 나쁨');
+    }
+  }, [plantSatisfactionValue]);
+
+
+  const handleBarClick = () => {
+    conditionModalOpen(true);
+  };
+
+  const boxStyle = {
+    borderRadius: '50px',
+    background: '#F8FFCC',
+    boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.30)',
+    display: 'flex',
+    width: '360px',
+    height: '48px',
+    padding: '0px 16px',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: '4px'
+  };
+
+  const expBackgroundStyle = {
+    boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.75)',
+    height: '24px',
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // 반투명 백그라운드
+    borderRadius: '12px',
+    margin: '2px',
+    position: 'relative',
+  };
+  //골 이미지
+  const expGoalIconStyle = {
+    position: 'absolute', // 상대적인 위치 설정
+    right: '0px', // 오른쪽 끝에 위치
+    top: '50%', // 상단에서 50% 위치
+    transform: 'translateY(-50%)', // Y축 중앙 정렬
+    width: '20px', // 이미지 너비
+    height: '20px', // 이미지 높이
+    backgroundImage: `url(${goalImage})`, // 배경 이미지 설정
+    backgroundSize: 'cover' // 이미지 크기 자동 조절
+  };
+
+  // 실제 경험치 바 스타일 (동적 길이)
+  const expFillStyle = {
+    height: '24px',
+    width: `${plantExp}%`,
+    backgroundColor: 'red',
+    borderRadius: '12px',
+    transition: 'width 0.3s ease-in-out'
+  };
+
+  const satisfactionBackgroundStyle = {
+    boxShadow: '0px 4px 8px 0px rgba(101, 92, 128, 0.75)',
+    height: '40px',
+    width: '100%',
+    backgroundColor: 'rgba(255, 255, 255, 0.2)', // 반투명 백그라운드
+    borderRadius: '12px',
+    margin: '2px',
+    position: 'relative',
+  };
+
+  const satisfactionFillStyle = {
+    height: '40px',
+    width: `${plantSatisfactionValue}%`,
+    backgroundColor: satisfactionColors[plantSatisfaction],
+    borderRadius: '12px',
+    transition: 'width 0.3s ease-in-out'
+  };
+
   const calculateWidthSize = (originalSize, ratio) => {
     return Math.round(window.innerWidth * ratio) || originalSize;
   };
@@ -56,79 +196,89 @@ const MainPage = () => {
   };
 
   return (
-    <div style={{ backgroundImage: `url()`, backgroundSize: 'cover', backgroundPosition: 'center', width: '100vw', height: '100vh', overflow: 'hidden', paddingTop: 'px' }}>
-      <div className="container d-flex align-items-center justify-content-center vh-50">
+    <div style={{
+      padding: '5vh',
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
+      backgroundPosition: 'center', // 이미지를 중앙에 배치
+      backgroundRepeat: 'no-repeat', // 이미지를 반복하지 않음
+      height: '100vh' // 배경이 전체 뷰포트를 덮도록 설정
+    }}>
+      <div className="container d-flex justify-content-center vh-50" style={{ width: calculateWidthSize(500, 0.4), height: calculateHeightSize(100, 0.3) }}>
         <div className="d-flex flex-column align-items-center">
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28" fill="none" style={{ position: 'absolute', top: 0, left: 300 }} >
-              <path d="M21.875 7.25H3.125" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M15.625 14H3.125" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M17.7083 20.75H3.125" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </div>
-
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="28" viewBox="0 0 26 28" fill="none" style={{ position: 'absolute', top: 0, right: 330 }}>
-              <path d="M19.0037 9.5C19.0037 7.70979 18.3452 5.9929 17.1731 4.72703C16.001 3.46116 14.4113 2.75 12.7537 2.75C11.0961 2.75 9.50635 3.46116 8.33425 4.72703C7.16214 5.9929 6.50366 7.70979 6.50366 9.5C6.50366 17.375 3.37866 19.625 3.37866 19.625H22.1287C22.1287 19.625 19.0037 17.375 19.0037 9.5Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M14.5557 24.125C14.3726 24.466 14.1097 24.749 13.7934 24.9457C13.4772 25.1425 13.1186 25.246 12.7536 25.246C12.3886 25.246 12.0301 25.1425 11.7138 24.9457C11.3975 24.749 11.1347 24.466 10.9515 24.125" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </div>
-          <div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="40" viewBox="0 0 26 40" fill="none" style={{ position: 'absolute', top: 0, right: 300 }}>
-              <path d="M15.1042 4.5H9.89587L7.29171 7.875H4.16671C3.61417 7.875 3.08427 8.11205 2.69357 8.53401C2.30287 8.95597 2.08337 9.52826 2.08337 10.125V20.25C2.08337 20.8467 2.30287 21.419 2.69357 21.841C3.08427 22.2629 3.61417 22.5 4.16671 22.5H20.8334C21.3859 22.5 21.9158 22.2629 22.3065 21.841C22.6972 21.419 22.9167 20.8467 22.9167 20.25V10.125C22.9167 9.52826 22.6972 8.95597 22.3065 8.53401C21.9158 8.11205 21.3859 7.875 20.8334 7.875H17.7084L15.1042 4.5Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              <path d="M12.5 18.4375C14.5616 18.4375 16.1042 16.6567 16.1042 14.625C16.1042 12.5933 14.5616 10.8125 12.5 10.8125C10.4384 10.8125 8.89587 12.5933 8.89587 14.625C8.89587 16.6567 10.4384 18.4375 12.5 18.4375Z" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </div>
+          <PlantConditionModal
+            isOpen={isConditionModalOpen}
+            onClose={() => conditionModalOpen(false)}
+          />
+          <PlantAutocontrolModal
+            isOpen={isToggleModalOpen}
+            onClose={() => toggleModalOpen(false)}
+          />
+          <CalendarModal
+            isOpen={isCalendarModalOpen}
+            onClose={() => calendarModalOpen(false)}
+          />
+          <ControlLightModal
+            isOpen={isControlLightModalOpen}
+            onClose={() => controlLightModalOpen(false)}
+          />
+          <ControlWaterModal
+            isOpen={isControlWaterModalOpen}
+            onClose={() => controlWaterModalOpen(false)}
+          />
 
           {/* 센서값에 따른 바 표시 */}
-          <div>
-            <div
-              style={{
-                backgroundColor: plantSatisfaction === 'Satisfied' ? 'green' : 'red',
-                width: `${sensorValue / 2}%`,
-                height: '40px',
-                borderRadius: '10px'
-              }}
-              onClick={handleBarClick} // onClick 이벤트 핸들러 추가
-            ></div>
-            <p>Sensor Value: {sensorValue}</p>
-            <p>Plant Satisfaction: {plantSatisfaction}</p>
+          <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
+            <div style={satisfactionBackgroundStyle} onClick={handleBarClick}>
+              <div style={satisfactionFillStyle}></div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <span>식물 만족도: {plantSatisfaction}</span>
+            </div>
           </div>
 
-          {/* 식물 이미지가 들어 갈 자리*/}
-          <div className="cacus">
-            <img src={require('../img/cacus.png')} alt="선인장 이미지" />
-
+          {/* 식물 이미지가 들어 갈 자리 */}
+          <div className="plant_image" style={{}}>
+            <img
+              src={plantImageUrl}
+              alt="식물 이미지"
+              style={{ height: '45vh', width: 'auto' }} />
           </div>
+
+          {/* 식물 이름이 들어 갈 자리 */}
+          <div className="plant_info" style={{}}>
+            <text style={boxStyle}>{plantName}</text>
+          </div>
+
+          {/* 경험치 바와 레벨업 정보 */}
+          <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
+            <div style={expBackgroundStyle}>
+              <div style={expFillStyle}></div>
+              <div style={expGoalIconStyle}></div> {/* 목표 이미지 추가 */}
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <p>
+                <span style={{ marginRight: '10px' }}>Lv{plantLevel}</span>
+                레벨업까지 <span style={{ color: '#FF3333' }}>{(100 - plantExp).toFixed(2)}%</span> 남음
+              </p>
+            </div>
+          </div>
+
 
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
             <map name="image-map">
-              <area shape="rect" coords="0,0,75,180" alt="Link 1" href={<Link to="/user/login" />} />
-              <area shape="rect" coords="75,0,150,180" alt="Link 2" href={<Link to="/main" />} />
-              <area shape="rect" coords="150,0,225,180" alt="Link 3" href={<Link to="/user/plant" />} />
-              <area shape="rect" coords="225,0,300,180" alt="Link 4" href={<Link to="/user/plant" />} />
-              <area shape="rect" coords="300,0,375,180" alt="Link 5" href={<Link to="/user/login" />} />
+              <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} />
+              <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
+              <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
+              <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
+              <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => controlWaterModalOpen(true)} />
             </map>
           </div>
-          {/* <div className="menu-bar">
-            <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
-              <map name="image-map">
-                <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => handleNavigate('/main/info')} />
-                <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => handleNavigate('/main/calendar')} />
-                <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => handleNavigate('/main/plant')} />
-                <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => handleNavigate('/main/sun')} />
-                <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => handleNavigate('/main/water')} />
-              </map>
-          </div> */}
         </div>
-
-
       </div>
     </div>
-
   );
 };
-
 
 export default MainPage;

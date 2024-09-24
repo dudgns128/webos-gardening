@@ -5,7 +5,7 @@ import UserSignup from './pages/UserSignup';
 import UserPlantRegister from './pages/UserPlantRegister';
 
 import MainPage from './pages/MainPage';
-import PlantCondition from './pages/PlantCondition';
+
 
 const routes = [
     {
@@ -27,10 +27,6 @@ const routes = [
     {
         path: '/main',
         component: MainPage
-    },
-    {
-        path: '/plant/condition',
-        component: PlantCondition
     },
 ]
 
