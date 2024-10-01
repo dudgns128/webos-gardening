@@ -259,7 +259,7 @@ const MainPage = () => {
             <div style={{ textAlign: 'center' }}>
               <p>
                 <span style={{ marginRight: '10px' }}>Lv{plantLevel}</span>
-                레벨업까지 <span style={{ color: '#FF3333' }}>{(100 - plantExp).toFixed(2)}%</span> 남음
+                레벨업까지 <span style={{ color: '#FF3333' }}>{Math.ceil(100 - plantExp).toFixed(2)}%</span> 남음
               </p>
             </div>
           </div>
