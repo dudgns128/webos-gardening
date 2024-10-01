@@ -54,34 +54,33 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
   let [currentState, setCurrentState] = useState(true);
 
   useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
+    const updateCurrentState = (isAutoControl) => {
+      setCurrentState(isAutoControl);
+    };
 
+    WebSocketUtil.onReceiveAutoControlCallback = updateCurrentState;
+
+    // 초기 상태 설정
     if (WebSocketUtil.isAutoControl !== undefined) {
       setCurrentState(WebSocketUtil.isAutoControl);
     }
 
-    WebSocketUtil.onReceiveAutoControlCallback = (isAutoControl) => {
-      setCurrentState(isAutoControl);
-    };
-
     return () => {
       WebSocketUtil.onReceiveAutoControlCallback = undefined;
     };
-
-  }, [isOpen, currentState]);
+  }, []);
 
   const toggleHandler = () => {
+    const newState = !currentState;
     const msg = {
       "method": 16,
       "userPlant": WebSocketUtil.selection,
       "data": {
-        "isAutoControl": !currentState
+        "isAutoControl": newState
       }
     };
-    setCurrentState(!currentState);
-
+    
+    setCurrentState(newState);
     WebSocketUtil.socket.send(JSON.stringify(msg));
   };
 
