@@ -92,7 +92,7 @@ const HomePage = () => {
               />
             </svg>
 
-            <text style={nameStyle}>grown</text>
+            <span style={nameStyle}>grown</span>
           </div>
         </div>
       </div>

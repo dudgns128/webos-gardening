@@ -32,7 +32,7 @@ const PlantConditionModal = ({ isOpen, onClose }) => {
   }
 
   return (
-    <div class="PlantModal">
+    <div className="PlantModal">
       <div className="modal-backdrop">
         <div className="plant-container">
           <h1>환경 상태</h1>

@@ -197,7 +197,7 @@ const MainPage = () => {
 
           {/* 식물 이름이 들어 갈 자리 */}
           <div className="plant_info" style={{ marginTop: '40px'}}>
-            <text style={boxStyle}>{plantName}</text>
+            <div style={boxStyle}>{plantName}</div>
           </div>
           
           {/* 경험치 바와 레벨업 정보 */}
@@ -218,7 +218,7 @@ const MainPage = () => {
             <img
               src={require('../img/BottomBar.png')}
               alt="Description"
-              usemap="#image-map"
+              useMap="#image-map"
             />
             <map name="image-map">
               <area

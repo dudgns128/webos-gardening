@@ -28,7 +28,7 @@ const ControlLightModal = ({ isOpen, onClose }) => {
       }    
 
     return (
-        <div class="PlantModal">
+        <div className="PlantModal">
             <div className="modal-backdrop" onClick={onClose}>
                 <div className="plant-container" onClick={(e) => e.stopPropagation()}>
                 <h1>광량 제어</h1>
