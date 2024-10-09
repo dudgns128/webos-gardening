@@ -14,7 +14,7 @@
 #define SM_PIN A2
 
 // uncomment to debug print
-// #define DEBUG_PRINT
+#define DEBUG_PRINT
 
 Adafruit_NeoPixel neopixel(NEOPIXEL_CNT, NEOPIXEL_PIN, NEO_GRB | NEO_KHZ800);
 DHT dht(DHT_PIN, DHT_TYPE);
@@ -27,6 +27,8 @@ void setup()
   Wire.begin(1);
   Wire.onReceive(onReceiveCallback);
   Wire.onRequest(onRequestCallback);
+
+  dht.begin();
 
   neopixel.begin();
 
