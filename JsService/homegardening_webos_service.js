@@ -139,7 +139,7 @@ service.register('start', async function (message) {
         controlLight(wMessage.light);
         break;
       case 16:  case '16':
-        await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
+        await plantCurrentInfo.updateIsAutoControl(wMessage.autoControl);
         break;
       default:
         break;

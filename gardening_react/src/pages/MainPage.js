@@ -197,6 +197,7 @@ const MainPage = () => {
 
   return (
     <div style={{
+      padding: '5vh',
       backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
       backgroundPosition: 'center', // 이미지를 중앙에 배치
@@ -225,7 +226,7 @@ const MainPage = () => {
             isOpen={isControlWaterModalOpen}
             onClose={() => controlWaterModalOpen(false)}
           />
-          
+
           {/* 센서값에 따른 바 표시 */}
           <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
             <div style={satisfactionBackgroundStyle} onClick={handleBarClick}>
@@ -237,17 +238,20 @@ const MainPage = () => {
           </div>
 
           {/* 식물 이미지가 들어 갈 자리 */}
-          <div className="plant_image" style={{ marginTop: '10px', height: '90%' }}>
-            <img src={plantImageUrl} alt="식물 이미지" style={{ height: '100%' }} />
+          <div className="plant_image" style={{}}>
+            <img
+              src={plantImageUrl}
+              alt="식물 이미지"
+              style={{ height: '45vh', width: 'auto' }} />
           </div>
 
           {/* 식물 이름이 들어 갈 자리 */}
-          <div className="plant_info" style={{ marginTop: '40px'}}>
+          <div className="plant_info" style={{}}>
             <text style={boxStyle}>{plantName}</text>
           </div>
 
           {/* 경험치 바와 레벨업 정보 */}
-          <div style={{ width: '100%', paddingTop: '20px', boxSizing: 'border-box' }}>
+          <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
             <div style={expBackgroundStyle}>
               <div style={expFillStyle}></div>
               <div style={expGoalIconStyle}></div> {/* 목표 이미지 추가 */}
@@ -255,7 +259,7 @@ const MainPage = () => {
             <div style={{ textAlign: 'center' }}>
               <p>
                 <span style={{ marginRight: '10px' }}>Lv{plantLevel}</span>
-                레벨업까지 <span style={{ color: '#FF3333' }}>{(100 - plantExp).toFixed(2)}%</span> 남음
+                레벨업까지 <span style={{ color: '#FF3333' }}>{Math.ceil(100 - plantExp).toFixed(2)}%</span> 남음
               </p>
             </div>
           </div>
@@ -263,13 +267,13 @@ const MainPage = () => {
 
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
-              <map name="image-map">
-                <area shape="rect" coords="0,0,75,180" alt="Link 1" />
-                <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
-                <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
-                <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
-                <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => controlWaterModalOpen(true)} />
-              </map>
+            <map name="image-map">
+              <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} />
+              <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
+              <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
+              <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
+              <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => controlWaterModalOpen(true)} />
+            </map>
           </div>
         </div>
       </div>
