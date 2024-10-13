@@ -21,6 +21,8 @@ service.register('getPlantInfos', async function (message) {
     const satisfaction = await plantCurrentInfo.getSatisfaction();
     const level = await plantCurrentInfo.getLevel();
     const waterCount = await plantCurrentInfo.getWaterCount();
+    const currentData = await getSensingDataJSON();
+
     message.respond({
       success: true,
       imageUrl: normalImageUrl,
@@ -28,6 +30,7 @@ service.register('getPlantInfos', async function (message) {
       satisfaction: satisfaction,
       level: level,
       exp: (100 * waterCount) / (level * 2),
+      waterTankLevel: currentData.waterTankLevel
     });
   } catch (e) {
     message.respond({
@@ -254,14 +257,14 @@ service.register('hitest', async function (message) {
 service.register('getSensingData', async function (message) {
   try {
     const sensingData = await plantCurrentInfo.getSensingData();
-    const currentData = await getSensingDataJSON();
+    // const currentData = await getSensingDataJSON();
     message.respond({
       success: true,
       water: sensingData.water,
       light: sensingData.light,
       temperature: sensingData.temperature,
       humidity: sensingData.humidity,
-      waterTankLevel: currentData.waterTankLevel
+      // waterTankLevel: currentData.waterTankLevel
     });
   } catch (e) {
     message.respond({
