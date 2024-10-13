@@ -1,0 +1,49 @@
+getCameraList
+luna-send -n 1 -f luna://com.webos.service.camera2/getCameraList '{}'
+
+getInfo
+luna-send -n 1 -f luna://com.webos.service.camera2/getInfo '{ "id":"camera1"}'
+
+open
+luna-send -n 1 -f luna://com.webos.service.camera2/open '{"id":"camera1"}'
+
+getSolutions
+luna-send -n 1 -f luna://com.webos.service.camera2/getSolutions '{"id": "camera1"}'
+
+startCapture
+luna-send -n 1 -f luna://com.webos.service.camera2/startCapture '{
+     "handle": '+ $handle +',
+     "params":
+          {
+             "width": 640,
+             "height": 480,
+             "format": "JPEG",
+             "mode":"MODE_ONESHOT",
+             "nimage":1
+          }
+}'
+
+pscp -scp root@192.168.106.219:/tmp/Picture24092024-05452059.jpeg C:\Users\rwg09\Desktop\
+
+capture
+luna-send -n 1 -f luna://com.webos.service.camera2/capture '{"handle": 7771,"nimage": 2}'
+
+{
+"id": "com.domain.webcam",
+"version": "0.0.1",
+"vendor": "My Company",
+"type": "web",
+"main": "index.html",
+"title": "webcam",
+"icon": "icon.png",
+"allowVideoCapture": true,
+"allowAudioCapture": true,
+"enableWebOSVDA": true
+}
+
+(getCameraList, getInfo) -> open -> (setFormat) -> startPreview -> load -> takeCameraSnapshot -> unload -> stopPreview -> close
+
+handle, windowId
+
+camera_window_manager_exporter[x] [y] [width] [height] &
+/usr/sbin/camera_window_manager_exporter0 0 640 480 &
