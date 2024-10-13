@@ -6,7 +6,7 @@ const WebSocket = require('ws');
 const service = new Service(pkgInfo.name);
 const logHeader = '[' + pkgInfo.name + ']';
 // *************** WebSocket ********************//
-const wsurl = 'ws://52.79.60.122:8080/ws';
+const wsurl = 'ws://15.164.95.57:8080/ws';
 const connection = new WebSocket(wsurl);
 connection.on('open', () => {
   console.log("연결 됨");
@@ -222,7 +222,8 @@ service.register('start', async function (message) {
             satisfaction,
             level,
             exp: (100 * waterCount) / (level * 2),
-            imageUrl: normalImageUrl
+            imageUrl: normalImageUrl,
+            waterTankLevel: data.waterTankLevel
           }
         })
       );
@@ -253,12 +254,14 @@ service.register('hitest', async function (message) {
 service.register('getSensingData', async function (message) {
   try {
     const sensingData = await plantCurrentInfo.getSensingData();
+    const currentData = await getSensingDataJSON();
     message.respond({
       success: true,
       water: sensingData.water,
       light: sensingData.light,
       temperature: sensingData.temperature,
       humidity: sensingData.humidity,
+      waterTankLevel: currentData.waterTankLevel
     });
   } catch (e) {
     message.respond({
@@ -433,10 +436,11 @@ async function getSensingDataJSON() {
     light: data.light,
     temperature: data.temperature,
     humidity: data.humidity,
+    waterTankLevel: data.watertank_level
   };
 }
 
-// 만족도 판정 로직
+// 만족도 판정 로직 + 만족도 판단하며 자동 제어 로직
 // 일단 단순하게 이상적인 범위 벗어나면 10점씩 깎음.
 async function calcSatisfaction(data) {
   let satisfaction = 100;
@@ -455,14 +459,17 @@ async function calcSatisfaction(data) {
       await controlWater();
   }
   if (waterValue + waterRange < data.water) satisfaction -= 10;
-  if (data.light < lightValue - lightRange) {
+  const today = new Date();
+  const hours = today.getHours();
+  const isNight = ((18 < hours) || (hours < 6)) ? true : false;
+  if ((data.light < lightValue - lightRange) && isNight) {
     satisfaction -= 10;
     // light 제어 api 사용
     if (isAutoControl) {
       controlNeopixel(data.light + 10);
     }
   }
-  if (lightValue + lightRange < data.light) {
+  if ((lightValue + lightRange < data.light) && isNight) {
     satisfaction -= 10;
     // light 제어 api 사용
     if (isAutoControl) {
