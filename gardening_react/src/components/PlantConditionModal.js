@@ -1,5 +1,3 @@
-//센서값 나중에 정해지면 센서값 기준 바꾸기
-
 import React, { useState, useEffect } from 'react';
 import './PlantCondition.css';
 
