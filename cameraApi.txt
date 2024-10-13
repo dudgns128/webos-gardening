@@ -46,4 +46,66 @@ luna-send -n 1 -f luna://com.webos.service.camera2/capture '{"handle": 7771,"nim
 handle, windowId
 
 camera_window_manager_exporter[x] [y] [width] [height] &
-/usr/sbin/camera_window_manager_exporter0 0 640 480 &
+
+/usr/sbin/camera_window_manager_exporter 0 0 640 480 &
+
+windowId=
+
+luna-send -n 1 -f luna://com.webos.service.camera2/getCameraList '{}'
+
+luna-send -n 1 -f luna://com.webos.service.camera2/open '{
+   "id":"camera1"
+}'
+
+handle=
+
+luna-send -n 1 -f luna://com.webos.service.camera2/setFormat '{
+   "handle":'$handle',
+   "params":{
+      "width":640,
+      "height":480,
+      "format":"JPEG",
+      "fps":30
+   }
+}'
+
+luna-send -n 1 -f luna://com.webos.service.camera2/startPreview '{
+    "handle": '$handle',
+    "params": {"type":"sharedmemory", "source":"0"},
+    "windowId": "'$windowId'"
+}'
+
+mediaId=
+
+luna-send -n 1 luna://com.webos.media/load '{
+   "uri":"camera://com.webos.service.camera2/7010",
+   "payload":{
+      "option":{
+         "appId":"com.team17.homegardening",
+         "windowId":"'$windowId'",
+         "videoDisplayMode":"Textured",
+         "width":640,
+         "height":480,
+         "format":"JPEG",
+         "frameRate":30,
+         "memType":"shmem",
+         "memSrc":"7010"
+      }
+   },
+   "type":"camera"
+}'
+
+luna-send -n 1 luna://com.webos.media/takeCameraSnapshot '{
+   "mediaId":"'$mediaId'",
+   "location":"/tmp/",
+   "format":"jpg",
+   "width":640,
+   "height":480,
+   "pictureQuality":30
+}'
+
+luna-send -n 1 -f luna://com.webos.media/unload '{"mediaId":"'$mediaId'"}'
+
+luna-send -n 1 -f luna://com.webos.service.camera2/stopPreview '{"handle":'$handle'}'
+
+luna-send -n 1 -f luna://com.webos.service.camera2/close '{"handle":'$handle'}'
