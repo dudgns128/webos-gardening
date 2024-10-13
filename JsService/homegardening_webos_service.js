@@ -1732,6 +1732,12 @@ async function readSensor() {
   service.call(writeI2CApi, writeI2CParams, writeI2CApi_callback);
 
   await delay(500);
+  // water tank level 판단 로직
+  if (watertank_level < 200)
+      watertank_level = 0
+  else
+    watertank_level = 1
+
   return {
     water,
     light,
