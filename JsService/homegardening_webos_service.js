@@ -462,14 +462,14 @@ async function calcSatisfaction(data) {
   const today = new Date();
   const hours = today.getHours();
   const isNight = ((18 < hours) || (hours < 6)) ? true : false;
-  if ((data.light < lightValue - lightRange) && isNight) {
+  if ((data.light < lightValue - lightRange) && !isNight) {
     satisfaction -= 10;
     // light 제어 api 사용
     if (isAutoControl) {
       controlNeopixel(data.light + 10);
     }
   }
-  if ((lightValue + lightRange < data.light) && isNight) {
+  if ((lightValue + lightRange < data.light) && !isNight) {
     satisfaction -= 10;
     // light 제어 api 사용
     if (isAutoControl) {
@@ -1740,7 +1740,7 @@ async function readSensor() {
 
   return {
     water,
-    light,
+    light: (100 - light),
     temperature,
     humidity,
     watertank_level
