@@ -1723,7 +1723,7 @@ async function readSensor() {
     if (res.payload.returnValue) {
         setTimeout(function() {
             service.call(readI2CApi, readI2CParams, readI2CApi_callback);
-        }, 23);
+        }, 30);
     } else {
         console.log("fail to read from sensors");
     }
