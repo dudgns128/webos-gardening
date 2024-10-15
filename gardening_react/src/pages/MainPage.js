@@ -187,7 +187,7 @@ const MainPage = () => {
           />
           <WaterAlertModal
             isOpen={isWaterAlertModalOpen}
-            onClose={() => setWaterAlertModalOpen(false)} 
+            onClose={() => setWaterAlertModalOpen(false)}
           />
 
           {/* 센서값에 따른 바 표시 */}
