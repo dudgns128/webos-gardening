@@ -24,6 +24,7 @@ const MainPage = () => {
   const [plantName, setPlantName] = useState('초기');
   const [plantLevel, setPlantLevel] = useState(0);
   const [plantExp, setPlantExp] = useState(50);
+  const [waterTankLevel, setWaterTankLevel] = useState(1);
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
   const [isToggleModalOpen, toggleModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
