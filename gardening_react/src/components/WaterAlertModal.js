@@ -13,9 +13,9 @@ const WaterAlertModal = ({ isOpen, onClose }) => {
               <p>물탱크 내 물의 양이 부족합니다. 채워주세요!</p>
             </div>  
           </div>
-        </div>
-        <div>
-          <button onClick={onClose}>확인</button>
+          <div>
+            <button onClick={onClose}>확인</button>
+          </div>
         </div>
       </div>
     </div>
