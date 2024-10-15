@@ -7,6 +7,7 @@ import WebSocketUtil from '../WebSocketUtil';
 import { useLocation } from 'react-router-dom';
 import ControlLightModal from '../components/ControlLightModal';
 import ControlWaterModal from '../components/ControlWaterModal';
+import WaterAlertModal from '../components/WaterAlertModal';
 import backgroundImage from '../img/background.png';
 import goalImage from '../img/present.png';
 
@@ -28,6 +29,7 @@ const MainPage = () => {
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
   const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
   const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
+  const [isWaterAlertModalOpen, setWaterAlertModalOpen] = useState(false);
 
   const query = useQuery();
   const plantId = query.get('plantId'); // 이전 페이지에서 선택한 plantId 로 웹소켓 연결 설정하면 됨.
@@ -40,12 +42,23 @@ const MainPage = () => {
       setPlantName(plantData.plantName);
       setPlantLevel(plantData.level);
       setPlantExp(plantData.exp);
+      setWaterTankLevel(plantData.waterTankLevel);
     };
 
     return () => {
       WebSocketUtil.onReceivePlantPageDataCallback = undefined;
     };
   }, []);
+
+  useEffect(() => {
+    if (waterTankLevel === 0) {
+      setWaterAlertModalOpen(true);
+    }
+  }, [waterTankLevel]);
+
+  const handleBarClick = () => {
+    conditionModalOpen(true);
+  };
 
   const satisfactionColors = {
     '매우 좋음': '#00A35E',
@@ -69,10 +82,6 @@ const MainPage = () => {
       setPlantSatisfaction('아주 나쁨');
     }
   }, [plantSatisfactionValue]);
-
-  const handleBarClick = () => {
-    conditionModalOpen(true);
-  };
 
   const boxStyle = {
     borderRadius: '50px',
@@ -178,6 +187,10 @@ const MainPage = () => {
           <ControlWaterModal
             isOpen={isControlWaterModalOpen}
             onClose={() => controlWaterModalOpen(false)}
+          />
+          <WaterAlertModal
+            isOpen={isWaterAlertModalOpen}
+            onClose={() => setWaterAlertModalOpen(false)}
           />
           
           {/* 센서값에 따른 바 표시 */}
