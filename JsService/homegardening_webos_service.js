@@ -515,7 +515,7 @@ async function controlWater() {
   } else await plantCurrentInfo.updateWaterCount(curWaterCount + 1);
   // water 제어 api 사용
   controlPump(1);
-  await delay(3000);
+  await delay(2500);
   controlPump(0);
 }
 
