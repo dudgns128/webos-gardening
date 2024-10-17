@@ -235,7 +235,7 @@ service.register('start', async function (message) {
         e,
       });
     }
-  }, 3000);
+  }, 2900);
 
   message.respond({
     success: true,
@@ -244,8 +244,10 @@ service.register('start', async function (message) {
 
 service.register('hitest', async function (message) {
   try {
-    const a = await plantInfo.getPlantId();
-    message.respond({suc:a});
+    const today = new Date();
+    const hours = today.getUTCHours() + 9;
+    const isNight = ((18 < hours) || (hours < 6)) ? true : false;
+    message.respond({today, hours, isNight});
     return;
   } catch(e) {
     message.respond(e);
@@ -463,20 +465,20 @@ async function calcSatisfaction(data) {
   }
   if (waterValue + waterRange < data.water) satisfaction -= 10;
   const today = new Date();
-  const hours = today.getHours();
+  const hours = today.getUTCHours() + 9;
   const isNight = ((18 < hours) || (hours < 6)) ? true : false;
-  if ((data.light < lightValue - lightRange) && !isNight) {
+  if ((data.light < lightValue - lightRange)) {
     satisfaction -= 10;
     // light 제어 api 사용
     if (isAutoControl) {
-      controlNeopixel(data.light + 10);
+      controlNeopixel(lightValue);
     }
   }
   if ((lightValue + lightRange < data.light) && !isNight) {
     satisfaction -= 10;
     // light 제어 api 사용
     if (isAutoControl) {
-      controlNeopixel(data.light - 10);
+      controlNeopixel(0);
     }
   }
   if (
@@ -515,7 +517,7 @@ async function controlWater() {
   } else await plantCurrentInfo.updateWaterCount(curWaterCount + 1);
   // water 제어 api 사용
   controlPump(1);
-  await delay(2500);
+  await delay(2300);
   controlPump(0);
 }
 
@@ -1736,7 +1738,7 @@ async function readSensor() {
 
   await delay(500);
   // water tank level 판단 로직
-  if (watertank_level < 120)
+  if (watertank_level < 180)
       watertank_level = 0
   else
     watertank_level = 1
