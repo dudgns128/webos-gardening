@@ -21,7 +21,7 @@ service.register('getPlantInfos', async function (message) {
     const satisfaction = await plantCurrentInfo.getSatisfaction();
     const level = await plantCurrentInfo.getLevel();
     const waterCount = await plantCurrentInfo.getWaterCount();
-    const currentData = await getSensingDataJSON();
+    const currentSensingData = await plantCurrentInfo.getSensingData();
 
     message.respond({
       success: true,
@@ -30,7 +30,7 @@ service.register('getPlantInfos', async function (message) {
       satisfaction: satisfaction,
       level: level,
       exp: (100 * waterCount) / (level * 2),
-      waterTankLevel: currentData.waterTankLevel
+      waterTankLevel: currentSensingData.waterTankLevel
     });
   } catch (e) {
     message.respond({
@@ -235,7 +235,7 @@ service.register('start', async function (message) {
         e,
       });
     }
-  }, 2900);
+  }, 3000);
 
   message.respond({
     success: true,
@@ -259,14 +259,12 @@ service.register('hitest', async function (message) {
 service.register('getSensingData', async function (message) {
   try {
     const sensingData = await plantCurrentInfo.getSensingData();
-    // const currentData = await getSensingDataJSON();
     message.respond({
       success: true,
       water: sensingData.water,
       light: sensingData.light,
       temperature: sensingData.temperature,
       humidity: sensingData.humidity,
-      // waterTankLevel: currentData.waterTankLevel
     });
   } catch (e) {
     message.respond({
@@ -458,12 +456,7 @@ async function calcSatisfaction(data) {
   const temperatureRange = await plantEnvInfo.getTemperatureRange();
   const humidityValue = await plantEnvInfo.getHumidityValue();
   const humidityRange = await plantEnvInfo.getHumidityRange();
-  if (data.water < waterValue - waterRange) {
-    satisfaction -= 10;
-    if (isAutoControl)
-      await controlWater();
-  }
-  if (waterValue + waterRange < data.water) satisfaction -= 10;
+
   const today = new Date();
   const hours = today.getUTCHours() + 9;
   const isNight = ((18 < hours) || (hours < 6)) ? true : false;
@@ -491,6 +484,12 @@ async function calcSatisfaction(data) {
     temperatureValue + temperatureRange < data.temperature
   )
     satisfaction -= 10;
+  if (data.water < waterValue - waterRange) {
+    satisfaction -= 10;
+    if (isAutoControl)
+      await controlWater();
+  }
+  if (waterValue + waterRange < data.water) satisfaction -= 10;
   return satisfaction;
 }
 
@@ -517,7 +516,7 @@ async function controlWater() {
   } else await plantCurrentInfo.updateWaterCount(curWaterCount + 1);
   // water 제어 api 사용
   controlPump(1);
-  await delay(2300);
+  await delay(2000);
   controlPump(0);
 }
 
