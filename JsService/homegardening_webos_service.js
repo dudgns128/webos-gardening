@@ -460,16 +460,21 @@ async function calcSatisfaction(data) {
   const today = new Date();
   const hours = today.getUTCHours() + 9;
   const isNight = ((18 < hours) || (hours < 6)) ? true : false;
-  if ((data.light < lightValue - lightRange)) {
+  if (!isNight && (data.light < lightValue - lightRange)) {
     satisfaction -= 10;
     // light 제어 api 사용
     if (isAutoControl) {
       controlNeopixel(lightValue);
     }
   }
-  if ((lightValue + lightRange < data.light) && !isNight) {
+  if (!isNight && (lightValue - lightRange <= data.light)) {
     satisfaction -= 10;
     // light 제어 api 사용
+    if (isAutoControl) {
+      controlNeopixel(0);
+    }
+  }
+  if (isNight) {
     if (isAutoControl) {
       controlNeopixel(0);
     }
