@@ -161,6 +161,25 @@ service.register('start', async function (message) {
     })
   );
 
+  // plantCurrentInfo DB 내용 초기화
+  if ((await plantCurrentInfo.isDataExist()) != true)
+    await plantCurrentInfo.putData({
+      isAutoControl: true,
+      level: 1,
+      waterCount: 0,
+      satisfaction: 0,
+      sensingData: null,
+    });
+  else {
+    await plantCurrentInfo.replaceData({
+      isAutoControl: true,
+      level: 1,
+      waterCount: 0,
+      satisfaction: 0,
+      sensingData: null,
+    })
+  }
+
   // 5초 주기로 센싱
   // 1. envSensingData 에 저장
   // 2. 분석해 만족도 결정(-> 자동제어 여부에 따라 제어는 이때 같이!), 만족도 평균값 갱신
@@ -173,14 +192,7 @@ service.register('start', async function (message) {
       const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
       const dayNow = now.getDate();
       const data = await getSensingDataJSON();
-      if ((await plantCurrentInfo.isDataExist()) != true)
-        await plantCurrentInfo.putData({
-          isAutoControl: true,
-          level: 1,
-          waterCount: 0,
-          satisfaction: 0,
-          sensingData: null,
-        });
+      
       if ((await avgSatisfactionRecord.isDataExist(yearNow, monthNow, dayNow)) != true)
         await avgSatisfactionRecord.putData({
           year: yearNow,
@@ -837,6 +849,7 @@ const plantCurrentInfo = {
           _kind: kindID_plantCurrentInfo,
           level: newData.level,
           isAutoControl: newData.isAutoControl,
+          waterCount: data.waterCount,
           satisfaction: newData.satisfaction,
           sensingData: newData.sensingData,
         },
