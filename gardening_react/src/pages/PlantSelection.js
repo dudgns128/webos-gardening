@@ -24,6 +24,24 @@ function PlantSelection() {
   }, []);
 
   const handleSelectPlant = (plant) => {
+    const selectedPlant = plants.find((p) => p.id === plant.id);
+    const properWaterValue = selectedPlant.plantInfo.plantEnvironment.properWaterValue;
+    const properWaterRange = selectedPlant.plantInfo.plantEnvironment.properWaterRange;
+    const properLightValue = selectedPlant.plantInfo.plantEnvironment.properLightValue;
+    const properLightRange = selectedPlant.plantInfo.plantEnvironment.properLightRange;
+    const properTemperatureValue = selectedPlant.plantInfo.plantEnvironment.properTemperatureValue;
+    const properTemperatureRange = selectedPlant.plantInfo.plantEnvironment.properTemperatureRange;
+    const properHumidityValue = selectedPlant.plantInfo.plantEnvironment.properHumidityValue;
+    const properHumidityRange = selectedPlant.plantInfo.plantEnvironment.properHumidityRange;
+    localStorage.setItem('properWaterValue', properWaterValue);
+    localStorage.setItem('properWaterRange', properWaterRange);
+    localStorage.setItem('properLightValue', properLightValue);
+    localStorage.setItem('properLightRange', properLightRange);
+    localStorage.setItem('properTemperatureValue', properTemperatureValue);
+    localStorage.setItem('properTemperatureRange', properTemperatureRange);
+    localStorage.setItem('properHumidityValue', properHumidityValue);
+    localStorage.setItem('properHumidityRange', properHumidityRange);
+
     navigate(`/main?plantId=${plant.id}`);
 
     const msg = {
