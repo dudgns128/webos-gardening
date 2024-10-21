@@ -40,6 +40,14 @@ service.register('getPlantInfos', async function (message) {
   }
 });
 
+service.register('capture', function (message) {
+  const url = 'luna://com.webos.service.applicationmanager/launch';
+  const params = {
+    id: "com.team17.app.camera"
+  };
+  service.call(url, params, (res) => {});
+})
+
 // 초기 데이터 등록 및 백그라운드 작업 시작
 service.register('start', async function (message) {
   // Open sensor
