@@ -1763,7 +1763,7 @@ async function readSensor() {
 
   await delay(500);
   // water tank level 판단 로직
-  if (watertank_level < 180)
+  if (watertank_level < 700)
       watertank_level = 0
   else
     watertank_level = 1
