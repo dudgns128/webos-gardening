@@ -19,6 +19,8 @@
     It's a webOS-based smart home gardening project with remote and automatic control!
     <br />
     <br />
+    <a href="https://youtu.be/V7H0JUiSZ7Y">🎥 View Demo</a>
+    ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">🐞 Report Bug</a>
     ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">💬 Request Feature</a>
@@ -82,7 +84,7 @@
 
   - The system supports both **an automation mode for convenient management** and **a customization mode for users who wish to interact directly with their plants.** Users can switch between modes without restrictions. For example, someone who enjoys watering their plants manually can use the customization mode but switch to automation mode when they need to be away for an extended period.
   
-  - Through a mobile web interface, users can monitor plant conditions and environmental factors remotely, such as light and moisture levels, and make adjustments as needed.
+  - Through a mobile web interface, users can monitor plant conditions and environmental factors, such as light and moisture levels, and make adjustments as needed.
 
 <!-- specifications -->
 ## Specifications
@@ -199,7 +201,7 @@
 * DHT11 : A sensor used to measure temperature and humidity
 * NeoPixel : A brand of addressable LEDs developed by Adafruit for control Light 
 
-  <img width="899" alt="HW + SENSOR " src="pre build image file">
+  <img width="899" alt="HW + SENSOR " src="https://github.com/dudgns128/webos-gardening/assets/62871662/51fa53d8-2721-4015-95e8-d17fb2efaff7">
 
 <!-- GETTING STARTED -->
 # Getting Started
