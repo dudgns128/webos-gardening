@@ -56,7 +56,7 @@ const theme = {
   /* 네비게이션 비활성화 됐을때 스타일 */
   .react-calendar__navigation button:disabled {
     background-color: white;
-    color: ${(props) => props.theme.darkBlack};
+    // color: ${(props) => props.theme.darkBlack};
   }
 
   /* 년/월 상단 네비게이션 칸 크기 줄이기 */
@@ -121,6 +121,7 @@ const theme = {
   /* 이미지를 중앙에 배치하기 위한 스타일 적용 */
   .react-calendar__tile--content {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100%;
@@ -222,12 +223,12 @@ const CalendarModal = ({ isOpen, onClose }) => {
     }
 
     const getSatisfactionImage = (value) => {
-      if (value === undefined) return require('../img/blank.png');
+      if (value === undefined || value === null) return require('../img/blank.png');
       if (value >= 0 && value <= 20) return require('../img/verybad.png');
-      if (value >= 21 && value <= 40) return require('../img/bad.png');
-      if (value >= 41 && value <= 60) return require('../img/soso.png');
-      if (value >= 61 && value <= 80) return require('../img/good.png');
-      if (value >= 81 && value <= 100) return require('../img/verygood.png');
+      if (value > 20 && value <= 40) return require('../img/bad.png');
+      if (value > 40 && value <= 60) return require('../img/soso.png');
+      if (value > 60 && value <= 80) return require('../img/good.png');
+      if (value > 80 && value <= 100) return require('../img/verygood.png');
       return null;
   };
 

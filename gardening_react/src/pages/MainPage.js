@@ -5,6 +5,7 @@ import PlantAutocontrolModal from '../components/PlantAutocontrolModal';
 import CalendarModal from '../components/CalendarModal';
 import ControlLightModal from '../components/ControlLightModal';
 import ControlWaterModal from '../components/ControlWaterModal';
+import WaterAlertModal from '../components/WaterAlertModal';
 import backgroundImage from '../img/background.png';
 import goalImage from '../img/present.png';
 
@@ -17,12 +18,27 @@ const MainPage = () => {
   const [plantName, setPlantName] = useState('초기');
   const [plantLevel, setPlantLevel] = useState(0);
   const [plantExp, setPlantExp] = useState(50);
+  const [waterTankLevel, setWaterTankLevel] = useState(1);
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
   const [isToggleModalOpen, toggleModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
   const [isControlLightModalOpen, controlLightModalOpen] = useState(false);
   const [isControlWaterModalOpen, controlWaterModalOpen] = useState(false);
+  const [isWaterAlertModalOpen, setWaterAlertModalOpen] = useState(false);
 
+
+  const camera = () => {
+    const bridge2 = new WebOSServiceBridge();
+
+    const serviceURL = "luna://com.team17.homegardening.service/capture";
+    bridge2.onservicecallback = function (msg) {
+      const response = JSON.parse(msg);
+      if (response.success) {
+          console.log("Camera opend");
+      } 
+    };
+    bridge2.call(serviceURL, '{}');
+  };
 
   useEffect(() => {
     const bridge = new WebOSServiceBridge();
@@ -37,6 +53,7 @@ const MainPage = () => {
         setPlantName(response.name);
         setPlantLevel(response.level);
         setPlantExp(response.exp);
+        setWaterTankLevel(response.waterTankLevel);
       }
 
     };
@@ -48,55 +65,15 @@ const MainPage = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  // useEffect(() => {
-  //   const bridge = new WebOSServiceBridge();
-  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantSatisfaction"; // 사용할 서비스의 URL
+  useEffect(() => {
+    if (waterTankLevel === 0) {
+      setWaterAlertModalOpen(true);
+    }
+  }, [waterTankLevel]);
 
-  //   bridge.onservicecallback = function (msg) {
-  //     const response = JSON.parse(msg);
-  //     setSensorValue(response.satisfaction);
-  //   };
-
-  //   // 5초마다 센서 값을 가져오는 인터벌 설정
-  //   const intervalId = setInterval(bridge.call(serviceURL, '{}'), 5000);
-
-  //   // 컴포넌트가 언마운트될 때 인터벌 정리
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
-  // useEffect(() => {
-  //   const bridge2 = new WebOSServiceBridge();
-  //   const serviceURL = "luna://com.team11.homegardening.service/getPlantInfo"; // 사용할 서비스의 URL
-
-
-  //   bridge2.onservicecallback = function (msg) {
-  //     const response = JSON.parse(msg);
-  //     setPlantImageUrl(response.normalImageUrl);
-  //     setPlantName(response.name);
-  //   };
-
-  //   bridge2.call(serviceURL, '{}');
-
-  //   const bridge3 = new WebOSServiceBridge();
-  //   const levelserviceURL = "luna://com.team11.homegardening.service/getPlantLevel"; // 사용할 서비스의 URL
-
-  //   bridge3.onservicecallback = function (msg) {
-  //     const response = JSON.parse(msg);
-  //     setPlantLevel(response.level);
-  //   };
-
-  //   bridge3.call(levelserviceURL, '{}');
-  //   // // localStorage에서 plantSpecies 이름을 가져옴
-  //   // const plantSpecies = localStorage.getItem('plantSpecies');
-  //   // // plantSpecies 이름을 기반으로 이미지 URL 키 생성
-  //   // const imageKey = `${plantSpecies}-image`;
-  //   // // 생성된 키로 localStorage에서 이미지 URL 가져오기
-  //   // const storedImageUrl = localStorage.getItem(imageKey);
-
-  //   // if (storedImageUrl) {
-  //   //   setPlantImageUrl(storedImageUrl);
-  //   // }
-  // }, [])
+  const handleBarClick = () => {
+    conditionModalOpen(true);
+  };
 
   const satisfactionColors = {
     '매우 좋음': '#00A35E',
@@ -120,11 +97,6 @@ const MainPage = () => {
       setPlantSatisfaction('아주 나쁨');
     }
   }, [plantSatisfactionValue]);
-
-
-  const handleBarClick = () => {
-    conditionModalOpen(true);
-  };
 
   const boxStyle = {
     borderRadius: '50px',
@@ -197,7 +169,7 @@ const MainPage = () => {
 
   return (
     <div style={{
-      padding: '140px',
+      padding: '5vh',
       backgroundImage: `url(${backgroundImage})`,
       backgroundSize: 'cover', // 필요에 따라 배경 크기 조정
       backgroundPosition: 'center', // 이미지를 중앙에 배치
@@ -226,7 +198,11 @@ const MainPage = () => {
             isOpen={isControlWaterModalOpen}
             onClose={() => controlWaterModalOpen(false)}
           />
-          
+          <WaterAlertModal
+            isOpen={isWaterAlertModalOpen}
+            onClose={() => setWaterAlertModalOpen(false)}
+          />
+
           {/* 센서값에 따른 바 표시 */}
           <div style={{ width: '100%', padding: '20px', boxSizing: 'border-box' }}>
             <div style={satisfactionBackgroundStyle} onClick={handleBarClick}>
@@ -238,12 +214,15 @@ const MainPage = () => {
           </div>
 
           {/* 식물 이미지가 들어 갈 자리 */}
-          <div className="plant_image" style={{ marginTop: '40px' }}>
-            <img src={plantImageUrl} alt="식물 이미지" />
+          <div className="plant_image" style={{}}>
+            <img
+              src={plantImageUrl}
+              alt="식물 이미지"
+              style={{ height: '45vh', width: 'auto' }} />
           </div>
 
           {/* 식물 이름이 들어 갈 자리 */}
-          <div className="plant_info" style={{ marginTop: '40px'}}>
+          <div className="plant_info" style={{}}>
             <text style={boxStyle}>{plantName}</text>
           </div>
 
@@ -256,7 +235,7 @@ const MainPage = () => {
             <div style={{ textAlign: 'center' }}>
               <p>
                 <span style={{ marginRight: '10px' }}>Lv{plantLevel}</span>
-                레벨업까지 <span style={{ color: '#FF3333' }}>{(100 - plantExp).toFixed(2)}%</span> 남음
+                레벨업까지 <span style={{ color: '#FF3333' }}>{Math.ceil(100 - plantExp).toFixed(2)}%</span> 남음
               </p>
             </div>
           </div>
@@ -264,13 +243,13 @@ const MainPage = () => {
 
           <div className="menu-bar">
             <img src={require('../img/BottomBar.png')} alt="Description" usemap="#image-map" />
-              <map name="image-map">
-                <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={() => navigate('/main/info')} />
-                <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
-                <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
-                <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
-                <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => controlWaterModalOpen(true)} />
-              </map>
+            <map name="image-map">
+              <area shape="rect" coords="0,0,75,180" alt="Link 1" onClick={camera} />
+              <area shape="rect" coords="75,0,150,180" alt="Link 2" onClick={() => calendarModalOpen(true)} />
+              <area shape="rect" coords="150,0,225,180" alt="Link 3" onClick={() => toggleModalOpen(true)} />
+              <area shape="rect" coords="225,0,300,180" alt="Link 4" onClick={() => controlLightModalOpen(true)} />
+              <area shape="rect" coords="300,0,375,180" alt="Link 5" onClick={() => controlWaterModalOpen(true)} />
+            </map>
           </div>
         </div>
       </div>

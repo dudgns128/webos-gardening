@@ -6,7 +6,7 @@ const WebSocket = require('ws');
 const service = new Service(pkgInfo.name);
 const logHeader = '[' + pkgInfo.name + ']';
 // *************** WebSocket ********************//
-const wsurl = 'ws://52.79.60.122:8080/ws';
+const wsurl = 'ws://15.164.95.57:8080/ws';
 const connection = new WebSocket(wsurl);
 connection.on('open', () => {
   console.log("연결 됨");
@@ -21,6 +21,8 @@ service.register('getPlantInfos', async function (message) {
     const satisfaction = await plantCurrentInfo.getSatisfaction();
     const level = await plantCurrentInfo.getLevel();
     const waterCount = await plantCurrentInfo.getWaterCount();
+    const currentSensingData = await plantCurrentInfo.getSensingData();
+
     message.respond({
       success: true,
       imageUrl: normalImageUrl,
@@ -28,6 +30,7 @@ service.register('getPlantInfos', async function (message) {
       satisfaction: satisfaction,
       level: level,
       exp: (100 * waterCount) / (level * 2),
+      waterTankLevel: currentSensingData.waterTankLevel
     });
   } catch (e) {
     message.respond({
@@ -37,8 +40,19 @@ service.register('getPlantInfos', async function (message) {
   }
 });
 
+service.register('capture', function (message) {
+  const url = 'luna://com.webos.service.applicationmanager/launch';
+  const params = {
+    id: "com.team17.app.camera"
+  };
+  service.call(url, params, (res) => {});
+})
+
 // 초기 데이터 등록 및 백그라운드 작업 시작
 service.register('start', async function (message) {
+  // Open sensor
+  openI2C();
+
   // 모든 DB kind 생성 및 권한 할당
   plantInfo.putKind();
   plantCurrentInfo.putKind();
@@ -136,7 +150,7 @@ service.register('start', async function (message) {
         controlLight(wMessage.light);
         break;
       case 16:  case '16':
-        await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
+        await plantCurrentInfo.updateIsAutoControl(wMessage.autoControl);
         break;
       default:
         break;
@@ -155,6 +169,25 @@ service.register('start', async function (message) {
     })
   );
 
+  // plantCurrentInfo DB 내용 초기화
+  if ((await plantCurrentInfo.isDataExist()) != true)
+    await plantCurrentInfo.putData({
+      isAutoControl: true,
+      level: 1,
+      waterCount: 0,
+      satisfaction: 0,
+      sensingData: null,
+    });
+  else {
+    await plantCurrentInfo.replaceData({
+      isAutoControl: true,
+      level: 1,
+      waterCount: 0,
+      satisfaction: 0,
+      sensingData: null,
+    })
+  }
+
   // 5초 주기로 센싱
   // 1. envSensingData 에 저장
   // 2. 분석해 만족도 결정(-> 자동제어 여부에 따라 제어는 이때 같이!), 만족도 평균값 갱신
@@ -166,15 +199,8 @@ service.register('start', async function (message) {
       const yearNow = now.getFullYear();
       const monthNow = now.getMonth() + 1; // 월 (0부터 시작하므로 1을 더해야 함)
       const dayNow = now.getDate();
-      const data = getSensingDataJSON();
-      if ((await plantCurrentInfo.isDataExist()) != true)
-        await plantCurrentInfo.putData({
-          isAutoControl: true,
-          level: 1,
-          waterCount: 0,
-          satisfaction: 0,
-          sensingData: null,
-        });
+      const data = await getSensingDataJSON();
+      
       if ((await avgSatisfactionRecord.isDataExist(yearNow, monthNow, dayNow)) != true)
         await avgSatisfactionRecord.putData({
           year: yearNow,
@@ -219,7 +245,8 @@ service.register('start', async function (message) {
             satisfaction,
             level,
             exp: (100 * waterCount) / (level * 2),
-            imageUrl: normalImageUrl
+            imageUrl: normalImageUrl,
+            waterTankLevel: data.waterTankLevel
           }
         })
       );
@@ -237,8 +264,10 @@ service.register('start', async function (message) {
 
 service.register('hitest', async function (message) {
   try {
-    const a = await plantInfo.getPlantId();
-    message.respond({suc:a});
+    const today = new Date();
+    const hours = today.getUTCHours() + 9;
+    const isNight = ((18 < hours) || (hours < 6)) ? true : false;
+    message.respond({today, hours, isNight});
     return;
   } catch(e) {
     message.respond(e);
@@ -421,17 +450,20 @@ function getRandomTF() {
 }
 
 // sensors 조회/제어 관련 함수들
-function getSensingDataJSON() {
-  // [todo] 실제 센서 연결 후 실제 값 받아오게 변경
+async function getSensingDataJSON() {
+  // 실제 센서 연결 후 실제 값 받아는 코드
+  const data = await readSensor();
+
   return {
-    water: getRandomInt(1, 100),
-    light: getRandomInt(1, 100),
-    temperature: getRandomInt(1, 100),
-    humidity: getRandomInt(1, 100),
+    water: data.water,
+    light: data.light,
+    temperature: data.temperature,
+    humidity: data.humidity,
+    waterTankLevel: data.watertank_level
   };
 }
 
-// 만족도 판정 로직
+// 만족도 판정 로직 + 만족도 판단하며 자동 제어 로직
 // 일단 단순하게 이상적인 범위 벗어나면 10점씩 깎음.
 async function calcSatisfaction(data) {
   let satisfaction = 100;
@@ -444,21 +476,28 @@ async function calcSatisfaction(data) {
   const temperatureRange = await plantEnvInfo.getTemperatureRange();
   const humidityValue = await plantEnvInfo.getHumidityValue();
   const humidityRange = await plantEnvInfo.getHumidityRange();
-  if (data.water < waterValue - waterRange) {
+
+  const today = new Date();
+  const hours = today.getUTCHours() + 9;
+  const isNight = ((18 < hours) || (hours < 6)) ? true : false;
+  if (!isNight && (data.light < lightValue - lightRange)) {
     satisfaction -= 10;
-    if (isAutoControl)
-      await controlWater();
+    // light 제어 api 사용
+    if (isAutoControl) {
+      controlNeopixel(lightValue);
+    }
   }
-  if (waterValue + waterRange < data.water) satisfaction -= 10;
-  if (data.light < lightValue - lightRange) {
+  if (!isNight && (lightValue - lightRange <= data.light)) {
     satisfaction -= 10;
-    // [todo] 빛 세기 조절 api 사용
-    if (isAutoControl) {}
+    // light 제어 api 사용
+    if (isAutoControl) {
+      controlNeopixel(0);
+    }
   }
-  if (lightValue + lightRange < data.light) {
-    satisfaction -= 10;
-    // [todo] 빛 세기 조절 api 사용
-    if (isAutoControl) {}
+  if (isNight) {
+    if (isAutoControl) {
+      controlNeopixel(0);
+    }
   }
   if (
     data.humidity < humidityValue - humidityRange ||
@@ -470,12 +509,18 @@ async function calcSatisfaction(data) {
     temperatureValue + temperatureRange < data.temperature
   )
     satisfaction -= 10;
+  if (data.water < waterValue - waterRange) {
+    satisfaction -= 10;
+    if (isAutoControl)
+      await controlWater();
+  }
+  if (waterValue + waterRange < data.water) satisfaction -= 10;
   return satisfaction;
 }
 
 function controlLight(lightValue) {
-  // [todo] light 제어 api 사용하기
-  console.log(`adjust light value to ${lightValue}!!`);
+  // light 제어 api 사용하기
+  controlNeopixel(lightValue);
 }
 
 // controlWater()가 호출되면 물을 주는 것
@@ -494,8 +539,10 @@ async function controlWater() {
     await plantCurrentInfo.updateWaterCount(0);
     await plantCurrentInfo.updateLevel(curLevel + 1);
   } else await plantCurrentInfo.updateWaterCount(curWaterCount + 1);
-  // [todo] water 제어 api 사용하기
-  console.log(`adjust water value!!`);
+  // water 제어 api 사용
+  controlPump(1);
+  await delay(2000);
+  controlPump(0);
 }
 
 // *************************************** Heartbeat ***************************************
@@ -810,6 +857,7 @@ const plantCurrentInfo = {
           _kind: kindID_plantCurrentInfo,
           level: newData.level,
           isAutoControl: newData.isAutoControl,
+          waterCount: data.waterCount,
           satisfaction: newData.satisfaction,
           sensingData: newData.sensingData,
         },
@@ -1590,3 +1638,145 @@ const avgSatisfactionRecord = {
     });
   },
 };
+
+// *************************************** HW ***************************************
+function openI2C() {
+  var openI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/open';
+  var openI2CParams = {name:"I2C1", address:1};
+
+  service.call(openI2CApi, openI2CParams, (res) => {
+    if (res.payload.returnValue) {
+        console.log("open success");
+    } else {
+        console.log("open failed");
+    }
+  });
+}
+
+function closeI2C() {
+  var closeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/close';
+  var closeI2CParams = {name:"I2C1", address:1};
+
+  function closeI2CApi_callback(res) {
+      if (res.payload.returnValue) {
+          console.log("close success");
+      } else {
+          console.log("close failed");
+      }
+  }
+  service.call(closeI2CApi, closeI2CParams, closeI2CApi_callback);
+}
+
+function controlNeopixel(br) {
+  var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+  var writeI2CParams1 = {name:"I2C1", address:1, data:[0, 0]};
+  var writeI2CParams2 = {name:"I2C1", address:1, data:[br]};
+
+  function writeI2CApi_callback1(res) {
+    if (res.payload.returnValue) {
+      service.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
+    } else {
+      console.log("fail to control Neopixel");
+    }
+  }
+
+  function writeI2CApi_callback2(res) {
+    if (res.payload.returnValue) {
+      console.log("success to control Neopixel");
+    } else {
+      console.log("fail to control Neopixel");
+    }
+  }
+  service.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
+}
+
+function controlPump(on) {  // 0: turn off, 1: turn on
+  var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+  var writeI2CParams1 = {name:"I2C1", address:1, data:[0, 1]};
+  var writeI2CParams2 = {name:"I2C1", address:1, data:[on]};
+
+  function writeI2CApi_callback1(res) {
+      if (res.payload.returnValue) {
+          service.call(writeI2CApi, writeI2CParams2, writeI2CApi_callback2);
+      } else {
+          console.log("fail to control water pump");
+      }
+  }
+
+  function writeI2CApi_callback2(res) {
+      if (res.payload.returnValue) {
+          console.log("success to control water pump");
+      } else {
+          console.log("fail to control water pump");
+      }
+  }
+
+  service.call(writeI2CApi, writeI2CParams1, writeI2CApi_callback1);
+}
+
+async function readSensor() {
+  var readI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/read';
+  var readI2CParams = {name:"I2C1", address:1, size:10};
+  var writeI2CApi = 'luna://com.webos.service.peripheralmanager/i2c/write';
+  var writeI2CParams = {name:"I2C1", address:1, data:[0, 2]};
+
+  let water, light, temperature, humidity, watertank_level;
+
+  function readI2CApi_callback(res) {
+    const arg = res.payload;
+    if (res.payload.returnValue) {
+        var humid = arg.data[0] + arg.data[1] * 0.1;
+
+        var temp = arg.data[2];
+        if (arg.data[3] & 0x80) {
+            temp = - 1 - temp;
+        }
+        temp += (arg.data[3] & 0x0f) * 0.1;
+
+        var cds = arg.data[4] * 256 + arg.data[5];
+
+        var water_level = arg.data[6] * 256 + arg.data[7];
+
+        var soil_moisture = arg.data[8] * 256 + arg.data[9];
+
+        humidity = humid;
+        temperature = temp;
+        light = Math.round(100 - (cds) / 10.23);
+        watertank_level = Math.round(water_level / 10.23);
+        water = Math.round(soil_moisture / 10.23);
+    } else {
+        console.log("fail to read from sensors");
+    }
+  }
+
+  function writeI2CApi_callback(res) {
+    if (res.payload.returnValue) {
+        setTimeout(function() {
+            service.call(readI2CApi, readI2CParams, readI2CApi_callback);
+        }, 30);
+    } else {
+        console.log("fail to read from sensors");
+    }
+  }
+
+  service.call(writeI2CApi, writeI2CParams, writeI2CApi_callback);
+
+  await delay(500);
+  // water tank level 판단 로직
+  if (watertank_level < 700)
+      watertank_level = 0
+  else
+    watertank_level = 1
+
+  return {
+    water,
+    light: (100 - light),
+    temperature,
+    humidity,
+    watertank_level
+  }
+}
+
+async function delay(n) {
+  return new Promise(resolve => setTimeout(resolve, n));
+}
