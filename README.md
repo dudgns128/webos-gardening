@@ -1,4 +1,4 @@
-<a name="readme-top"></a>
+![image](https://github.com/user-attachments/assets/6e9a9ce5-bfca-4322-8e90-89e3775e8b26)<a name="readme-top"></a>
 
 
 [![Contributors][contributors-shield]][contributors-url]
@@ -19,7 +19,7 @@
     It's a webOS-based smart home gardening project with remote and automatic control!
     <br />
     <br />
-    <a href="https://youtu.be/V7H0JUiSZ7Y">🎥 View Demo</a>
+    <a href="https://youtu.be/V7H0JUiSZ7">🎥 View Demo</a>
     ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">🐞 Report Bug</a>
     ·
