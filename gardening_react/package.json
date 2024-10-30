@@ -9,6 +9,7 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.2",
+    "com.team17.homegardening.service": "file:../JsService",
     "constants": "^0.0.2",
     "moment": "^2.30.1",
     "polished": "^4.3.1",

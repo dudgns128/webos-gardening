@@ -35,16 +35,12 @@ const Span = styled.span`
 
 const Toggle = ({ isOn, toggleHandler }) => {
   return (
-    <ToggleContainer onClick={(e) => {
-      e.stopPropagation();
-      toggleHandler();
-    }}>
+    <ToggleContainer onClick={toggleHandler}>
       <ToggleBackground isOn={isOn} />
       <ToggleCircle isOn={isOn} />
     </ToggleContainer>
   );
 };
-
 
 const PlantAutocontrolModal = ({ isOpen, onClose }) => {
   const [currentState, setCurrentState] = useState(true);
@@ -61,17 +57,23 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
 
     const serviceURL = "luna://com.team17.homegardening.service/isAutocontrol";
 
-    bridge1.onservicecallback = function (msg) {
+    const updateState = (msg) => {
       const response = JSON.parse(msg);
       if (response.success) {
         setCurrentState(response.currentState);
       }
     };
 
+    bridge1.onservicecallback = updateState;
     bridge1.call(serviceURL, '{}');
+
+    // 주기적으로 상태를 가져오는 방법
     const intervalId = setInterval(() => bridge1.call(serviceURL, '{}'), 1000);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(intervalId);
+      bridge1.onservicecallback = undefined;
+    };
   }, [isOpen]);
 
   const toggleHandler = () => {
@@ -93,13 +95,13 @@ const PlantAutocontrolModal = ({ isOpen, onClose }) => {
 
   return (
     <div className="PlantModal">
-      <div className="modal-backdrop"  onClick={onClose}>
+      <div className="modal-backdrop" onClick={onClose}>
         <div className="plant-container" onClick={(e) => e.stopPropagation()}>
           <h1>식물 관리</h1>
           <div className="plant-status">
             <div className="status-item">
               <Span>자동 제어 유무</Span>
-              <Toggle isOn={currentState} toggleHandler={toggleHandler} style={{ marginLeft: '20px' }}/>
+              <Toggle isOn={currentState} toggleHandler={toggleHandler} />
             </div>
             <div className="autocontrol-text">
               {descriptionLines}
