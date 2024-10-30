@@ -37,6 +37,7 @@ WebSocketUtil.socket.onmessage = function (event) {
     } else if (arg.method === 18) {
         if (WebSocketUtil.onReceiveCalendarDataCallback !== undefined) {
             WebSocketUtil.calendarData = arg.data;
+            console.log("Received calendarData:", WebSocketUtil.calendarData);
             WebSocketUtil.onReceiveCalendarDataCallback(arg.data);
         }
     }

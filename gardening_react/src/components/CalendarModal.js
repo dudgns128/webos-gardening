@@ -202,6 +202,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
     WebSocketUtil.socket.send(params);
     
     WebSocketUtil.onReceiveCalendarDataCallback = (calendarData) => {
+      console.log("Received calendarData:", calendarData);
       const newWaterDays = [];
         for (let day = 1; day <= 31; day++) {
             if (calendarData.isWater[`day${day}`]) {
@@ -219,6 +220,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
             }
         }
         setSatisfactionDay(newSatisfactionDays);
+        console.log("Satisfaction Days:", newSatisfactionDays); 
     }
 
     return () => {
@@ -280,6 +282,7 @@ const CalendarModal = ({ isOpen, onClose }) => {
                 // }
 
                 const satisfactionValue = satisfactionDay[date.getDate()];
+                console.log(`Date: ${date.getDate()}, Value: ${satisfactionValue}`);
                 if (view === "month") {
                   const imgSrc = getSatisfactionImage(satisfactionValue);
                   if (imgSrc) { //html.push(<img key={`satisfaction-${date.getDate()}`} src={imgSrc} alt="satisfaction" />);

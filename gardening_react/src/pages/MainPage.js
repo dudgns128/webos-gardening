@@ -44,6 +44,12 @@ const MainPage = () => {
       setPlantLevel(plantData.level);
       setPlantExp(plantData.exp);
       setWaterTankLevel(plantData.waterTankLevel);
+
+      // waterTankLevel이 0으로 변경되면 모달 열기
+      if (plantData.waterTankLevel === 0) {
+        setWaterAlertModalOpen(true);
+      }
+      
     };
 
     return () => {
@@ -51,11 +57,11 @@ const MainPage = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (waterTankLevel === 0) {
-      setWaterAlertModalOpen(true);
-    }
-  }, [waterTankLevel]);
+  // useEffect(() => {
+  //   if (waterTankLevel === 0) {
+  //     setWaterAlertModalOpen(true);
+  //   }
+  // }, [waterTankLevel]);
 
   const handleBarClick = () => {
     conditionModalOpen(true);
