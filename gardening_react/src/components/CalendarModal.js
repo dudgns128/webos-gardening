@@ -187,19 +187,6 @@ const CalendarModal = ({ isOpen, onClose }) => {
     if (!isOpen) {
       return;
     }
-
-    const updatedYear = date.getFullYear();
-    const updatedMonth = date.getMonth() + 1;
-    const params = JSON.stringify({
-      "method": 17,
-      "userPlant": plantId,
-      "data": {
-        "year": updatedYear,
-        "month": updatedMonth
-      }
-    });
-
-    WebSocketUtil.socket.send(params);
     
     WebSocketUtil.onReceiveCalendarDataCallback = (calendarData) => {
       console.log("Received calendarData:", calendarData);
@@ -222,6 +209,19 @@ const CalendarModal = ({ isOpen, onClose }) => {
         setSatisfactionDay(newSatisfactionDays);
         console.log("Satisfaction Days:", newSatisfactionDays); 
     }
+
+    const updatedYear = date.getFullYear();
+    const updatedMonth = date.getMonth() + 1;
+    const params = JSON.stringify({
+      "method": 17,
+      "userPlant": plantId,
+      "data": {
+        "year": updatedYear,
+        "month": updatedMonth
+      }
+    });
+
+    WebSocketUtil.socket.send(params);
 
     return () => {
       WebSocketUtil.onReceivePlantsCallback = undefined;
