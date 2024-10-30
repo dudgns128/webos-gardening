@@ -10,15 +10,12 @@ import backgroundImage from '../img/background.png';
 import goalImage from '../img/present.png';
 
 const MainPage = () => {
-  const navigate = useNavigate();
-
   const [plantSatisfactionValue, setPlantSatisfactionValue] = useState(0);
   const [plantSatisfaction, setPlantSatisfaction] = useState(0);
   const [plantImageUrl, setPlantImageUrl] = useState('');
   const [plantName, setPlantName] = useState('초기');
   const [plantLevel, setPlantLevel] = useState(0);
   const [plantExp, setPlantExp] = useState(50);
-  const [waterTankLevel, setWaterTankLevel] = useState(1);
   const [isConditionModalOpen, conditionModalOpen] = useState(false);
   const [isToggleModalOpen, toggleModalOpen] = useState(false);
   const [isCalendarModalOpen, calendarModalOpen] = useState(false);
@@ -53,7 +50,11 @@ const MainPage = () => {
         setPlantName(response.name);
         setPlantLevel(response.level);
         setPlantExp(response.exp);
-        setWaterTankLevel(response.waterTankLevel);
+
+        // waterTankLevel이 0으로 변경되면 모달 열기
+        if (response.waterTankLevel === 0) {
+          setWaterAlertModalOpen(true);
+        }
       }
 
     };
@@ -64,12 +65,6 @@ const MainPage = () => {
     // 컴포넌트가 언마운트될 때 인터벌 정리
     return () => clearInterval(intervalId);
   }, []);
-
-  useEffect(() => {
-    if (waterTankLevel === 0) {
-      setWaterAlertModalOpen(true);
-    }
-  }, [waterTankLevel]);
 
   const handleBarClick = () => {
     conditionModalOpen(true);
