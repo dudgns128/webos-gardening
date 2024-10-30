@@ -1750,7 +1750,7 @@ async function readSensor() {
         humidity = humid;
         temperature = temp;
         light = Math.round(100 - (cds) / 10.23);
-        watertank_level = Math.round(water_level / 10.23);
+        watertank_level = water_level;
         water = Math.round(soil_moisture / 10.23);
     } else {
         console.log("fail to read from sensors");
@@ -1771,7 +1771,7 @@ async function readSensor() {
 
   await delay(500);
   // water tank level 판단 로직
-  if (watertank_level < 700)
+  if (watertank_level < 300)
       watertank_level = 0
   else
     watertank_level = 1
