@@ -141,6 +141,9 @@ service.register('start', async function (message) {
       case 16:  case '16':
         await plantCurrentInfo.updateIsAutoControl(wMessage.isAutoControl);
         break;
+      case 17:  case '17':
+        await getCalendarData(wMessage.year, wMessage.month);
+        break;
       default:
         break;
     }
@@ -317,6 +320,11 @@ service.register('controlWater', async function (message) {
 service.register('calendar', async function (message) {
   const year = message.payload.year;
   const month = message.payload.month;
+
+  return await getCalendarData(year, month);
+});
+
+async function getCalendarData(year, month) {
   const waterData = await wateringRecord.getMonthData(year, month);
   const satisfactionData = await avgSatisfactionRecord.getMonthData(
     year,
@@ -337,8 +345,8 @@ service.register('calendar', async function (message) {
     result.satisfaction[`day${data.day}`] = data.avgSatisfaction;
   }
 
-  message.respond(result);
-});
+  return result;
+}
 
 // 자동제어 ON/OFF
 service.register('toggleAutocontrol', async function (message) {
