@@ -154,12 +154,15 @@ service.register('start', async function (message) {
         break;
       case 17:  case '17':
         const plantId = await plantInfo.getPlantId();
-        const data = await getCalendarData(wMessage.data.year, wMessage.data.month);
+        const {isWater, satisfaction} = await getCalendarData(wMessage.data.year, wMessage.data.month);
         connection.send(
           JSON.stringify({
             method: 18,
             userPlant: plantId,
-            data
+            data: {
+              isWater,
+              satisfaction
+            }
           })
         );
         break;
@@ -355,7 +358,14 @@ service.register('calendar', async function (message) {
   const year = message.payload.year;
   const month = message.payload.month;
 
-  return await getCalendarData(year, month);
+  const {isWater, satisfaction} = await getCalendarData(year, month);
+
+  // let result = { success: true, isWater: {}, satisfaction: {} };
+  message.respond({
+    success: true,
+    isWater,
+    satisfaction
+  })
 });
 
 async function getCalendarData(year, month) {
@@ -365,21 +375,22 @@ async function getCalendarData(year, month) {
     month
   );
 
-  let result = { success: true, isWater: {}, satisfaction: {} };
+  let isWater = {};
+  let satisfaction = {};
   // 초기화
   for (let i = 1; i < 32; i++) {
-    result.isWater[`day${i}`] = false;
-    result.satisfaction[`day${i}`] = null;
+    isWater[`day${i}`] = false;
+    satisfaction[`day${i}`] = null;
   }
   // 있는 값은 할당
   for (const data of waterData) {
-    result.isWater[`day${data.day}`] = true;
+    isWater[`day${data.day}`] = true;
   }
   for (const data of satisfactionData) {
-    result.satisfaction[`day${data.day}`] = data.avgSatisfaction;
+    satisfaction[`day${data.day}`] = data.avgSatisfaction;
   }
 
-  return result;
+  return {isWater, satisfaction};
 }
 
 // 자동제어 ON/OFF
