@@ -154,7 +154,7 @@ service.register('start', async function (message) {
         break;
       case 17:  case '17':
         const plantId = await plantInfo.getPlantId();
-        const data = await getCalendarData(wMessage.year, wMessage.month);
+        const data = await getCalendarData(wMessage.data.year, wMessage.data.month);
         connection.send(
           JSON.stringify({
             method: 18,
