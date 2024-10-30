@@ -153,7 +153,15 @@ service.register('start', async function (message) {
         await plantCurrentInfo.updateIsAutoControl(wMessage.autoControl);
         break;
       case 17:  case '17':
-        await getCalendarData(wMessage.year, wMessage.month);
+        const plantId = await plantInfo.getPlantId();
+        const data = await getCalendarData(wMessage.year, wMessage.month);
+        connection.send(
+          JSON.stringify({
+            method: 18,
+            userPlant: plantId,
+            data
+          })
+        );
         break;
       default:
         break;
