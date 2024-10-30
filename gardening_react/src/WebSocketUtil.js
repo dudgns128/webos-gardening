@@ -2,7 +2,7 @@ var WebSocketUtil = {};
 
 WebSocketUtil.socket = new WebSocket("ws://15.164.95.57:8080/ws");
 
-WebSocketUtil.socket.onopen = function(e) {
+WebSocketUtil.socket.onopen = function (e) {
     const msg = {
         "method": 30,
         "userPlant": 0,
@@ -14,7 +14,7 @@ WebSocketUtil.socket.onopen = function(e) {
     WebSocketUtil.socket.send(JSON.stringify(msg));
 }
 
-WebSocketUtil.socket.onmessage = function(event) {
+WebSocketUtil.socket.onmessage = function (event) {
     var arg = JSON.parse(event.data);
     if (arg.method === 11) {
         // console.log('arg : ', arg);
@@ -33,6 +33,11 @@ WebSocketUtil.socket.onmessage = function(event) {
         if (WebSocketUtil.onReceiveAutoControlCallback !== undefined) {
             WebSocketUtil.isAutoControl = (Boolean)(arg.autoControl);
             WebSocketUtil.onReceiveAutoControlCallback((Boolean)(arg.autoControl));
+        }
+    } else if (arg.method === 18) {
+        if (WebSocketUtil.onReceiveCalendarDataCallback !== undefined) {
+            WebSocketUtil.calendarData = arg.data;
+            WebSocketUtil.onReceiveCalendarDataCallback(arg.data);
         }
     }
 };
