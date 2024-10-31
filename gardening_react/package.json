@@ -1,6 +1,7 @@
 {
   "name": "gardening_react",
   "version": "0.1.0",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@enact/webos": "^4.8.0",
