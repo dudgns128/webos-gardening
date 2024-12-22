@@ -19,7 +19,7 @@
     It's a webOS-based smart home gardening project with remote and automatic control!
     <br />
     <br />
-    <a href="https://www.youtube.com/watch?v=LhSrGsrTOFw">🎥 View Demo</a>
+    <a href="https://youtu.be/0eDjUXKEMuM">🎥 View Demo</a>
     ·
     <a href="https://github.com/dudgns128/webos-gardening/issues">🐞 Report Bug</a>
     ·
