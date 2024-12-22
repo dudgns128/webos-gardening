@@ -206,7 +206,7 @@ If you would like to see the contents including the HW connection, you can find 
 #### Circuit Diagram & Sensor & Actuator
 
 * Ardiuno Nano: Communicates Raspberry Pi with I2C, to control all sensors and actuators. [See docs of webOS peripheralmanager.](https://www.webosose.org/docs/reference/ls2-api/com-webos-service-peripheralmanager/)
-24 x WS2812B Neopixel Ring: Used for light actuator. Connected to Arduino Nano Pin 3.
+* 24 x WS2812B Neopixel Ring: Used for light actuator. Connected to Arduino Nano Pin 3.
 * Water pump: Used for watering actuator. Requires transistor circuit or motor driver. [See docs of arduino.](https://docs.arduino.cc/learn/electronics/transistor-motor-control/) Connected to Arduino Nano Pin 4. 
 * DHT11: Temperature and humidity sensor. Connected to Arduino Nano Pin 2.
 * SEN030101: Light sensor for approximate value. Can be replaced with CDS cell and pull-up resistor. Connected to Arduino Nano Pin A0.
