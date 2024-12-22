@@ -205,7 +205,7 @@ If you would like to see the contents including the HW connection, you can find 
 
 #### Circuit Diagram & Sensor & Actuator
 
-**The Arduino source code is uploaded to arduino/i2cSlaveFinal within the Hardware branch.**
+> **Note:** The Arduino source code is uploaded to **arduino/i2cSlaveFinal within the Hardware branch**.
 
 * Ardiuno Nano: Communicates Raspberry Pi with I2C, to control all sensors and actuators. [See docs of webOS peripheralmanager.](https://www.webosose.org/docs/reference/ls2-api/com-webos-service-peripheralmanager/)
 * 24 x WS2812B Neopixel Ring: Used for light actuator. Connected to Arduino Nano Pin 3.
