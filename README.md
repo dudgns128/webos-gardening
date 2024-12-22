@@ -166,10 +166,12 @@ If you would like to see the contents including the HW connection, you can find 
 
 ### Hardware Setup
 
+![Sample](https://github.com/user-attachments/assets/55bb04b4-16bd-4d7b-8878-0b04ba77a35e)
+
 #### Raspberry Pi
 * HardWare : Raspberry Pi 4 Model B 8GB
-
 * OS : WebOS OSE
+* TouchDisplay : Raspberry Pi Display 10.1-Inch Touch Screen LCD
 
 1. Download WebOS image from [WebOS OSE](https://github.com/webosose/build-webos/releases)
  
@@ -201,13 +203,18 @@ If you would like to see the contents including the HW connection, you can find 
    
 * If Writing Successful appears, you have successfully flashing the image on the sd card.
 
-#### TouchDisplay & Sensor
+#### Circuit Diagram & Sensor & Actuator
 
-* TouchDisplay : Raspberry Pi Display 10.1-Inch Touch Screen LCD
-* DHT11 : A sensor used to measure temperature and humidity
-* NeoPixel : A brand of addressable LEDs developed by Adafruit for control Light 
+* Ardiuno Nano: Communicates Raspberry Pi with I2C, to control all sensors and actuators. [See docs of webOS peripheralmanager.](https://www.webosose.org/docs/reference/ls2-api/com-webos-service-peripheralmanager/)
+24 x WS2812B Neopixel Ring: Used for light actuator. Connected to Arduino Nano Pin 3.
+* Water pump: Used for watering actuator. Requires transistor circuit or motor driver. [See docs of arduino.](https://docs.arduino.cc/learn/electronics/transistor-motor-control/) Connected to Arduino Nano Pin 4. 
+* DHT11: Temperature and humidity sensor. Connected to Arduino Nano Pin 2.
+* SEN030101: Light sensor for approximate value. Can be replaced with CDS cell and pull-up resistor. Connected to Arduino Nano Pin A0.
+* SZH-EK057: Water level sensor. Connected to Arduino Nano Pin A1.
+* SEN030003: Soil moisture sensor. Connected to Arduino Nano Pin A2.
 
-  <img width="899" alt="HW + SENSOR " src="https://github.com/dudgns128/webos-gardening/assets/62871662/51fa53d8-2721-4015-95e8-d17fb2efaff7">
+![Sensor](https://github.com/user-attachments/assets/620a1a41-1b72-4637-a170-4c4af2d22eec)
+![회로도](https://github.com/user-attachments/assets/99e33bd1-538a-45d8-b610-bc445451c64e)
 
 <!-- GETTING STARTED -->
 # Getting Started
