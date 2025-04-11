@@ -166,7 +166,6 @@ We know that the display that supports Raspberry Pi 4 only has 1024x600 resoluti
    - Adding a target device with interactive mode (target device name: target, host address: 10.123.45.67, port number: 22, user: root)
 
    ```sh
-   ares-setup-device
 
    name               deviceinfo               connection  profile
    ------------------ ------------------------ ----------- -------
